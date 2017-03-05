@@ -1,0 +1,3 @@
+[0304/181401.710:ERROR:process_reader_win.cc(83)] NtQuerySystemInformation: {Quota insuffisant} Le quota de mémoire virtuelle ou de fichier d’échange est insuffisant pour finir l’opération spécifiée.  (0xc0000017)
+[0304/181401.715:ERROR:exception_snapshot_win.cc(87)] thread ID 10348 not found in process
+[0304/181401.715:WARNING:crash_report_exception_handler.cc(60)] ProcessSnapshotWin::Initialize failed

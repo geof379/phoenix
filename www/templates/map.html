@@ -1,0 +1,66 @@
+/** **/
+
+<ion-view view-title="Map">
+  <ion-drawer-vertical-wrapper delegate-handle="first" direction="up" state="closed" on-swipe-down="toggleDrawer('first')">
+    <ion-drawer-vertical-content>
+
+      <div class="card">
+        <div class="item item-text-wrap item-icon-right">
+          <i class="icon ion-ios-cloud-outline">
+           
+            <span class="badge icon-badge cloudbadge badge-assertive">
+               {{currentObject.id}}
+            </span>
+          </i> {{currentObject.title}}
+        </div>
+
+        <div class="item item-body">
+
+          <p>
+            The header is created from a Thumbnail List item, the content is from a card-body consisting of an image and paragraph text.
+          </p>
+          <p>
+            <a href="#" class="subdued">1 Like</a>
+            <a href="#" class="subdued">5 Comments</a>
+          </p>
+        </div>
+      </div>
+    </ion-drawer-vertical-content>
+
+  </ion-drawer-vertical-wrapper>
+  <ion-content >
+
+    <div id="map" on-double-tap="toggleDrawer('second')" ></div>
+
+    <ion-slides id="list" options="options" pager="true" slider="data.slider">
+      <ion-slide-box on-slide-changed="slideHasChanged($index)">
+        <ion-slide ng-repeat="search in searchlists" href="#">
+
+          <div class="slide-item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')">
+            <i class="icon ion-ios-cloud-outline">
+           
+            <span class="badge icon-badge slide-item-cloudbadge badge-assertive">
+               {{search.id}}
+            </span>
+          </i> {{search.title}}
+
+
+
+            </button>
+
+          </div>
+
+          <ion-slide>
+
+      </ion-slide-box>
+
+
+    </ion-slides>
+
+  </ion-content>
+
+
+
+
+
+</ion-view>
