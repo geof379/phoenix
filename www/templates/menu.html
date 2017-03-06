@@ -24,7 +24,7 @@
 
   </ion-side-menu-content>
 
-  <ion-side-menu side="left" ng-controller="LeftMenuCtrl" >
+  <ion-side-menu side="left" ng-controller="LeftMenuCtrl" expose-aside-when="(min-width:601px)">
 
     <ion-content scroll=false>
 
@@ -43,7 +43,7 @@
       </ul>
 
    <div class="bar bar-footer  bar-light">
-        <button class="button button-clear icon-left ion-android-exit" menu-close ng-click="login()">Logout</button>
+        <a class="button button-clear icon-left ion-android-exit" menu-close ng-href="#/app/login">Logout</a>
         <a class="button button-clear ion-gear-a" style="margin-right: 5px;" menu-close ng-href="#/app/profile"></a>
       </div>
 
