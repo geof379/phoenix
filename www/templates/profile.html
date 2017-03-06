@@ -1,12 +1,14 @@
 <ion-view view-title="Profile">
-  <ion-content scroll="false">
-     <div  class="profile item">
-        <div class="row"><img src="img/IMG_0315.jpg"></div>
-        <div class="row"><h2>Geoffroy Ayeboua </h2></div>
-        <div>MHD</div>
+  <ion-content>
+    <div class="profile item">
+      <div class="row"><img src="img/user_male.png"></div>
+      <div class="row">
+        <h2>Geoffroy Ayeboua </h2>
       </div>
-    <div class="row row-top" style="height: 60%">
-      <form style="width:100%">
+      <div>MHD</div>
+    </div>
+    <div class="row row-top" style="height: 60%; text-align: center">
+      <form class="col" style="margin:auto; margin-top: 10px">
         <div class="list">
           <label class="item item-input">
       
@@ -16,12 +18,12 @@
           
           <input type="password" placeholder="Password" ng-model="loginData.password">
         </label>
-          <label class="item">
-          <button class="button button-full button-positive" type="submit">OK</button>
+          <label class="col item no-border no-margin">
+          <button class="button button-block button-positive" type="submit">OK</button>
         </label>
         </div>
       </form>
     </div>
-   
+
   </ion-content>
-  </ion-view>
+</ion-view>

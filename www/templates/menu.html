@@ -28,10 +28,12 @@
 
     <ion-content scroll=false>
 
-      <div id="profil" class="item item-avatar ">
-        <img src="img/IMG_0315.jpg">
+      <div  class="profile" style="height: 120px;">
+        <div class="item item-avatar">  
+          <img src="img/user_male.png">
         <h2>Geoffroy Ayeboua </h2>
         <p>MHD</p>
+        </div>
       </div>
       <ul id="menu" class="list">
         <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}">
@@ -40,11 +42,11 @@
        
       </ul>
 
-
-    <div class="bar bar-footer  bar-light">
+   <div class="bar bar-footer  bar-light">
         <button class="button button-clear icon-left ion-android-exit" menu-close ng-click="login()">Logout</button>
-        <a class="button button-clear ion-gear-a" menu-close ng-href="#/app/profile"></a>
+        <a class="button button-clear ion-gear-a" style="margin-right: 5px;" menu-close ng-href="#/app/profile"></a>
       </div>
+
 
 
     </ion-content>
