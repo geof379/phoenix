@@ -14,16 +14,17 @@ angular.module('starter.controllers', [])
 
 
     $scope.playlists = [
-      { title: 'Reggae', id: 1, styl: getRandomColor() },
-      { title: 'Chill', id: 2, style: getRandomColor() },
-      { title: 'Dubstep', id: 3, styl: getRandomColor() },
-      { title: 'Indie', id: 4, styl: getRandomColor() },
-      { title: 'Rap', id: 5, styl: getRandomColor() },
-      { title: 'Cowbell', id: 6, styl: getRandomColor() }
+      { title: 'Max&Cie', id: 1, styl: getRandomColor() },
+      { title: 'Metro', id: 2, style: getRandomColor() },
+      { title: 'Carefour', id: 3, styl: getRandomColor() },
+      { title: 'Ikea', id: 4, styl: getRandomColor() },
+      { title: 'ToyRuzz', id: 5, styl: getRandomColor() },
+      { title: 'ZhongJie', id: 6, styl: getRandomColor() }
     ];
   })
 
   .controller('ProductlistCtrl', function ($scope, $stateParams) {
+    
   })
   .controller('ProfileCtrl', function ($scope, $stateParams) {
   })
@@ -31,12 +32,12 @@ angular.module('starter.controllers', [])
   .controller('ShopListCtrl', function ($scope) {
 
     $scope.playlists = [
-      { title: 'Reggae', id: 1 },
-      { title: 'Chill', id: 2 },
-      { title: 'Dubstep', id: 3 },
-      { title: 'Indie', id: 4 },
-      { title: 'Rap', id: 5 },
-      { title: 'Cowbell', id: 6 }
+      { title: 'Max&Cie', id: 1 },
+      { title: 'Metro', id: 2 },
+      { title: 'Carefour', id: 3 },
+      { title: 'Ikea', id: 4 },
+      { title: 'ToyRuzz', id: 5 },
+      { title: 'ZhongJie', id: 6 }
     ];
 
 
@@ -106,16 +107,14 @@ angular.module('starter.controllers', [])
       }
     }
 
-
     $scope.searchlists = [
-      { title: 'Reggae', id: 1 },
-      { title: 'Chill', id: 2 },
-      { title: 'Dubstep', id: 3 },
-      { title: 'Indie', id: 4 },
-      { title: 'Rap', id: 5 },
-      { title: 'Cowbell', id: 6 }
+      { title: 'Max&Cie', id: 1 },
+      { title: 'Metro', id: 2 },
+      { title: 'Carefour', id: 3 },
+      { title: 'Ikea', id: 4 },
+      { title: 'ToyRuzz', id: 5 },
+      { title: 'ZhongJie', id: 6 }
     ];
-
 
     $scope.options = {
       loop: false,
@@ -130,22 +129,15 @@ angular.module('starter.controllers', [])
     });
 
     $scope.slideHasChanged = function (index) {
-     
+
       $scope.currentObject = $scope.searchlists[index];
     }
 
-
-
     ionic.Platform.ready(function () {
-
-
-
 
       $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
       });
-
-
 
       var posOptions = {
         enableHighAccuracy: true,

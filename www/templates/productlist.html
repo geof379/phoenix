@@ -1,14 +1,27 @@
 <ion-view view-title="Product list">
   <ion-content>
+
     <div class="list">
-      <label class="item item-input">
-    <span class="input-label">Username</span>
+      <div class="item item-divider">
+        Categorie 1
+      </div>
+      <label class="item item-input" ng-repeat="n in [1,2,3,4,5] ">
+    <span class="input-label">Product  {{n}}</span>
     <input type="text">
   </label>
-      <label class="item item-input">
-    <span class="input-label">Password</span>
-    <input type="password">
+
+
+   <div class="item item-divider">
+       Categorie 1
+      </div>
+      <label class="item item-input" ng-repeat="n in [1,2,3,4,5]">
+    <span class="input-label">Product  {{$index}}</span>
+    <input type="text">
   </label>
+
+  
     </div>
-  </ion-content>
+ <button class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
+  
+ </ion-content>
 </ion-view>
