@@ -6,41 +6,40 @@
 
       <div class="card">
         <div class="item item-text-wrap item-icon-right">
-         
-            <span class="badge icon-badge badge-assertive">
+
+          <span class="badge icon-badge badge-assertive">
                {{currentObject.id}}
-            </span>
-          {{currentObject.title}}
+            </span> {{currentObject.title}}
         </div>
 
         <div class="item item-body">
 
           <p>
-            The header is created from a Thumbnail List item, the content is from a card-body consisting of an image and paragraph text.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
           <p>
-            <a href="#" class="subdued">1 Like</a>
-            <a href="#" class="subdued">5 Comments</a>
+
+            <a href="#" class="subdued">1 DonnéeX</a>
+            <a href="#" class="subdued">5 DonnéeY</a>
           </p>
         </div>
       </div>
     </ion-drawer-vertical-content>
 
   </ion-drawer-vertical-wrapper>
-  <ion-content >
+  <ion-content>
 
-    <div id="map" on-double-tap="toggleDrawer('second')" ></div>
+    <div id="map" on-double-tap="toggleDrawer('second')"></div>
 
     <ion-slides id="list" options="options" pager="true" slider="data.slider">
       <ion-slide-box on-slide-changed="slideHasChanged($index)">
         <ion-slide ng-repeat="search in searchlists" href="#">
 
           <div class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')">
-           
+
             <span class="badge icon-badge  badge-assertive">
                {{search.id}}
-            </span>
-          {{search.title}}
+            </span> {{search.title}}
 
 
 
