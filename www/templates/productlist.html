@@ -1,7 +1,13 @@
 <ion-view view-title="Product list">
+
   <ion-content>
 
     <div class="list">
+      <label class="item item-input">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input type="text" placeholder="Search">
+  </label>
+
       <div class="item item-divider">
         Categorie 1
       </div>
@@ -11,17 +17,17 @@
   </label>
 
 
-   <div class="item item-divider">
-       Categorie 1
+      <div class="item item-divider">
+        Categorie 1
       </div>
       <label class="item item-input" ng-repeat="n in [1,2,3,4,5]">
     <span class="input-label">Product  {{$index}}</span>
     <input type="text">
   </label>
 
-  
+
     </div>
- <button class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
-  
- </ion-content>
+    <button class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
+
+  </ion-content>
 </ion-view>

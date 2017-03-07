@@ -24,7 +24,7 @@ angular.module('starter.controllers', [])
   })
 
   .controller('ProductlistCtrl', function ($scope, $stateParams) {
-    
+
   })
   .controller('ProfileCtrl', function ($scope, $stateParams) {
   })
@@ -91,29 +91,17 @@ angular.module('starter.controllers', [])
     });
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, $ionDrawerVerticalDelegate) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor) {
 
-    if (window.Connection) {
-      if (navigator.connection.type == Connection.NONE) {
-        $ionicPopup.confirm({
-          title: 'No Internet Connection',
-          content: 'Sorry, no Internet connectivity detected. Please reconnect and try again.'
-        })
-          .then(function (result) {
-            if (!result) {
-              ionic.Platform.exitApp();
-            }
-          });
-      }
-    }
+
 
     $scope.searchlists = [
-      { title: 'Max&Cie', id: 1 },
-      { title: 'Metro', id: 2 },
-      { title: 'Carefour', id: 3 },
-      { title: 'Ikea', id: 4 },
-      { title: 'ToyRuzz', id: 5 },
-      { title: 'ZhongJie', id: 6 }
+      { title: 'Max&Cie', id: 1, lat: 65.484869099999995, lng: -72.5618684 },
+      { title: 'Metro', id: 2, lat: 45.594829099999995, lng: -73.10684 },
+      { title: 'Carefour', id: 3, lat: 45.494869097799995, lng: -73.98684 },
+      { title: 'Ikea', id: 4, lat: 45.194868999999995, lng: -73.8684 },
+      { title: 'ToyRuzz', id: 5, lat: 45.29488899999995, lng: -73.2684 },
+      { title: 'ZhongJie', id: 6, lat: 45.394860099999995, lng: -73.284 }
     ];
 
     $scope.options = {
@@ -122,50 +110,27 @@ angular.module('starter.controllers', [])
       speed: 500,
     }
 
-    $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
-      // data.slider is the instance of Swiper
-      $scope.slider = data.slider;
-      $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
-    });
+   GoogleMaps.init("AIzaSyD0KQVXzXgEQfhl0dyl-6eK65BtnMvIquY", $scope.searchlists);
+    
 
-    $scope.slideHasChanged = function (index) {
 
-      $scope.currentObject = $scope.searchlists[index];
-    }
 
-    ionic.Platform.ready(function () {
+      //===============================================slide=============================================
 
-      $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+
+      $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
+        // data.slider is the instance of Swiper
+        $scope.slider = data.slider;
+        $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
       });
 
-      var posOptions = {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 0
-      };
 
-      $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-        var lat = position.coords.latitude;
-        var long = position.coords.longitude;
+      $scope.slideHasChanged = function (index) {
 
-        var myLatlng = new google.maps.LatLng(lat, long);
+        $scope.currentObject = $scope.searchlists[index];
+      }
 
-        var mapOptions = {
-          center: myLatlng,
-          zoom: 16,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
 
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-        $scope.map = map;
-        $ionicLoading.hide();
-
-      }, function (err) {
-        $ionicLoading.hide();
-        console.log(err);
-      });
 
       /** $scope.onTouch = function () {
          var buttons = document.getElementById('tt');
@@ -186,7 +151,6 @@ angular.module('starter.controllers', [])
         return $ionDrawerVerticalDelegate.getState() == state;
       }
 
-    })
 
 
   });

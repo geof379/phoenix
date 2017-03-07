@@ -6,12 +6,11 @@
 
       <div class="card">
         <div class="item item-text-wrap item-icon-right">
-          <i class="icon ion-ios-cloud-outline">
-           
-            <span class="badge icon-badge cloudbadge badge-assertive">
+         
+            <span class="badge icon-badge badge-assertive">
                {{currentObject.id}}
             </span>
-          </i> {{currentObject.title}}
+          {{currentObject.title}}
         </div>
 
         <div class="item item-body">
@@ -36,13 +35,12 @@
       <ion-slide-box on-slide-changed="slideHasChanged($index)">
         <ion-slide ng-repeat="search in searchlists" href="#">
 
-          <div class="slide-item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')">
-            <i class="icon ion-ios-cloud-outline">
+          <div class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')">
            
-            <span class="badge icon-badge slide-item-cloudbadge badge-assertive">
+            <span class="badge icon-badge  badge-assertive">
                {{search.id}}
             </span>
-          </i> {{search.title}}
+          {{search.title}}
 
 
 

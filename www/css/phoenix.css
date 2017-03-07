@@ -356,6 +356,7 @@ ion-content.has-header {
 
  button.button-icon.round-overlay-button {
       position: relative !important;
+          left: 80%;
     height: 56px !important;
     width: 56px !important;
     border-radius: 50%;
@@ -377,6 +378,7 @@ ion-content.has-header {
     right: 16px;
     z-index: 2;
  }
+
 
 
 @media screen and (min-width: 601px) {
