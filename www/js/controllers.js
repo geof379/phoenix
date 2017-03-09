@@ -24,13 +24,13 @@ angular.module('starter.controllers', [])
   })
 
   .controller('ProductlistCtrl', function ($scope, $stateParams, ShopService) {
-    
+
 
     $scope.products = ShopService.get($stateParams.shopId).products;
 
 
   })
-  
+
   .controller('ProfileCtrl', function ($scope, $stateParams) {
 
   })
@@ -82,7 +82,7 @@ angular.module('starter.controllers', [])
     }
 
 
-  
+
   })
 
   .controller('PopOverCtrl', function ($scope, $ionicPopover) {
@@ -115,13 +115,13 @@ angular.module('starter.controllers', [])
       // Execute action
     });
   })
-    .controller('ShopMapCtrl', function ($scope, $stateParams, ShopService) {
-    
+  .controller('ShopMapCtrl', function ($scope, $stateParams, ShopService) {
+
     $scope.shop = ShopService.get($stateParams.shopId);
-  // get marker then show map and add marker and the adress
+    // get marker then show map and add marker and the adress
 
 
-  
+
   })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService) {
@@ -148,12 +148,13 @@ angular.module('starter.controllers', [])
       // data.slider is the instance of Swiper
       $scope.slider = data.slider;
       $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
-     
+      
     });
 
     $scope.slideHasChanged = function (index) {
       $scope.currentObject = $scope.searchlists[index];
-       GoogleMaps.clearMarker();
+      GoogleMaps.clearMarker();
+      GoogleMaps.addMarker($scope.currentObject);
     }
 
 

@@ -149,12 +149,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     // Some fake testing data
 
     var shops = [
-      { title: 'Max&Cie', id: 1, lat: 65.484869099999995, lng: -72.5618684, products: [{ name: 'product1', price: 0 }, { name: 'product2', price: 0 }] },
-      { title: 'Metro', id: 2, lat: 45.594829099999995, lng: -73.10684, products: [{ name: 'product3', price: 0 }, { name: 'product4', price: 0 }] },
-      { title: 'Carefour', id: 3, lat: 45.494869097799995, lng: -73.98684, products: [{ name: 'product6', price: 0 }, { name: 'product5', price: 0 }] },
-      { title: 'Ikea', id: 4, lat: 45.194868999999995, lng: -73.8684, products: [{ name: 'product7', price: 0 }, { name: 'product9', price: 0 }] },
-      { title: 'ToyRuzz', id: 5, lat: 45.29488899999995, lng: -73.2684, products: [{ name: 'product8', price: 0 }, { name: 'product10', price: 0 }] },
-      { title: 'ZhongJie', id: 6, lat: 45.394860099999995, lng: -73.284, products: [{ name: 'product11', price: 0 }, { name: 'product12', price: 0 }] }     
+      { title: 'Max&Cie', id: 1, lat: 45.491403, lng: -73.56114319999999, products: [{ name: 'product1', price: 0 }, { name: 'product2', price: 0 }] },
+      { title: 'Metro', id: 2, lat: 45.492403, lng: -73.56163319999999, products: [{ name: 'product3', price: 0 }, { name: 'product4', price: 0 }] },
+      { title: 'Carefour', id: 3, lat: 45.493403, lng: -73.54164319999999, products: [{ name: 'product6', price: 0 }, { name: 'product5', price: 0 }] },
+      { title: 'Ikea', id: 4, lat: 45.494403, lng: -73.56164519999999, products: [{ name: 'product7', price: 0 }, { name: 'product9', price: 0 }] },
+      { title: 'ToyRuzz', id: 5, lat: 45.495403, lng: -73.56664319999999, products: [{ name: 'product8', price: 0 }, { name: 'product10', price: 0 }] },
+      { title: 'ZhongJie', id: 6, lat: 45.496403, lng: -73.5654319999999, products: [{ name: 'product11', price: 0 }, { name: 'product12', price: 0 }] }
     ];
 
     return {
@@ -233,6 +233,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     var markerCache = [];
     var apiKey = false;
     var map = null;
+    var directionsDisplay;
+
 
     function enableMap() {
       $ionicLoading.hide();
@@ -256,7 +258,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     }
 
     function initMap() {
-
+      directionsDisplay = new google.maps.DirectionsRenderer();
       var options = { timeout: 10000, enableHighAccuracy: true };
 
       $cordovaGeolocation.getCurrentPosition(options)
@@ -269,12 +271,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
-
+          console.info(position.coords.latitude + '===' + position.coords.longitude);
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
+          directionsDisplay.setMap(map);
           //Wait until the map is loaded
           google.maps.event.addListenerOnce(map, 'idle', function () {
-            loadMarkers();
+
             enableMap();
           });
 
@@ -298,10 +300,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
+          console.info(position.coords.latitude + '===' + position.coords.longitude);
           //Wait until the map is loaded
           google.maps.event.addListenerOnce(map, 'idle', function () {
-            loadMarkers(records);
+            loadMarker(records[0]);
             enableMap();
 
           });
@@ -388,7 +390,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           // Add the markerto the map
           var marker = new google.maps.Marker({
             map: map,
-            animation: google.maps.Animation.DROP,
+            animation: google.maps.Animation.BOUNCE,
             position: markerPos
           });
           markerCache.push(marker);
@@ -401,25 +403,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     }
 
     function loadMarkers(records) {
-
-
       for (var i = 0; i < records.length; i++) {
         var record = records[i];
-        var markerPos = new google.maps.LatLng(record.lat, record.lng);
-
-        // Add the markerto the map
-        var marker = new google.maps.Marker({
-          map: map,
-          animation: google.maps.Animation.DROP,
-          position: markerPos
-        });
-
-        markerCache.push(marker);
-        var infoWindowContent = "<h4>" + record.title + "</h4>";
-
-        addInfoWindow(marker, infoWindowContent, record);
-
+        loadMarkers(record);
       }
+
+    }
+
+    function loadMarker(record) {
+      var markerPos = new google.maps.LatLng(record.lat, record.lng);
+
+      // Add the markerto the map
+      var marker = new google.maps.Marker({
+        map: map,
+        animation: google.maps.Animation.DROP,
+        position: markerPos
+      });
+
+      markerCache.push(marker);
+      var infoWindowContent = "<h4>" + record.title + "</h4>";
+
+      addInfoWindow(marker, infoWindowContent, record);
+
+
 
     }
 
@@ -528,8 +534,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
         addConnectivityListeners();
 
       },
-      addMarker: function (marker) {
-        var markerPos = new google.maps.LatLng(marker.lat, marker.lng);
+      addMarker: function (record) {
+        var markerPos = new google.maps.LatLng(record.lat, record.lng);
         var marker = new google.maps.Marker({
           map: map,
           animation: google.maps.Animation.DROP,
@@ -540,7 +546,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
         addInfoWindow(marker, infoWindowContent, record);
       },
       clearMarker: function () {
-        for (var i = 0; markerCache.length; i++) {
+        for (var i = 0; i < markerCache.length; i++) {
           markerCache[i].setMap(null);
         }
       }
