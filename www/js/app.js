@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.contrib.drawer.vertical'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -50,23 +50,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           }
         }
       })
-
       .state('app.map', {
         url: '/map',
         views: {
           'menuContent': {
             templateUrl: 'templates/map.html',
             controller: 'MapCtrl'
-          }
-        }
-      })
-
-      .state('app.shoplist', {
-        url: '/shoplist',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/shoplist.html',
-            controller: 'ShopListCtrl'
           }
         }
       })
@@ -79,7 +68,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           }
         }
       })
-
+      .state('app.shoplist', {
+        url: '/shoplist',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/shoplist.html',
+            controller: 'ShopListCtrl'
+          }
+        }
+      })
       .state('app.single', {
         url: '/shops/:shopId',
         views: {
@@ -89,11 +86,88 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           }
         }
       })
+      .state('app.shopMap', {
+        url: '/shopMap/:shopId',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/shopMap.html',
+            controller: 'ShopMapCtrl'
+          }
+        }
+      })
+      .state('masterDetail', {
+        url: '/masterDetail',
+        templateUrl: 'templates/masterDetails.html',
+        abstract: true
+      })
+      /**    .state('masterDetail.shops', {
+            url: '/shops',
+            views: {
+              'shop-list': {
+                templateUrl: 'templates/shoplist.html',
+                controller: 'ShopListCtrl'
+              },
+    
+              'product': {
+                templateUrl: 'templates/productlist.html',
+                controller: 'ProductlistCtrl'
+              }
+            }
+          })*/
+      .state('masterDetail.shop', {
+        url: '/shops',
 
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/productlist.html',
+            controller: function ($scope, $state, $stateParams) {
+              $scope.params = $stateParams;
+              $scope.go = function () {
+                $state.go('masterDetail.single', { shopId: 1 });
+              };
 
+              console.log('state1 params:', $stateParams);
+            }
+          }
+        }
+      })
+
+      .state('masterDetail.single', {
+        url: '/shops/:shopId',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/productlist.html',
+            controller: 'ProductlistCtrl'
+          }
+        }
+      })
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
+  })
+  .factory('ShopService', function () {
+    // Some fake testing data
+
+    var shops = [
+      { title: 'Max&Cie', id: 1, lat: 65.484869099999995, lng: -72.5618684, products: [{ name: 'product1', price: 0 }, { name: 'product2', price: 0 }] },
+      { title: 'Metro', id: 2, lat: 45.594829099999995, lng: -73.10684, products: [{ name: 'product3', price: 0 }, { name: 'product4', price: 0 }] },
+      { title: 'Carefour', id: 3, lat: 45.494869097799995, lng: -73.98684, products: [{ name: 'product6', price: 0 }, { name: 'product5', price: 0 }] },
+      { title: 'Ikea', id: 4, lat: 45.194868999999995, lng: -73.8684, products: [{ name: 'product7', price: 0 }, { name: 'product9', price: 0 }] },
+      { title: 'ToyRuzz', id: 5, lat: 45.29488899999995, lng: -73.2684, products: [{ name: 'product8', price: 0 }, { name: 'product10', price: 0 }] },
+      { title: 'ZhongJie', id: 6, lat: 45.394860099999995, lng: -73.284, products: [{ name: 'product11', price: 0 }, { name: 'product12', price: 0 }] }     
+    ];
+
+    return {
+      all: function () {
+        return shops;
+      },
+      get: function (shopId) {
+        for (var i = 0; i < shops.length; i++)
+          if (shops[i].id == shopId)
+            return shops[i];
+
+      }
+    }
   })
   .factory('ConnectivityMonitor', function ($rootScope, $cordovaNetwork) {
     return {
@@ -167,7 +241,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     function disableMap() {
       $ionicLoading.show({
         template: 'You must be connected to the Internet to view this map' +
-        '<a  class="button button-clear" ng-click="enableMap()" menu-close ng-href="#/app/shoplist">' +
+        '<a  class="button button-dark" on-click="enableMap()" menu-close ng-href="#/app/shoplist">' +
         'List' +
         '</a>'
 
@@ -213,10 +287,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     function initMap(records) {
 
       var options = { timeout: 10000, enableHighAccuracy: false };
-      console.warn("loooad 1");
       $cordovaGeolocation.getCurrentPosition(options)
         .then(function (position) {
-          console.warn("loooad 2");
           var latLng = new google.maps.LatLng(position.coords.latitude,
             position.coords.longitude);
 
@@ -225,21 +297,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
-          console.warn("loooad ");
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
           //Wait until the map is loaded
           google.maps.event.addListenerOnce(map, 'idle', function () {
-            console.warn("loooad markers");
             loadMarkers(records);
-            console.warn("loooad markers");
             enableMap();
 
           });
 
         }, function (error) {
-          
-            console.log(error);
+
+          console.log(error);
         });
 
     }
@@ -293,7 +362,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
       if (apiKey) {
         script.src = 'http://maps.google.com/maps/api/js?key=' + apiKey
           + '&callback=mapInit';
-         
+
       }
       else {
         script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
@@ -322,7 +391,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
             animation: google.maps.Animation.DROP,
             position: markerPos
           });
-
+          markerCache.push(marker);
           var infoWindowContent = "<h4>" + record.title + "</h4>";
 
           addInfoWindow(marker, infoWindowContent, record);
@@ -345,6 +414,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           position: markerPos
         });
 
+        markerCache.push(marker);
         var infoWindowContent = "<h4>" + record.title + "</h4>";
 
         addInfoWindow(marker, infoWindowContent, record);
@@ -412,16 +482,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
 
           if (ConnectivityMonitor.isOnline()) {
             loadGoogleMaps();
-            console.warn("1111");
+
           }
         }
         else {
           if (ConnectivityMonitor.isOnline()) {
             initMap();
             enableMap();
-            console.warn("12s1");
+
           } else {
-            console.warn("12s666s");
+
             disableMap();
           }
         }
@@ -458,6 +528,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
         addConnectivityListeners();
 
       },
+      addMarker: function (marker) {
+        var markerPos = new google.maps.LatLng(marker.lat, marker.lng);
+        var marker = new google.maps.Marker({
+          map: map,
+          animation: google.maps.Animation.DROP,
+          position: markerPos
+        });
+        markerCache.push(marker);
+        var infoWindowContent = "<h4>" + record.title + "</h4>";
+        addInfoWindow(marker, infoWindowContent, record);
+      },
+      clearMarker: function () {
+        for (var i = 0; markerCache.length; i++) {
+          markerCache[i].setMap(null);
+        }
+      }
     }
 
 

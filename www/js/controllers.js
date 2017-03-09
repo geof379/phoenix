@@ -23,23 +23,37 @@ angular.module('starter.controllers', [])
     ];
   })
 
-  .controller('ProductlistCtrl', function ($scope, $stateParams) {
+  .controller('ProductlistCtrl', function ($scope, $stateParams, ShopService) {
+    
+
+    $scope.products = ShopService.get($stateParams.shopId).products;
+
 
   })
+  
   .controller('ProfileCtrl', function ($scope, $stateParams) {
+
   })
 
-  .controller('ShopListCtrl', function ($scope) {
+  .controller('ShopListCtrl', function ($scope, $ionicListDelegate, MultipleViewsManager, ShopService) {
 
-    $scope.playlists = [
-      { title: 'Max&Cie', id: 1 },
-      { title: 'Metro', id: 2 },
-      { title: 'Carefour', id: 3 },
-      { title: 'Ikea', id: 4 },
-      { title: 'ToyRuzz', id: 5 },
-      { title: 'ZhongJie', id: 6 }
-    ];
+    $scope.shops = ShopService.all();
+    $scope.selectedShopId = 0;
 
+
+    if (MultipleViewsManager.isActive()) {
+      MultipleViewsManager.updateView('product', { shopId: $scope.selectedShopId });
+    }
+
+    $scope.changeShop = function (shop) {
+      $scope.selectedShopId = shop.id;
+      console.log(MultipleViewsManager.isActive());
+      if (MultipleViewsManager.isActive()) {
+        MultipleViewsManager.updateView('product', { shopId: shop.id });
+      } else {
+        $state.go('shops', { shopId: shop.id });
+      }
+    };
 
   })
 
@@ -48,7 +62,7 @@ angular.module('starter.controllers', [])
     $scope.menus = [
       { name: 'Dashboard', href: '#/app/dashboard', icon: 'ion-home' },
       { name: 'Map', href: '#/app/map', icon: 'ion-map' },
-      { name: 'List', href: '#/app/shoplist', icon: 'ion-ios-list-outline' },
+      { name: 'List', href: '#/masterDetail/shops', icon: 'ion-ios-list-outline' },
     ];
 
     $scope.isItemActive = function (menu) {
@@ -58,9 +72,20 @@ angular.module('starter.controllers', [])
       return style;
     };
   })
+  .controller('ShopMenuCtrl', function ($scope, $location, ShopService) {
+    $scope.shops = ShopService.all();
+    $scope.menus = [];
+    for (i = 0; i < $scope.shops.length; i++) {
+      $scope.menus.push({
+        name: $scope.shops[i].title, href: '#/masterDetail/shops/' + $scope.shops[i].id,
+      })
+    }
+
+
+  
+  })
 
   .controller('PopOverCtrl', function ($scope, $ionicPopover) {
-
 
     $ionicPopover.fromTemplateUrl('my-popover.html', {
       scope: $scope
@@ -90,19 +115,20 @@ angular.module('starter.controllers', [])
       // Execute action
     });
   })
+    .controller('ShopMapCtrl', function ($scope, $stateParams, ShopService) {
+    
+    $scope.shop = ShopService.get($stateParams.shopId);
+  // get marker then show map and add marker and the adress
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor) {
+
+  
+  })
+
+  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService) {
 
 
 
-    $scope.searchlists = [
-      { title: 'Max&Cie', id: 1, lat: 65.484869099999995, lng: -72.5618684 },
-      { title: 'Metro', id: 2, lat: 45.594829099999995, lng: -73.10684 },
-      { title: 'Carefour', id: 3, lat: 45.494869097799995, lng: -73.98684 },
-      { title: 'Ikea', id: 4, lat: 45.194868999999995, lng: -73.8684 },
-      { title: 'ToyRuzz', id: 5, lat: 45.29488899999995, lng: -73.2684 },
-      { title: 'ZhongJie', id: 6, lat: 45.394860099999995, lng: -73.284 }
-    ];
+    $scope.searchlists = ShopService.all();
 
     $scope.options = {
       loop: false,
@@ -110,46 +136,34 @@ angular.module('starter.controllers', [])
       speed: 500,
     }
 
-   GoogleMaps.init("AIzaSyD0KQVXzXgEQfhl0dyl-6eK65BtnMvIquY", $scope.searchlists);
-    
+    GoogleMaps.init("AIzaSyD0KQVXzXgEQfhl0dyl-6eK65BtnMvIquY", $scope.searchlists);
 
 
 
-      //===============================================slide=============================================
+
+    //===============================================slide=============================================
 
 
-      $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
-        // data.slider is the instance of Swiper
-        $scope.slider = data.slider;
-        $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
-      });
+    $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
+      // data.slider is the instance of Swiper
+      $scope.slider = data.slider;
+      $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
+     
+    });
+
+    $scope.slideHasChanged = function (index) {
+      $scope.currentObject = $scope.searchlists[index];
+       GoogleMaps.clearMarker();
+    }
 
 
-      $scope.slideHasChanged = function (index) {
+    $scope.toggleDrawer = function (handle) {
+      $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
+    }
 
-        $scope.currentObject = $scope.searchlists[index];
-      }
-
-
-
-      /** $scope.onTouch = function () {
-         var buttons = document.getElementById('tt');
- 
-         console.log(buttons.offsetHeight);
-         move(buttons)
-           .ease('out')
-           .y(-10)
-           .duration('0.5s')
-           .end();
-       }**/
-
-      $scope.toggleDrawer = function (handle) {
-        $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
-      }
-
-      $scope.drawerIs = function (state) {
-        return $ionDrawerVerticalDelegate.getState() == state;
-      }
+    $scope.drawerIs = function (state) {
+      return $ionDrawerVerticalDelegate.getState() == state;
+    }
 
 
 

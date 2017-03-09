@@ -1,56 +1,55 @@
 <ion-view view-title="Dashboard">
   <ion-content>
     <ion-list ng-controller="PopOverCtrl">
-      <ion-item ng-repeat="playlist in playlists" ng-click="onPopover($event,playlist.styl)" class="no-border ">
+      <ion-item ng-repeat="playlist in playlists" ng-href="#/masterDetail/shops/{{playlist.id}}" class="no-border ">
         <div class="card">
           <div class="item item-text-wrap item-icon-right" style="border-top:{{playlist.styl}}">
 
-           
-            <span class="badge icon-badge badge-assertive">
-               {{playlist.id}}
-            </span>
-         {{playlist.title}}
-</div>
 
-<div class="item item-body">
+            <span class="badge" style="top:0px !important">
+              <a ng-href="#/app/shopMap/{{playlist.id}}" style="right: -20px !important;"><i class="icon icon  ion-android-pin"></i>   </a>
+            </span> {{playlist.title}}
+          </div>
 
-  <p>
-   Lorem ipsum dolor sit amet, consectetur adipiscing elit. In turpis metus, bibendum a dolor non, pulvinar pellentesque lacus.
-  </p>
-  <p>
-    <a href="#" class="subdued">1 DonnéeX</a>
-    <a href="#" class="subdued">5 DonnéeY</a>
-  </p>
-</div>
-</div>
-</ion-item>
-</ion-list>
-</ion-content>
+          <div class="item item-body">
 
-<script id="my-popover.html" type="text/ng-template">
-  <ion-popover-view>
-   <div class="item item-text-wrap">
-    Shop name
-    <p>Geoffroy Ayeboua </p>
-    <p>MHD</p>
-  </div>
-    <ion-content id="shop-info" class="list" scroll="false">
-  
-    <a class="button-full  item item-icon-left " href="#" >
-   <i class="calm rounded-icon icon ion-email"></i>
-    <span class="calm title">Check mail</span>
-  </a>
-  <a class=" button-full item item-icon-left " href="#" >
-   <i class=" balance rounded-icon icon ion-email"></i>
-     <span class="balance title">Check mail</span>
-  </a>
-  <a class="button-full item item-icon-left " href="#" >
-   <i class="positive rounded-icon icon ion-email"></i>
-    <span class="positive title">Check mail</span>
-  </a>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In turpis metus, bibendum a dolor non, pulvinar pellentesque lacus.
+            </p>
+            <p>
+              <a href="#" class="subdued">{{playlist.id}}</a>
+              <a href="#" class="subdued">5 DonnéeY</a>
+            </p>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
 
-      
-    </ion-content>
-  </ion-popover-view>
-</script>
+  <script id="my-popover.html" type="text/ng-template">
+    <ion-popover-view>
+      <div class="item item-text-wrap">
+        Shop name
+        <p>Geoffroy Ayeboua </p>
+        <p>MHD</p>
+      </div>
+      <ion-content id="shop-info" class="list" scroll="false">
+
+        <a class="button-full  item item-icon-left " href="#">
+          <i class="calm rounded-icon icon ion-email"></i>
+          <span class="calm title">Check mail</span>
+        </a>
+        <a class=" button-full item item-icon-left " href="#">
+          <i class=" balance rounded-icon icon ion-email"></i>
+          <span class="balance title">Check mail</span>
+        </a>
+        <a class="button-full item item-icon-left " href="#">
+          <i class="positive rounded-icon icon ion-email"></i>
+          <span class="positive title">Check mail</span>
+        </a>
+
+
+      </ion-content>
+    </ion-popover-view>
+  </script>
 </ion-view>

@@ -1,17 +1,20 @@
 <ion-view view-title="List">
-  <ion-pane>
+
     <ion-content>
 
-      <ion-list show-delete="false" can-swipe="true" id="list-shop" class="list">
-        <ion-item ng-repeat="playlist in playlists" class="item item-icon-right" href="#/app/shops/{{playlist.id}}">
-          {{playlist.title}}
+      <ion-list >
+        <ion-item ng-repeat="shop in shops" 
+        ng-class="{ 'active': selectedShopId === shop.id }"
+				ng-href="#/masterDetail/shops/:{{shop.id.id}}">
+          {{shop.title}}
           <i class="icon ion-ios-arrow-forward"></i>
-          <ion-option-button class="button-light icon ion-heart"></ion-option-button>
-          <ion-option-button class="button-light icon ion-email"></ion-option-button>
-          <ion-option-button class="button-assertive icon ion-trash-a"></ion-option-button>
+  
+        <ion-option-button class="button-light "> <i class="icon ion-location icon-positive"></i></ion-option-button>
+        <ion-option-button class="button-light "> <i class="icon ion-ios-reload  icon-balanced"></i></ion-option-button>
         </ion-item>
       </ion-list>
-
+     
     </ion-content>
-  </ion-pane>
+
+  	<multiple-views-support width="30%" />
 </ion-view>

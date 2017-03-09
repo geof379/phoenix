@@ -1,3 +1,8 @@
+html,body{
+height: 100%
+}
+
+
 .card {
     margin-top: -5px !important;
     margin-bottom: -10px !important;
@@ -355,7 +360,7 @@ ion-content.has-header {
 
 
  button.button-icon.round-overlay-button {
-      position: relative !important;
+      position: fixed !important;
           left: 80%;
     height: 56px !important;
     width: 56px !important;
@@ -379,7 +384,10 @@ ion-content.has-header {
     z-index: 2;
  }
 
-
+.footer{
+  position: fixed !important;
+   bottom: 0px !important;
+}
 
 @media screen and (min-width: 601px) {
     /*map*/

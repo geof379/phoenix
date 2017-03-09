@@ -27,29 +27,11 @@
   </ion-drawer-vertical-wrapper>
   <ion-content>
 
-    <div id="map" on-double-tap="toggleDrawer('second')"></div>
+    <div id="map" class="row">aaa</div>
+    <div id="mapInfo" class="row">aaa</div>
 
-    <ion-slides id="list" options="options" pager="true" slider="data.slider">
-      <ion-slide-box on-slide-changed="slideHasChanged($index)">
-        <ion-slide ng-repeat="search in searchlists" >
+   
 
-          <a class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')" href="#/masterDetail/shops/{{search.id}}">
-
-            <span class="badge icon-badge  badge-assertive">
-               {{search.id}}
-            </span> {{search.title}}
-
-
-            </button>
-
-          </a>
-
-          <ion-slide>
-
-      </ion-slide-box>
-
-
-    </ion-slides>
 
   </ion-content>
 

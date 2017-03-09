@@ -1,5 +1,6 @@
 <ion-view view-title="Product list">
 
+
   <ion-content>
 
     <div class="list">
@@ -9,25 +10,22 @@
   </label>
 
       <div class="item item-divider">
-        Categorie 1
+       
       </div>
-      <label class="item item-input" ng-repeat="n in [1,2,3,4,5] ">
-    <span class="input-label">Product  {{n}}</span>
-    <input type="number"  style="text-align:right;">
+      <label class="item  item-input  icon-left" ng-repeat="product in products">
+       
+    <span class="input-label">{{product.name}}</span>
+    <input type="number"  style="text-align:right;"  ng-bind="{{product.price}}">
+   
   </label>
 
 
-      <div class="item item-divider">
-        Categorie 1
-      </div>
-      <label class="item item-input" ng-repeat="n in [1,2,3,4,5]">
-    <span class="input-label">Product  {{$index}}</span>
-    <input type="text" style="text-align:right;">
-  </label>
+
 
 
     </div>
     <button class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
 
   </ion-content>
+  <multiple-views-support width="70%" />
 </ion-view>
