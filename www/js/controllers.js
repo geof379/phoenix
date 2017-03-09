@@ -137,7 +137,7 @@ angular.module('starter.controllers', [])
     }
 
     GoogleMaps.init("AIzaSyD0KQVXzXgEQfhl0dyl-6eK65BtnMvIquY", $scope.searchlists);
-
+   
 
 
 
@@ -148,13 +148,14 @@ angular.module('starter.controllers', [])
       // data.slider is the instance of Swiper
       $scope.slider = data.slider;
       $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
-      
+
     });
 
     $scope.slideHasChanged = function (index) {
       $scope.currentObject = $scope.searchlists[index];
       GoogleMaps.clearMarker();
       GoogleMaps.addMarker($scope.currentObject);
+      GoogleMaps.routeToShop($scope.currentObject);
     }
 
 

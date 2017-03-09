@@ -234,7 +234,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
     var apiKey = false;
     var map = null;
     var directionsDisplay;
-
+    var directionsService;
+    var directionRequestion;
+    var currentPosition;
 
     function enableMap() {
       $ionicLoading.hide();
@@ -257,13 +259,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
       }
     }
 
+
+    function initDiection() {
+      var directionsService1 = new google.maps.DirectionsService();
+      var directionsDisplay1 = new google.maps.DirectionsRenderer();
+      directionsService = directionsService1;
+      directionsDisplay = directionsDisplay1;
+      directionsDisplay.setMap(map);
+      //directionsDisplay.setPanel(document.getElementById('panel'));
+
+    }
+
+
     function initMap() {
-      directionsDisplay = new google.maps.DirectionsRenderer();
+
       var options = { timeout: 10000, enableHighAccuracy: true };
 
       $cordovaGeolocation.getCurrentPosition(options)
         .then(function (position) {
-
+          currentPosition = position;
           var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
           var mapOptions = {
@@ -273,10 +287,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
           };
           console.info(position.coords.latitude + '===' + position.coords.longitude);
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
-          directionsDisplay.setMap(map);
+
           //Wait until the map is loaded
           google.maps.event.addListenerOnce(map, 'idle', function () {
-
+            initDiection();
             enableMap();
           });
 
@@ -291,6 +305,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
       var options = { timeout: 10000, enableHighAccuracy: false };
       $cordovaGeolocation.getCurrentPosition(options)
         .then(function (position) {
+          currentPosition = position;
           var latLng = new google.maps.LatLng(position.coords.latitude,
             position.coords.longitude);
 
@@ -300,12 +315,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
           console.info(position.coords.latitude + '===' + position.coords.longitude);
           //Wait until the map is loaded
           google.maps.event.addListenerOnce(map, 'idle', function () {
             loadMarker(records[0]);
             enableMap();
-
+            initDiection();
           });
 
         }, function (error) {
@@ -549,6 +565,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
         for (var i = 0; i < markerCache.length; i++) {
           markerCache[i].setMap(null);
         }
+      },
+      routeToShop: function (record) {
+        var startMarkerPos = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
+     
+
+        var endMarkerPos = new google.maps.LatLng(record.lat, record.lng);
+       
+        var request = {
+          origin: startMarkerPos,
+          destination: endMarkerPos,
+          travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function (response, status) {
+          
+          if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+          }else{
+console.info(status);
+          }
+        });
       }
     }
 
