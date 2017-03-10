@@ -568,10 +568,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionic.c
       },
       routeToShop: function (record) {
         var startMarkerPos = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
-     
-
         var endMarkerPos = new google.maps.LatLng(record.lat, record.lng);
        
+       
+
         var request = {
           origin: startMarkerPos,
           destination: endMarkerPos,
