@@ -49,12 +49,12 @@ height: 100%
   }
 
 
-  .icon {
-    width: 32px !important;
-    height: 32px !important;
+  .myicon {
+    width: 15px !important;
+    height: 15px !important;
     position: absolute !important;
-    right: 15px !important;
-    top: 12px !important;
+    top: 15px !important;
+        right: -10px !important;
   }
 
 
@@ -275,15 +275,15 @@ ion-content.has-header {
   }
 
 
+/**
+Login
 
+*/
 
   #loginForm div label {
     border: none !important;
     border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
   }
-
-
-
 
   .appLogo {
     text-align: center;
@@ -299,19 +299,9 @@ ion-content.has-header {
 
 
 
-  ion-drawer-vertical-content .card {
-    margin-top: 10px !important;
-    box-shadow: none !important;
-  }
-
-
-
-
-  ion-drawer-vertical-wrapper {
-    background-color: #fff;
-  }
-
-
+/**
+profile
+*/
 
   .profile {
     height: 40%;
@@ -354,6 +344,17 @@ ion-content.has-header {
     color: #fff !important;
   }
 
+
+  ion-drawer-vertical-content .card {
+    margin-top: 10px !important;
+    box-shadow: none !important;
+  }
+
+
+  ion-drawer-vertical-wrapper {
+    background-color: #fff;
+  }
+
   .no-margin{
     margin:1px !important;
   }
@@ -383,16 +384,70 @@ ion-content.has-header {
     right: 16px;
     z-index: 2;
  }
+.shoplist{
+margin-bottom: 0px !important;
+ }
+
+ .shoplist::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.shoplist::-webkit-scrollbar
+{
+	width: 1px;
+	background-color: #F5F5F5;
+}
+
+.shoplist::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.3);
+	background-color: #F5F5F5;
+}
 
 .footer{
-  position: fixed !important;
+  position: fixed;
    bottom: 0px !important;
+   left:0px;
+   margin: 0 auto;
 }
 
-@media screen and (min-width: 601px) {
-    /*map*/
+
+
+/* Empty. Add your own CSS if you like */
+.emptyMsg{
+    color: #ccc;
+    font-size:3.0em;
+    text-align: center;
+  
 }
+
+.emptyMsg i {
+    margin-top: 40%;
+   font-size:3.0em;
+display: block;
+}
+
 
 @media screen and (min-width: 375px) {
+    .emptyMsg i {
+      margin-top: 30%;
+      font-size:3.0em;
+      display: block;
+  }
+}
+
+@media screen and (min-width: 625px) {
     /*profile*/
+    .profile {
+      width: 35%;
+      float: left;     
+    }
+
+    .profileInput{
+      width: 35%;         
+    }
 }

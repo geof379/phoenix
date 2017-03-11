@@ -1,28 +1,21 @@
 <ion-view view-title="Dashboard">
   <ion-content>
     <ion-list ng-controller="PopOverCtrl">
-      <ion-item ng-repeat="playlist in playlists" ng-href="#/masterDetail/shops/{{playlist.id}}" class="no-border ">
+      <ion-item ng-repeat="shop in shops" ng-href="#/masterDetail/shops/{{shop.id}}" class="no-border ">
         <div class="card">
-          <div class="item item-text-wrap item-icon-right" style="border-top:{{playlist.styl}}">
+          <div class="item  item-icon-right">
 
 
-            <span class="badge" style="top:0px !important">
-              <a ng-href="#/app/shopMap/{{playlist.id}}" style="right: -20px !important;"><i class="icon icon  ion-android-pin"></i>   </a>
-            </span> {{playlist.title}}
+            <span class="badge" style="top:0px !important;text-align: center">
+              <a ng-href="#/app/shopMap/{{shop.id}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
+            </span> {{shop.libelle}}|| {{shop.libelle}}
           </div>
 
-          <div class="item item-body">
-
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In turpis metus, bibendum a dolor non, pulvinar pellentesque lacus.
-            </p>
-            <p>
-              <a href="#" class="subdued">{{playlist.id}}</a>
-              <a href="#" class="subdued">5 DonnéeY</a>
-            </p>
-          </div>
         </div>
       </ion-item>
+
+      <div ng-show="!shops.length" class="emptyMsg"><i class="icon ion-trash-b"></i>
+        <button class="round-overlay-button bottom-right button button-icon  ion-loop light" ng-click="synchroniser()"></button></div>
     </ion-list>
   </ion-content>
 

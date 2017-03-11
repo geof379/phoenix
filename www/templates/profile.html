@@ -1,29 +1,30 @@
 <ion-view view-title="Profile">
   <ion-content>
-    <div class="profile item">
-      <div class="row"><img src="img/user_male.png"></div>
-      <div class="row">
-        <h2>Geoffroy Ayeboua </h2>
+    <div align="center">
+
+      <div class="profile item">
+        <div class="row"><img src="img/user_male.png"></div>
+        <div class="row">
+          <h2>Geoffroy Ayeboua </h2>
+        </div>
+        <div>MHD</div>
       </div>
-      <div>MHD</div>
-    </div>
-    <div class="row row-top" style="height: 60%; text-align: center">
-      <form class="col" style="margin:auto; margin-top: 10px">
-        <div class="list">
+      <div class=" profileInput row row-top" style="height: 60%; text-align: center">
+
+        <div class="list" style="margin:auto; margin-top: 10px">
           <label class="item item-input">
-      
           <input type="text" placeholder="Username" ng-model="loginData.username">
         </label>
           <label class="item item-input">
-          
           <input type="password" placeholder="Password" ng-model="loginData.password">
         </label>
           <label class="col item no-border no-margin">
-          <button class="button button-block button-positive" type="submit">OK</button>
+          <button class="button button-positive center" style="margin: auto; margin-top: 60px; width: 40%"  type="submit">OK</button>
         </label>
         </div>
-      </form>
-    </div>
 
+      </div>
+
+    </div>
   </ion-content>
 </ion-view>

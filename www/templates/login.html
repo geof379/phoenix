@@ -1,28 +1,26 @@
 <ion-view view-title="Login">
 
   <ion-content scroll="false">
-    <div class="appLogo row row-top">
-      <img src="img/phoenix-logo.png">
-    </div>
-    <div class="row row-center">
-      <form ng-submit="doLogin()" id="loginForm" style="width:100%">
-        <div class="list">
+    <div id="loginForm">
+      <div class="appLogo row row-top">
+        <img src="img/phoenix-logo.png">
+      </div>
+      <div class="row row-center">
+
+        <div class="loginInput list col">
           <label class="item item-input">
-      
           <input type="text" placeholder="Username" ng-model="loginData.username">
         </label>
           <label class="item item-input">
           
           <input type="password" placeholder="Password" ng-model="loginData.password">
         </label>
-          <label class="item">
-          <button class="button button-full button-positive" type="submit">Log in</button>
+          <label class="item item-input" style="text-align: center">
+          <button class="button button-positive center" style="margin: auto; margin-top: 60px; width: 40%" type="submit">Log in</button>
         </label>
         </div>
-      </form>
-    </div>
-    <div class="row row-center" style="text-align: center; color: #387EF5">
-     
+
+      </div>
     </div>
   </ion-content>
 </ion-view>

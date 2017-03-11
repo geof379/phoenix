@@ -10,12 +10,12 @@
   </label>
 
       <div class="item item-divider">
-       
+
       </div>
       <label class="item  item-input  icon-left" ng-repeat="product in products">
        
-    <span class="input-label">{{product.name}}</span>
-    <input type="number"  style="text-align:right;"  ng-bind="{{product.price}}">
+    <span class="input-label">{{product.code}}</span>
+    <input type="number"  style="text-align:right;"  ng-bind="{{product.prix}}">
    
   </label>
 
@@ -24,7 +24,12 @@
 
 
     </div>
-    <button class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
+
+    <div ng-show="!products.length" class="emptyMsg"><i class="icon ion-trash-b"></i>
+     
+    </div>
+
+    <button ng-show="products.length" class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
 
   </ion-content>
   <multiple-views-support width="70%" />

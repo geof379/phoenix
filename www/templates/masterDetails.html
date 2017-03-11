@@ -1,7 +1,7 @@
 <ion-side-menus enable-menu-with-back-views="false">
 
 
-    <ion-side-menu-content expose-aside-when="(min-width:768px)" >
+    <ion-side-menu-content expose-aside-when="(min-width:768px)">
 
 
         <ion-nav-bar class="bar bar-header bar-positive">
@@ -17,36 +17,37 @@
 
         </ion-nav-bar>
 
-    
+
         <ion-nav-view name="menuContent"></ion-nav-view>
 
 
     </ion-side-menu-content>
 
-    <ion-side-menu side="left" ng-controller="ShopMenuCtrl">
+    <ion-side-menu side="left" ng-controller="ShopMenuCtrl" >
 
-        <ion-content >
+        <ion-content scroll="false">
 
-            <div class="profile" style="height: 120px;">
+            <div class="profile" style="height: 20%;">
                 <div class="item item-avatar">
                     <img src="img/user_male.png">
                     <h2>Geoffroy Ayeboua </h2>
                     <p>MHD</p>
                 </div>
             </div>
-            <ion-list id="menu" class="list"  style="overflow: scroll">
+            
+            <ion-scroll id="menu" class="list shoplist" style="height:71%">
                 <a ng-repeat="menu in menus" class="item" menu-close ng-href="{{menu.href}}">
              {{menu.name}}
             </a>
 
-            </ion-list>
+            </ion-scroll>
 
-            
- <bar-footer class="button-bar bar-footer footer bar-positive">
+          
+  <div class="button-bar bar-footer bar-positive">
                 <a class="button ion-home" menu-close ng-href="#/app/dashboard"></a>
                 <a class="button ion-gear-a" menu-close ng-href="#/app/profile"></a>
                 <a class="button ion-android-exit" menu-close ng-href="#/app/login"></a>
-            </bar-footer>
+            </div>
 
 
         </ion-content>
