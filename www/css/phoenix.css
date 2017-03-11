@@ -442,12 +442,5 @@ display: block;
 
 @media screen and (min-width: 625px) {
     /*profile*/
-    .profile {
-      width: 35%;
-      float: left;     
-    }
-
-    .profileInput{
-      width: 35%;         
-    }
+  
 }

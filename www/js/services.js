@@ -27,6 +27,7 @@ angular.module('phoenix.services', ['ngCordova'])
             else{
                 useWebSql();
             }
+         
             initDatabase();
         })
 

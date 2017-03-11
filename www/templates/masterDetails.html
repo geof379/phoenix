@@ -1,7 +1,7 @@
 <ion-side-menus enable-menu-with-back-views="false">
 
 
-    <ion-side-menu-content expose-aside-when="(min-width:768px)">
+    <ion-side-menu-content expose-aside-when="(min-width:625px)">
 
 
         <ion-nav-bar class="bar bar-header bar-positive">
@@ -35,7 +35,7 @@
                 </div>
             </div>
             
-            <ion-scroll id="menu" class="list shoplist" style="height:71%">
+            <ion-scroll id="menu" class="list shoplist" style="height:72%">
                 <a ng-repeat="menu in menus" class="item" menu-close ng-href="{{menu.href}}">
              {{menu.name}}
             </a>
