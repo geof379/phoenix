@@ -4,9 +4,9 @@
 
       <ion-list >
         <ion-item ng-repeat="shop in shops" 
-        ng-class="{ 'active': selectedShopId === shop.id }"
-				ng-href="#/masterDetail/shops/:{{shop.id.id}}">
-          {{shop.title}}
+        ng-class="{ 'active': selectedShopId === shop.code}"
+				ng-href="#/masterDetail/shops/:{{shop.code}}">
+          {{shop.libelle}}
           <i class="icon ion-ios-arrow-forward"></i>
   
         <ion-option-button class="button-light "> <i class="icon ion-location icon-positive"></i></ion-option-button>

@@ -119,14 +119,13 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
 
         views: {
           'menuContent': {
-            templateUrl: 'templates/productlist.html',
+            templateUrl: 'templates/shoplist.html',
             controller: function ($scope, $state, $stateParams) {
               $scope.params = $stateParams;
               $scope.go = function () {
-                $state.go('masterDetail.single', { shopId: 1 });
+            
               };
 
-              console.log('state1 params:', $stateParams);
             }
           }
         }
@@ -149,13 +148,19 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
     // Some fake testing data
 
     var shops = [
-      { title: 'Max&Cie', id: 1, lat: 45.491403, lng: -73.56114319999999, products: [{ name: 'product1', price: 0 }, { name: 'product2', price: 0 }] },
-      { title: 'Metro', id: 2, lat: 45.492403, lng: -73.56163319999999, products: [{ name: 'product3', price: 0 }, { name: 'product4', price: 0 }] },
-      { title: 'Carefour', id: 3, lat: 45.493403, lng: -73.54164319999999, products: [{ name: 'product6', price: 0 }, { name: 'product5', price: 0 }] },
-      { title: 'Ikea', id: 4, lat: 45.494403, lng: -73.56164519999999, products: [{ name: 'product7', price: 0 }, { name: 'product9', price: 0 }] },
-      { title: 'ToyRuzz', id: 5, lat: 45.495403, lng: -73.56664319999999, products: [{ name: 'product8', price: 0 }, { name: 'product10', price: 0 }] },
-      { title: 'ZhongJie', id: 6, lat: 45.496403, lng: -73.5654319999999, products: [{ name: 'product11', price: 0 }, { name: 'product12', price: 0 }] }
-    ];
+      { libelle: 'Max&Cie', code: 1, lat: 45.491403, lng: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
+      { libelle: 'Metro', code: 2, lat: 45.492403, lng: -73.56163319999999, products: [{ libelle: 'product3', prix: 0 }, { libelle: 'product4', prix: 0 }] },
+      { libelle: 'Carefour', code: 3, lat: 45.493403, lng: -73.54164319999999, products: [{ libelle: 'product6', prix: 0 }, { libelle: 'product5', prix: 0 }] },
+      { libelle: 'Ikea', code: 4, lat: 45.494403, lng: -73.56164519999999, products: [{ libelle: 'product7', prix: 0 }, { libelle: 'product9', prix: 0 }] },
+      { libelle: 'ToyRuzz', code: 5, lat: 45.495403, lng: -73.56664319999999, products: [{ libelle: 'product8', prix: 0 }, { libelle: 'product10', prix: 0 }] },
+      { libelle: 'ZhongJie', code: 6, lat: 45.496403, lng: -73.5654319999999, products: [{ libelle: 'product11', prix: 0 }, { libelle: 'product12', prix: 0 }] },
+    { libelle: 'Max&Cie', code: 1, lat: 45.491403, lng: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
+      { libelle: 'Metro', code: 2, lat: 45.492403, lng: -73.56163319999999, products: [{ libelle: 'product3', prix: 0 }, { libelle: 'product4', prix: 0 }] },
+      { libelle: 'Carefour', code: 3, lat: 45.493403, lng: -73.54164319999999, products: [{ libelle: 'product6', prix: 0 }, { libelle: 'product5', prix: 0 }] },
+      { libelle: 'Ikea', code: 4, lat: 45.494403, lng: -73.56164519999999, products: [{ libelle: 'product7', prix: 0 }, { libelle: 'product9', prix: 0 }] },
+      { libelle: 'ToyRuzz', code: 5, lat: 45.495403, lng: -73.56664319999999, products: [{ libelle: 'product8', prix: 0 }, { libelle: 'product10', prix: 0 }] },
+      { libelle: 'ZhongJie', code: 6, lat: 45.496403, lng: -73.5654319999999, products: [{ libelle: 'product11', prix: 0 }, { libelle: 'product12', prix: 0 }] }
+   ];
 
     return {
       all: function () {
@@ -163,7 +168,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
       },
       get: function (shopId) {
         for (var i = 0; i < shops.length; i++)
-          if (shops[i].id == shopId)
+          if (shops[i].code == shopId)
             return shops[i];
 
       }

@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, DataService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, ShopService) {
 
     $scope.loggout = function () {
       $ionicHistory.clearCache();
@@ -81,16 +81,16 @@ angular.module('phoenix.controllers', [])
 
 
 
-  .controller('DashboardCtrl', function ($scope, DataService) {
+  .controller('DashboardCtrl', function ($scope, ShopService,$ionicLoading) {
 
-    // $scope.shops = ShopService.all();
+     $scope.shops = ShopService.all();
     $scope.selectedShopId = 0;
 
-    $scope.shops = {};
-    DataService.getSalePoints(function (result) {
-      $scope.shops = result;
-      console.log($scope.shops);
-    });
+   // $scope.shops = {};
+    //DataService.getSalePoints(function (result) {
+      //$scope.shops = result;
+      
+    //})
     var getRandomColor = function () {
       var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
 
@@ -102,13 +102,13 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('ProductlistCtrl', function ($scope, $stateParams, DataService) {
+  .controller('ProductlistCtrl', function ($scope, $stateParams, ShopService) {
     $scope.products = {};
     $scope.currentSalepoint = $stateParams.shopId;
-    DataService.getProducts($scope.currentSalepoint, function (result) {
-      $scope.products = result;
-    });
-
+    //ShopService.getProducts($scope.currentSalepoint, function (result) {
+    //  $scope.products = result;
+    //});
+ $scope.products = ShopService.get( $scope.currentSalepoint).products;
 
     $scope.updatePrice = function (produit) {
       $scope.produit = produit;
@@ -130,15 +130,15 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('ShopListCtrl', function ($scope, $ionicListDelegate, MultipleViewsManager, DataService) {
+  .controller('ShopListCtrl', function ($scope, $ionicListDelegate, MultipleViewsManager, ShopService) {
 
-    // $scope.shops = ShopService.all();
+     $scope.shops = ShopService.all();
     $scope.selectedShopId = 0;
 
-    $scope.shops = {};
-    DataService.getSalePoints(function (result) {
-      $scope.shops = result;
-    });
+    //$scope.shops = {};
+   // DataService.getSalePoints(function (result) {
+     // $scope.shops = result;
+    //});
 
   })
 
@@ -157,19 +157,19 @@ angular.module('phoenix.controllers', [])
       return style;
     };
   })
-  .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
+  .controller('ShopMenuCtrl', function ($scope, $location, ShopService) {
     $scope.shops = {};
-    DataService.getSalePoints(function (result) {
-      $scope.shops = result;
-      return result;
-    }).then(function () {
+   // DataService.getSalePoints(function (result) {
+     // $scope.shops = result;
+      $scope.shops = ShopService.all();
+   
       $scope.menus = [];
       for (i = 0; i < $scope.shops.length; i++) {
         $scope.menus.push({
           name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
         })
       }
-    });
+    //});
 
 
 

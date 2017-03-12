@@ -8,7 +8,7 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
         function useSqlLite(){
-            db = $cordovaSQLite.openDB({name: dbName, location: 1});
+            db = $cordovaSQLite.openDB({name: dbName});
             console.info('Using SQLite');
         }
 
@@ -41,7 +41,8 @@ angular.module('phoenix.services', ['ngCordova'])
              * Afficher les points de ventes
              */
             getSalePoints: function(cb){
-                var query = 'SELECT * FROM pointvente ORDER BY libelle';
+               /**
+                * var query = 'SELECT * FROM pointvente ORDER BY libelle';
                 return $cordovaSQLite.execute(db, query)
                 .then(function(result) {
                     
@@ -51,6 +52,8 @@ angular.module('phoenix.services', ['ngCordova'])
                     } 
                     cb(data); 
                 }, onErrorQuery);
+                * 
+                */ 
             }, 
 
             /*
@@ -58,8 +61,10 @@ angular.module('phoenix.services', ['ngCordova'])
              */
             createSalePoint: function(pointvente){
                 var query = 'INSERT INTO pointvente (code, libelle, adresse, latitude, longitude) VALUES (?,?,?,?,?) ';
-                return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude])
+               /**
+                * return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude])
                 .then(function(res){}, onErrorQuery);
+                */ 
             },
 
             /*
@@ -67,10 +72,12 @@ angular.module('phoenix.services', ['ngCordova'])
              */
             deleteAllSalepoints: function (){
                 var query = 'DELETE FROM pointvente';
-                return $cordovaSQLite.execute(db,query)
+              /**
+               *  return $cordovaSQLite.execute(db,query)
                 .then(function(res){
                      
                 }, onErrorQuery);
+               */ 
             },
 
             /*
@@ -121,7 +128,7 @@ angular.module('phoenix.services', ['ngCordova'])
             },
   
             getSalePoint: function (lg, callback){
-                var query = 'SELECT * FROM pointvente WHERE email = ?';
+                var query = 'BEGIN; SELECT * FROM pointvente WHERE email = ?;COMMIT';
                 $ionicPlatform.ready(function(){
                     $cordovaSQLite.execute(db, query, [lg]).then(function(result){
                         callback(result.rows.length);
@@ -138,7 +145,7 @@ angular.module('phoenix.services', ['ngCordova'])
             },
 
             getUrlApi: function () {
-                return 'http://www.e-sud.fr/client/phoenix/api/v1/salepoints'; 
+                return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize'; 
                 //return 'http://localhost/phoenix-api/api/v1/salepoints'; 
             },
         }
