@@ -205,6 +205,25 @@ angular.module('phoenix.controllers', [])
       return style;
     };
   })
+    .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
+    $scope.shops = {};
+    DataService.getSalePoints(function (result) {
+      $scope.shops = result;
+    //  $scope.shops = ShopService.all();
+   
+      $scope.menus = [];
+      for (i = 0; i < $scope.shops.length; i++) {
+        $scope.menus.push({
+          name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
+        })
+      }
+    });
+
+
+
+
+
+  })
   /**
     .controller('PopOverCtrl', function ($scope, $ionicPopover) {
   
