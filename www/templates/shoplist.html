@@ -3,7 +3,7 @@
     <ion-content>
 
       <ion-list >
-        <ion-item ng-repeat="shop in shops" 
+        <ion-item ng-repeat="shop in pointsvente" 
         ng-class="{ 'active': selectedShopId === shop.code}"
 				ng-href="#/masterDetail/shops/:{{shop.code}}">
           {{shop.libelle}}

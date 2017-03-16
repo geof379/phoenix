@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, ShopService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, DataService) {
 
     $scope.loggout = function () {
       $ionicHistory.clearCache();
@@ -23,6 +23,8 @@ angular.module('phoenix.controllers', [])
       /*$http.get(DataService.getUrlApi(), {
           headers: {'Authorization': 'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='}
       })*/
+      disableAction('Processing..');
+
       $http.get(DataService.getUrlApi())
         .success(function (data, status, headers, config) {
           //Vider la table des points de vente
@@ -46,15 +48,21 @@ angular.module('phoenix.controllers', [])
             product.libelle = object['libelle'];
             product.pointvente_id = object['pointvente_id'];
             DataService.createProduct(product);
-          })
+          }).then(
+            function(){
+              //update view
+               $state.go('app.dashboard',{},{reload:true});
+            }
+          )
 
+          
+        
         })
         .error(function (data, status, headers, config) {
-          console.log(data);
+          enableAction();
         })
         .then(function (result) {
-          console.log('Done.');
-         // $state.go('app.dashboard');
+          enableAction();
         });
 
     };
@@ -63,34 +71,104 @@ angular.module('phoenix.controllers', [])
      * Transferer des données de la base locale vers le serveur
      */
     $scope.transferer = function () {
-
-      DataService.getAllProducts(function (result) {
-        var products = result;
-        angular.forEach(products, function (object, key) {
+      disableAction('Processing..');
+      DataService.getAllProducts(function (results) {
+        var products = [];
+        angular.forEach(results, function (object, key) {
           var product = {};
           product.code = object['code'];
-          product.libelle = object['libelle'];
+          product.prix = object['prix'];
           product.pointvente_id = object['pointvente_id'];
-          DataService.createProduct(product);
+          if (object['prix'] > 0) {
+            products.push(product);
+          }
         })
-      });
 
+        //Lancer le transfert
+        $http({
+          method: 'POST',
+          url: DataService.getUrlApi(),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          transformRequest: function (obj) {
+            var str = [];
+            for (var p in obj)
+              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            return str.join("&");
+          },
+          data: products
+        })
+          .success(function (data, status, headers, config) {
+
+            angular.forEach(products, function (produit, key) {
+              var collectData = {};
+              collectData.code = produit.code;
+              collectData.statut = 1;
+              collectData.pointvente_id = produit.pointvente_id;
+              DataService.transfertUpdate(collectData, function (r) { })
+            })
+
+          }).error(function (data, status, headers, config) {
+            //ErrorService.hideLoading();
+            console.log('Erreur ok');
+          })
+          .then(function (data, status, headers, config) {
+            enableAction();
+        
+          });
+      });
     };
+
+
+    function enableAction() {
+      $ionicLoading.hide();
+    }
+
+    function disableAction(message) {
+      $ionicLoading.show({
+        template: message
+      });
+    }
   })
 
+  .controller('ProductlistCtrl', function ($scope, $stateParams, DataService, $ionicLoading) {
+    $scope.products = {};
+    $scope.currentSalepoint = $stateParams.shopId;
+    DataService.getProducts($scope.currentSalepoint, function (result) {
+      $scope.products = result;
+    });
 
+    $scope.updatePrice = function (produit) {
+      $scope.produit = produit;
+      if ($scope.produit.prix > 0) {
+        $scope.disableAction('Processing..');
+        var collectData = {};
+        collectData.code = $scope.produit.code;
+        collectData.prix = $scope.produit.prix;
+        DataService.updateProduct(collectData, function (r) {
+          $scope.enableAction();
+        })
+      }
+    }
 
+    $scope.enableAction = function () {
+      $ionicLoading.hide();
+    }
 
-  .controller('DashboardCtrl', function ($scope, ShopService,$ionicLoading) {
+    $scope.disableAction = function (message) {
+      $ionicLoading.show({
+        template: message
+      });
+    }
+  })
 
-     $scope.shops = ShopService.all();
-    $scope.selectedShopId = 0;
+  .controller('ShopListCtrl', function ($scope, DataService) {
+    $scope.pointsvente = {};
+    DataService.getSalePoints(function (result) {
+      $scope.pointsvente = result;
+    });
+  })
 
-   // $scope.shops = {};
-    //DataService.getSalePoints(function (result) {
-      //$scope.shops = result;
-      
-    //})
+  .controller('DashboardCtrl', function ($scope, DataService) {
     var getRandomColor = function () {
       var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
 
@@ -98,123 +176,70 @@ angular.module('phoenix.controllers', [])
 
     };
 
+    $scope.pointsvente = {};
+    DataService.getSalePoints(function (result) {
+      $scope.pointsvente = result;
+    });
 
-
+    /**    $scope.playlists = [
+            { title: 'Enquêtes encours (toDo)', id: 1, styl: getRandomColor() },
+            { title: 'Enquêtes en retard (toDo)', id: 2, style: getRandomColor() },
+            { title: 'Enquêtes en restant (toDo)', id: 3, styl: getRandomColor() }  
+          ];
+     */
   })
-
-  .controller('ProductlistCtrl', function ($scope, $stateParams, ShopService) {
-    $scope.products = {};
-    $scope.currentSalepoint = $stateParams.shopId;
-    //ShopService.getProducts($scope.currentSalepoint, function (result) {
-    //  $scope.products = result;
-    //});
- $scope.products = ShopService.get( $scope.currentSalepoint).products;
-
-    $scope.updatePrice = function (produit) {
-      $scope.produit = produit;
-      if ($scope.produit.prix > 0) {
-        var collectData = {};
-        collectData.code = $scope.produit.code;
-        collectData.prix = $scope.produit.prix;
-        DataService.updateProduct(collectData, function (r) {
-          console.log('Product saved.');
-          //$state.go('app.nonEnvoyees');
-          //ErrorService.showToast('Modification effectuée avec succès!','middle');
-        })
-      }
-    }
-
-  })
-
-  .controller('ProfileCtrl', function ($scope, $stateParams) {
-
-  })
-
-  .controller('ShopListCtrl', function ($scope, $ionicListDelegate, MultipleViewsManager, ShopService) {
-
-     $scope.shops = ShopService.all();
-    $scope.selectedShopId = 0;
-
-    //$scope.shops = {};
-   // DataService.getSalePoints(function (result) {
-     // $scope.shops = result;
-    //});
-
-  })
-
   .controller('LeftMenuCtrl', function ($scope, $location) {
 
     $scope.menus = [
-      { name: 'Dashboard', href: '#/app/dashboard', icon: 'ion-home' },
-      { name: 'Map', href: '#/app/map', icon: 'ion-map' },
-      { name: 'List', href: '#/masterDetail/shops', icon: 'ion-ios-list-outline' },
+
+      { name: 'List Shops', href: '#/app/shoplist', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
+      { name: 'Synchronize', href: '#', action: 'synchroniser()', icon: 'ion-gear-a' },
+      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' }
     ];
 
     $scope.isItemActive = function (menu) {
-      var currentRoute = $location.path().substring(1) || '#/app/dashboard';
+      var currentRoute = $location.path().substring(1) || '#/app/map';
       var active = menu === currentRoute ? 'active' : '';
       var style = active + ' item icon-left ' + menu.icon;
       return style;
     };
   })
-  .controller('ShopMenuCtrl', function ($scope, $location, ShopService) {
-    $scope.shops = {};
-   // DataService.getSalePoints(function (result) {
-     // $scope.shops = result;
-      $scope.shops = ShopService.all();
-   
-      $scope.menus = [];
-      for (i = 0; i < $scope.shops.length; i++) {
-        $scope.menus.push({
-          name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
-        })
-      }
-    //});
+  /**
+    .controller('PopOverCtrl', function ($scope, $ionicPopover) {
+  
+  
+      $ionicPopover.fromTemplateUrl('my-popover.html', {
+        scope: $scope
+      }).then(function (popover) {
+        $scope.popover = popover;
+      });
+  
+  
+      $scope.onPopover = function ($event, index) {
+        $scope.index = { 'value': index };
+        $scope.popover.show($event);
+      };
+  
+      $scope.closePopover = function () {
+        $scope.popover.hide();
+      };
+      //Cleanup the popover when we're done with it!
+      $scope.$on('$destroy', function () {
+        $scope.popover.remove();
+      });
+      // Execute action on hidden popover
+      $scope.$on('popover.hidden', function () {
+        // Execute action
+      });
+      // Execute action on remove popover
+      $scope.$on('popover.removed', function () {
+        // Execute action
+      });
+    })
+  */
 
 
-
-
-
-  })
-
-  .controller('PopOverCtrl', function ($scope, $ionicPopover) {
-
-    $ionicPopover.fromTemplateUrl('my-popover.html', {
-      scope: $scope
-    }).then(function (popover) {
-      $scope.popover = popover;
-    });
-
-
-    $scope.onPopover = function ($event, index) {
-      $scope.index = { 'value': index };
-      $scope.popover.show($event);
-    };
-
-    $scope.closePopover = function () {
-      $scope.popover.hide();
-    };
-    //Cleanup the popover when we're done with it!
-    $scope.$on('$destroy', function () {
-      $scope.popover.remove();
-    });
-    // Execute action on hidden popover
-    $scope.$on('popover.hidden', function () {
-      // Execute action
-    });
-    // Execute action on remove popover
-    $scope.$on('popover.removed', function () {
-      // Execute action
-    });
-  })
-  .controller('ShopMapCtrl', function ($scope, $stateParams, ShopService) {
-
-    $scope.shop = ShopService.get($stateParams.shopId);
-    // get marker then show map and add marker and the adress
-
-
-
-  })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService) {
 

@@ -1,7 +1,7 @@
 <ion-view view-title="Dashboard">
   <ion-content>
-    <ion-list ng-controller="PopOverCtrl">
-      <ion-item ng-repeat="shop in shops" ng-href="#/masterDetail/shops/{{shop.id}}" class="no-border ">
+    <ion-list>
+      <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.id}}" class="no-border ">
         <div class="card">
           <div class="item  item-icon-right">
 
@@ -14,8 +14,10 @@
         </div>
       </ion-item>
 
-      <div ng-show="!shops.length" class="emptyMsg"><i class="icon ion-trash-b"></i>
-        <button class="round-overlay-button bottom-right button button-icon  ion-loop light" ng-click=""></button></div>
+      <div ng-show="!pointsvente.length" class="emptyMsg">
+        <i class="icon ion-trash-b"></i>
+        <button class="round-overlay-button bottom-right button button-icon ion-loop light" ng-click="synchroniser()"></button>
+      </div>
     </ion-list>
   </ion-content>
 
