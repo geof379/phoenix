@@ -6,8 +6,8 @@
         <div class="item item-text-wrap item-icon-right">
 
           <span class="badge icon-badge badge-assertive">
-               {{currentObject.id}}
-            </span> {{currentObject.title}}
+               {{currentObject.code}}
+            </span> {{currentObject.libelle}}
         </div>
 
         <div class="item item-body">
@@ -27,11 +27,11 @@
   </ion-drawer-vertical-wrapper>
   <ion-content>
 
-    <div id="map" on-double-tap="toggleDrawer('second')"></div>
+    <div id="map" data-tap-disabled="true"></div>
 
     <ion-slides id="list" options="options" pager="true" slider="data.slider">
       <ion-slide-box on-slide-changed="slideHasChanged($index)">
-        <ion-slide ng-repeat="search in searchlists" >
+        <ion-slide ng-repeat="search in searchlists">
 
           <a class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')" href="#/masterDetail/shops/{{search.id}}">
 

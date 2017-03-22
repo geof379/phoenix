@@ -49,14 +49,14 @@ angular.module('phoenix.controllers', [])
             product.pointvente_id = object['pointvente_id'];
             DataService.createProduct(product);
           }).then(
-            function(){
+            function () {
               //update view
-               $state.go('app.dashboard',{},{reload:true});
+              $state.go('app.dashboard', {}, { reload: true });
             }
-          )
+            )
 
-          
-        
+
+
         })
         .error(function (data, status, headers, config) {
           enableAction();
@@ -113,7 +113,7 @@ angular.module('phoenix.controllers', [])
           })
           .then(function (data, status, headers, config) {
             enableAction();
-        
+
           });
       });
     };
@@ -192,7 +192,7 @@ angular.module('phoenix.controllers', [])
 
     $scope.menus = [
 
-      { name: 'List Shops', href: '#/app/shoplist', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
       { name: 'Synchronize', href: '#', action: 'synchroniser()', icon: 'ion-gear-a' },
       { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' }
@@ -205,12 +205,12 @@ angular.module('phoenix.controllers', [])
       return style;
     };
   })
-    .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
+  .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
     $scope.shops = {};
     DataService.getSalePoints(function (result) {
       $scope.shops = result;
-    //  $scope.shops = ShopService.all();
-   
+      //  $scope.shops = ShopService.all();
+
       $scope.menus = [];
       for (i = 0; i < $scope.shops.length; i++) {
         $scope.menus.push({
@@ -260,51 +260,50 @@ angular.module('phoenix.controllers', [])
 
 
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService) {
-
-
+  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService, Marker) {
 
     $scope.searchlists = ShopService.all();
 
-    $scope.options = {
-      loop: false,
-      effect: 'fade',
-      speed: 500,
-    }
-
-    GoogleMaps.init("AIzaSyD0KQVXzXgEQfhl0dyl-6eK65BtnMvIquY", $scope.searchlists);
+    GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
+      /** DataService.getSalePoints(function (result) {
+         $scope.searchlists = result;
+       })*/
 
 
+      //    .then(
+      //  function () {
+      GoogleMaps.initDiection();
+     // GoogleMaps.loadMapDataMarkers($scope.searchlists);
+      //===============================================slide=============================================
+      $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
+        // data.slider is the instance of Swiper
+        $scope.slider = data.slider;
+     //   $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
+       
+        
+      });
 
+      $scope.slideHasChanged = function (index) {
+        console.info("wtf");
+        $scope.currentObject = $scope.searchlists[index];
+        GoogleMaps.addMarker(Marker.getMarker($scope.currentObject));
+        GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject));
+      }
 
-    //===============================================slide=============================================
+      $scope.toggleDrawer = function (handle) {
+        $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
+      }
 
-
-    $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
-      // data.slider is the instance of Swiper
-      $scope.slider = data.slider;
-      $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
+      $scope.drawerIs = function (state) {
+        return $ionDrawerVerticalDelegate.getState() == state;
+      }
 
     });
 
-    $scope.slideHasChanged = function (index) {
-      $scope.currentObject = $scope.searchlists[index];
-      GoogleMaps.clearMarker();
-      GoogleMaps.addMarker($scope.currentObject);
-      GoogleMaps.routeToShop($scope.currentObject);
-    }
-
-
-    $scope.toggleDrawer = function (handle) {
-      $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
-    }
-
-    $scope.drawerIs = function (state) {
-      return $ionDrawerVerticalDelegate.getState() == state;
-    }
-
-
+    //   });
 
   });
+
+
 
 
