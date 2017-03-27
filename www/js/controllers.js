@@ -130,7 +130,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('ProductlistCtrl', function ($scope, $stateParams, DataService, $ionicLoading) {
+  /**.controller('ProductlistCtrl', function ($scope, $stateParams, DataService, $ionicLoading) {
     $scope.products = {};
     $scope.currentSalepoint = $stateParams.shopId;
     DataService.getProducts($scope.currentSalepoint, function (result) {
@@ -159,13 +159,75 @@ angular.module('phoenix.controllers', [])
         template: message
       });
     }
-  })
+  })*/
+  .controller('ProductlistCtrl', function ($scope, $stateParams, MultipleViewsManager, DataService, $ionicLoading) {
+    $scope.products = {};
+    $scope.currentSalepoint;
+    DataService.getSalePoint($stateParams.shopCode, function (result) {
+      $scope.currentSalepoint = result;
+    });
 
-  .controller('ShopListCtrl', function ($scope, DataService) {
+    MultipleViewsManager.updated('view-shop', function (params) {
+      DataService.getProducts(params.shopCode, function (result) {
+        $scope.products = result;
+       console.log(result);
+      })
+    });
+
+    $scope.updatePrice = function (produit) {
+      $scope.produit = produit;
+      if ($scope.produit.prix > 0) {
+        $scope.disableAction('Processing..');
+        var collectData = {};
+        collectData.code = $scope.produit.code;
+        collectData.prix = $scope.produit.prix;
+        DataService.updateProduct(collectData, function (r) {
+          $scope.enableAction();
+        })
+      }
+    }
+
+    $scope.enableAction = function () {
+      $ionicLoading.hide();
+    }
+
+    $scope.disableAction = function (message) {
+      $ionicLoading.show({
+        template: message
+      });
+    }
+  })
+  .controller('ShopListCtrl', function ($scope, $state,$stateParams, MultipleViewsManager, DataService) {
+
+
     $scope.pointsvente = {};
     DataService.getSalePoints(function (result) {
       $scope.pointsvente = result;
     });
+
+
+    if (MultipleViewsManager.isActive()) {
+      if($stateParams.shopCode){
+        console.log($stateParams.shopCode +"aaaa1112");
+        $scope.selectedShopCode = $stateParams.shopCode;
+      }
+        console.log($scope.selectedShopCode+"aaaa");
+      MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+    }
+
+    $scope.changeShop = function (shop) {
+      $scope.selectedShopCode = shop.code;
+      if (MultipleViewsManager.isActive()) {
+        MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
+
+        myEl = angular.element(document.querySelector('#list-view'));
+        myEl.addClass("mode-detail");
+
+      } else {
+        
+        $state.go('view-shop', { shopCode: shop.code });
+      }
+    };
   })
 
   .controller('DashboardCtrl', function ($scope, DataService) {
@@ -273,21 +335,21 @@ angular.module('phoenix.controllers', [])
       //    .then(
       //  function () {
       GoogleMaps.initDiection();
-     // GoogleMaps.loadMapDataMarkers($scope.searchlists);
+      // GoogleMaps.loadMapDataMarkers($scope.searchlists);
       //===============================================slide=============================================
       $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
         // data.slider is the instance of Swiper
         $scope.slider = data.slider;
-     //   $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
-       
-        
+        //   $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
+
+
       });
 
       $scope.slideHasChanged = function (index) {
         console.info("wtf");
         $scope.currentObject = $scope.searchlists[index];
         GoogleMaps.addMarker(Marker.getMarker($scope.currentObject));
-        GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject));
+        GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject), document.getElementById('routes'));
       }
 
       $scope.toggleDrawer = function (handle) {

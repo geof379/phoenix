@@ -2,10 +2,10 @@
 
     <ion-content>
 
-      <ion-list >
+      <ion-list>
         <ion-item ng-repeat="shop in pointsvente" 
-        ng-class="{ 'active': selectedShopId === shop.code}"
-				ng-href="#/masterDetail/shops/:{{shop.code}}">
+        ng-class="{ 'active': selectedShopCode === shop.code}"
+				ng-click="changeShop(shop)">
           {{shop.libelle}}
           <i class="icon ion-ios-arrow-forward"></i>
   
@@ -16,5 +16,5 @@
      
     </ion-content>
 
-  	<multiple-views-support width="30%" />
+  	<multiple-views-support width="35%" />
 </ion-view>

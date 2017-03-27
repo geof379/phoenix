@@ -801,11 +801,11 @@ angular.module('phoenix.services', ['ngCordova'])
                 // var directionsDisplay1 = new google.maps.DirectionsRenderer();
                 directionsService = new google.maps.DirectionsService;
                 directionsDisplay = new google.maps.DirectionsRenderer;
-                //  directionsDisplay.setMap(map);
-                //directionsDisplay.setPanel(document.getElementById('map'));
+               // directionsDisplay.setMap(map);
+              //  directionsDisplay.setPanel(directionsPanel);
 
             },
-            routeToShop: function (marker) {
+            routeToShop: function (marker,directionsPanel) {
                 this.clearMarker();
                 var startMarkerPos = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
                 var endMarkerPos = new google.maps.LatLng(marker.lat, marker.lng);
@@ -819,10 +819,14 @@ angular.module('phoenix.services', ['ngCordova'])
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                         directionsDisplay.setMap(map);
+                        directionsDisplay.setPanel(directionsPanel);
+                      
+
                     } else {
                         console.info(status);
                     }
                 });
+
 
             }
         }

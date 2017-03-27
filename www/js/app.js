@@ -100,21 +100,21 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
         templateUrl: 'templates/masterDetails.html',
         abstract: true
       })
-      /**    .state('masterDetail.shops', {
-            url: '/shops',
+         .state('masterDetail.shops', {
+            url: '/shops/:shopCode',
             views: {
               'shop-list': {
                 templateUrl: 'templates/shoplist.html',
                 controller: 'ShopListCtrl'
               },
     
-              'product': {
+              'view-shop': {
                 templateUrl: 'templates/productlist.html',
                 controller: 'ProductlistCtrl'
               }
             }
-          })*/
-      .state('masterDetail.shop', {
+          })
+    /**  .state('masterDetail.shop', {
         url: '/shops',
 
         views: {
@@ -122,10 +122,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
             templateUrl: 'templates/shoplist.html',
             controller: function ($scope, $state, $stateParams) {
               $scope.params = $stateParams;
-              $scope.go = function () {
-            
-              };
-
+          
             }
           }
         }
@@ -139,7 +136,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
             controller: 'ProductlistCtrl'
           }
         }
-      })
+      })*/
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');

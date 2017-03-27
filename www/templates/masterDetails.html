@@ -1,7 +1,7 @@
-<ion-side-menus enable-menu-with-back-views="false">
+<ion-side-menus enable-menu-with-back-views="true">
 
 
-    <ion-side-menu-content expose-aside-when="(min-width:625px)">
+    <ion-side-menu-content  id="list-view">
 
 
         <ion-nav-bar class="bar bar-header bar-positive">
@@ -18,12 +18,13 @@
         </ion-nav-bar>
 
 
-        <ion-nav-view name="menuContent"></ion-nav-view>
-
+        <!-- <ion-nav-view name="menuContent"></ion-nav-view>-->
+        <ion-nav-view name="shop-list" id="shop-list"></ion-nav-view>
+        <ion-nav-view name="view-shop" id="view-shop"></ion-nav-view>
 
     </ion-side-menu-content>
 
-    <ion-side-menu side="left" ng-controller="ShopMenuCtrl" >
+    <ion-side-menu side="left" ng-controller="LeftMenuCtrl">
 
         <ion-content scroll="false">
 
@@ -34,20 +35,20 @@
                     <p>MHD</p>
                 </div>
             </div>
-            
-            <ion-scroll id="menu" class="list shoplist" style="height:72%">
-                <a ng-repeat="menu in menus" class="item" menu-close ng-href="{{menu.href}}">
+
+            <ul id="menu" class="list">
+                <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}">
              {{menu.name}}
             </a>
 
-            </ion-scroll>
+            </ul>
 
-          
-  <div class="button-bar bar-footer bar-positive">
+
+           <!-- <div class="button-bar bar-footer bar-positive">
                 <a class="button ion-home" menu-close ng-href="#/app/dashboard"></a>
                 <a class="button ion-gear-a" menu-close ng-href="#/app/profile"></a>
                 <a class="button ion-android-exit" menu-close ng-href="#/app/login"></a>
-            </div>
+            </div>-->
 
 
         </ion-content>

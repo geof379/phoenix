@@ -1,13 +1,13 @@
 <ion-view view-title="Dashboard">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.id}}" class="no-border ">
+      <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.code}}" class="no-border ">
         <div class="card">
           <div class="item  item-icon-right">
 
 
             <span class="badge" style="top:0px !important;text-align: center">
-              <a ng-href="#/app/shopMap/{{shop.id}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
+              <a ng-href="#/app/shopMap/:{{shop.code}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
             </span> {{shop.libelle}}|| {{shop.libelle}}
           </div>
 
