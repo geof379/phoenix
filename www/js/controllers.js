@@ -65,7 +65,10 @@ angular.module('phoenix.controllers', [])
           enableAction();
         });
 
+
     };
+
+
 
     /*
      * Transferer des données de la base locale vers le serveur
@@ -170,9 +173,10 @@ angular.module('phoenix.controllers', [])
     MultipleViewsManager.updated('view-shop', function (params) {
       DataService.getProducts(params.shopCode, function (result) {
         $scope.products = result;
-       console.log(result);
+        console.log(result);
       })
     });
+
 
     $scope.updatePrice = function (produit) {
       $scope.produit = produit;
@@ -197,7 +201,7 @@ angular.module('phoenix.controllers', [])
       });
     }
   })
-  .controller('ShopListCtrl', function ($scope, $state,$stateParams, MultipleViewsManager, DataService) {
+  .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService) {
 
 
     $scope.pointsvente = {};
@@ -207,33 +211,43 @@ angular.module('phoenix.controllers', [])
 
 
     if (MultipleViewsManager.isActive()) {
-      if($stateParams.shopCode){
-        console.log($stateParams.shopCode +"aaaa1112");
+      if ($stateParams.shopCode) {
+        console.log($stateParams.shopCode + "aaaa1112");
         $scope.selectedShopCode = $stateParams.shopCode;
       }
-        console.log($scope.selectedShopCode+"aaaa");
+      console.log($scope.selectedShopCode + "aaaa");
       MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
     }
 
     $scope.changeShop = function (shop) {
       $scope.selectedShopCode = shop.code;
       if (MultipleViewsManager.isActive()) {
+      
         MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
 
         myEl = angular.element(document.querySelector('#list-view'));
+          myEl.removeClass("mode-master");
         myEl.addClass("mode-detail");
-
       } else {
-        
         $state.go('view-shop', { shopCode: shop.code });
       }
     };
+
+ $scope.detailToMaster = function () {
+      console.log("aaaaaaaaaa");
+      if (MultipleViewsManager.isActive()) {
+        myEl = angular.element(document.querySelector('#list-view'));
+        myEl.addClass("mode-master");
+      }
+    };
+
+
   })
+
 
   .controller('DashboardCtrl', function ($scope, DataService) {
     var getRandomColor = function () {
       var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
-
       return str.trim();
 
     };

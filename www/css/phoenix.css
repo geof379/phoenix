@@ -209,10 +209,9 @@ ion-content.has-header {
 
 
 
-  #menu a:active,
-  #  a.active {
-    color: #387ef5;
-    background-color: rgba(121, 121, 121, 0.11);
+  .item.active, .item.activated, .item-complex.active .item-content, .item-complex.activated .item-content, .item .item-content.active, .item .item-content.activated {
+    color:white;
+    background-color: #387ef5 !important;
   }
 
 
@@ -484,6 +483,9 @@ display: block;
             width: 65% !important;
             height: 100% !important;
             display: block;
+            webkit-transform: none;
+    transform: none;
+    box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.2), 1px 0px 2px rgba(0, 0, 0, 0.2);
           }
 @media screen and (min-width: 375px) {
         .emptyMsg i {
@@ -497,26 +499,51 @@ display: block;
 @media screen and (max-width: 540px) {
     
    #shop-list .pane {
-                width: 100% !important;
-                height: 100% !important;
+          width: 100% !important;
+          height: 100% !important;
        }
        #view-shop .pane { 
-                width: 100%;
-                height: 100%;
-                display: none;
+          width: 100%;
+          height: 100%;
+          display: none;
         }
 
+      #list-view.mode-detail #backButton {
+        display:block !important;			
+      }
+      #list-view.mode-detail #menuButton {
+        display: none !important;
+      }
       #list-view.mode-detail #shop-list .pane {
         display:none !important;
         left: 0% !important;
         width: 100% !important;
-                height: 100% !important;					
+        height: 100% !important;					
       }
       #list-view.mode-detail #view-shop .pane {
         display: block !important;
         left: 0% !important;
         width: 100% !important;
-                height: 100% !important;
+        height: 100% !important;
+      }
+
+  #list-view.mode-master #backButton {
+        display:none !important;			
+      }
+      #list-view.mode-master #menuButton {
+        display: block !important;
+      }
+       #list-view.mode-master #shop-list .pane {
+        display:block !important;
+        left: 0% !important;
+        width: 100% !important;
+        height: 100% !important;					
+      }
+      #list-view.mode-master #view-shop .pane {
+        display: none !important;
+        left: 0% !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
 }
