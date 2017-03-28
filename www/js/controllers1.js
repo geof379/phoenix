@@ -1,11 +1,11 @@
-angular.module('phoenix.controllers', [])
+﻿angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, ShopService) {
 
     $scope.loggout = function () {
       $ionicHistory.clearCache();
       $ionicHistory.clearHistory();
-      $state.go('login');
+      $state.go('login');Colas
     };
 
     $scope.$on('loggout-bye', function () {
