@@ -23,7 +23,7 @@
       <ion-slide-box on-slide-changed="slideHasChanged($index)">
         <ion-slide ng-repeat="search in searchlists">
 
-          <a class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')" href="#/masterDetail/shops/{{search.id}}">
+          <a class="item item-text-wrap item-icon-right" on-swipe-up="toggleDrawer('first')" href="#/masterDetail/shops/{{search.code}}">
 
             <span class="badge icon-badge  badge-assertive">
                {{search.code}}

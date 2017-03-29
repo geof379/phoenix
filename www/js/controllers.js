@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, DataService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService) {
 
     $scope.loggout = function () {
       $ionicHistory.clearCache();
@@ -30,7 +30,7 @@ angular.module('phoenix.controllers', [])
           //Vider la table des points de vente
           DataService.deleteAllSalepoints();
           //Remplir la table des points de vente
-          angular.forEach(data.salepoints, function (object, key) {
+          $q.all([angular.forEach(data.salepoints, function (object, key) {
             var salepoint = {};
             salepoint.code = object['code'];
             salepoint.libelle = object['libelle'];
@@ -38,9 +38,9 @@ angular.module('phoenix.controllers', [])
             salepoint.latitude = object['latitude'];
             salepoint.longitude = object['longitude'];
             DataService.createSalePoint(salepoint);
-          })
+          }),
           //Vider la table des produits
-          DataService.deleteAllProducts();
+          DataService.deleteAllProducts(),
           //Remplir la table des produits
           angular.forEach(data.products, function (object, key) {
             var product = {};
@@ -48,22 +48,25 @@ angular.module('phoenix.controllers', [])
             product.libelle = object['libelle'];
             product.pointvente_id = object['pointvente_id'];
             DataService.createProduct(product);
-          }).then(
+
+          })
+          ]).finally(
             function () {
-              //update view
-              $state.go('app.dashboard', {}, { reload: true });
+
+              enableAction();
+               $window.location.reload(true);
+              //$state.reload();
             }
             )
 
 
 
         })
+
         .error(function (data, status, headers, config) {
           enableAction();
         })
-        .then(function (result) {
-          enableAction();
-        });
+
 
 
     };
@@ -112,7 +115,7 @@ angular.module('phoenix.controllers', [])
 
           }).error(function (data, status, headers, config) {
             //ErrorService.hideLoading();
-            console.log('Erreur ok');
+
           })
           .then(function (data, status, headers, config) {
             enableAction();
@@ -122,11 +125,11 @@ angular.module('phoenix.controllers', [])
     };
 
 
-    function enableAction() {
+    var enableAction = function () {
       $ionicLoading.hide();
     }
 
-    function disableAction(message) {
+    var disableAction = function (message) {
       $ionicLoading.show({
         template: message
       });
@@ -222,18 +225,18 @@ angular.module('phoenix.controllers', [])
     $scope.changeShop = function (shop) {
       $scope.selectedShopCode = shop.code;
       if (MultipleViewsManager.isActive()) {
-      
+
         MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
 
         myEl = angular.element(document.querySelector('#list-view'));
-          myEl.removeClass("mode-master");
+        myEl.removeClass("mode-master");
         myEl.addClass("mode-detail");
       } else {
         $state.go('view-shop', { shopCode: shop.code });
       }
     };
 
- $scope.detailToMaster = function () {
+    $scope.detailToMaster = function () {
       console.log("aaaaaaaaaa");
       if (MultipleViewsManager.isActive()) {
         myEl = angular.element(document.querySelector('#list-view'));
@@ -245,17 +248,20 @@ angular.module('phoenix.controllers', [])
   })
 
 
-  .controller('DashboardCtrl', function ($scope, DataService) {
+  .controller('DashboardCtrl', function ($scope, DataService, $ionicPlatform) {
     var getRandomColor = function () {
       var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
       return str.trim();
 
     };
 
-    $scope.pointsvente = {};
-    DataService.getSalePoints(function (result) {
-      $scope.pointsvente = result;
-    });
+    $ionicPlatform.ready(function () {
+      $scope.pointsvente = {};
+      DataService.getSalePoints(function (result) {
+        $scope.pointsvente = result;
+      });
+    })
+
 
     /**    $scope.playlists = [
             { title: 'Enquêtes encours (toDo)', id: 1, styl: getRandomColor() },
@@ -336,47 +342,51 @@ angular.module('phoenix.controllers', [])
 
 
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, ConnectivityMonitor, ShopService, Marker) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
 
-    $scope.searchlists = ShopService.all();
+    $scope.searchlists = {};
 
-    GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
-      /** DataService.getSalePoints(function (result) {
-         $scope.searchlists = result;
-       })*/
+    $ionicPlatform.ready(function () {
+      $q.all([
+         DataService.getSalePoints(function (result) {
+           $scope.searchlists = result;
+         })
+        //$scope.searchlists = ShopService.all(),
+        
+      ]).then(function () {
+        console.log($scope.searchlists);
+        GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
 
 
-      //    .then(
-      //  function () {
-      GoogleMaps.initDiection();
-      // GoogleMaps.loadMapDataMarkers($scope.searchlists);
-      //===============================================slide=============================================
-      $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
-        // data.slider is the instance of Swiper
-        $scope.slider = data.slider;
-        //   $scope.currentObject = $scope.searchlists[$scope.slider.activeIndex];
+          GoogleMaps.initDiection();
+          // GoogleMaps.loadMapDataMarkers($scope.searchlists);
+          //===============================================slide=============================================
+          $scope.$on("$ionicSlides.sliderInitialized", function (event, data) {
+            // data.slider is the instance of Swiper
+            $scope.slider = data.slider;
+            $scope.currentObject = $scope.searchlists[0];
 
+
+          });
+
+          $scope.slideHasChanged = function (index) {
+            $scope.currentObject = $scope.searchlists[index];
+            GoogleMaps.addMarker(Marker.getMarker($scope.currentObject));
+            GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject), document.getElementById('routes'));
+          }
+
+          $scope.toggleDrawer = function (handle) {
+            $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
+          }
+
+          $scope.drawerIs = function (state) {
+            return $ionDrawerVerticalDelegate.getState() == state;
+          }
+
+        });
 
       });
-
-      $scope.slideHasChanged = function (index) {
-        console.info("wtf");
-        $scope.currentObject = $scope.searchlists[index];
-        GoogleMaps.addMarker(Marker.getMarker($scope.currentObject));
-        GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject), document.getElementById('routes'));
-      }
-
-      $scope.toggleDrawer = function (handle) {
-        $ionDrawerVerticalDelegate.$getByHandle(handle).toggleDrawer();
-      }
-
-      $scope.drawerIs = function (state) {
-        return $ionDrawerVerticalDelegate.getState() == state;
-      }
-
     });
-
-    //   });
 
   });
 

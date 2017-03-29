@@ -433,7 +433,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
                     google.maps.event.addListenerOnce(map, 'idle', function () {
 
-                        initCallBack(mapData);
+                        initCallBack();
                         enableMap();
 
                     });
@@ -711,14 +711,9 @@ angular.module('phoenix.services', ['ngCordova'])
                 }
 
                 if (typeof google == "undefined" || typeof google.maps == "undefined") {
-
-                    console.warn("Google Maps SDK needs to be loaded");
-
                     disableMap();
-
                     if (ConnectivityMonitor.isOnline()) {
                         loadGoogleMaps();
-
                     }
                 }
                 else {

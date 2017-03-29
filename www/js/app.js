@@ -4,12 +4,13 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
+angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
+
       if (window.cordova && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         cordova.plugins.Keyboard.disableScroll(true);
@@ -19,6 +20,9 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
+      setTimeout(function () {
+        navigator.splashscreen.hide();
+      }, 300);
     });
   })
 
@@ -100,20 +104,20 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
         templateUrl: 'templates/masterDetails.html',
         abstract: true
       })
-         .state('masterDetail.shops', {
-            url: '/shops/:shopCode',
-            views: {
-              'shop-list': {
-                templateUrl: 'templates/shoplist.html',
-                controller: 'ShopListCtrl'
-              },
-    
-              'view-shop': {
-                templateUrl: 'templates/productlist.html',
-                controller: 'ProductlistCtrl'
-              }
-            }
-          })
+      .state('masterDetail.shops', {
+        url: '/shops/:shopCode',
+        views: {
+          'shop-list': {
+            templateUrl: 'templates/shoplist.html',
+            controller: 'ShopListCtrl'
+          },
+
+          'view-shop': {
+            templateUrl: 'templates/productlist.html',
+            controller: 'ProductlistCtrl'
+          }
+        }
+      })
     /**  .state('masterDetail.shop', {
         url: '/shops',
 
@@ -141,4 +145,4 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers','phoenix.services', 'n
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
   })
- 
+
