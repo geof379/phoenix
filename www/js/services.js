@@ -1,10 +1,9 @@
 angular.module('phoenix.services', ['ngCordova'])
-    .factory('DataService', function ($cordovaSQLite, $ionicPlatform) {
+    .factory('DataService', function ($cordovaSQLite, $ionicPlatform, $q, $http, $ionicLoading) {
         var db, dbName = "phoenix.db";
 
         function useWebSql() {
             db = window.openDatabase(dbName, "1.0", "Phoenix database", 200000);
-            console.log('useWebSql');
         }
 
         function useSqlLite() {
@@ -17,10 +16,8 @@ angular.module('phoenix.services', ['ngCordova'])
             var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(20), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, gps TEXT DEFAULT NULL)';
 
             $cordovaSQLite.execute(db, query_pv).then(function (res1) {
-                console.log('Point de vente table');
             }, onErrorQuery);
             $cordovaSQLite.execute(db, query_pe).then(function (res2) {
-                console.log('Produit table');
             }, onErrorQuery);
         }
 
@@ -145,14 +142,19 @@ angular.module('phoenix.services', ['ngCordova'])
             getProducts: function (pointvente_id, callback) {
                 $ionicPlatform.ready(function () {
                     var query = 'SELECT * FROM produit WHERE pointvente_id = ?';
+                    var data = [];
+
                     $cordovaSQLite.execute(db, query, [pointvente_id]).then(function (results) {
-                        var data = [];
                         for (i = 0, max = results.rows.length; i < max; i++) {
                             data.push(results.rows.item(i));
                         }
-                        callback(data);
                     })
+
+                    callback(data);
+
+
                 })
+
             },
 
             /*
@@ -166,6 +168,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         for (i = 0, max = results.rows.length; i < max; i++) {
                             data.push(results.rows.item(i));
                         }
+
                         cb(data);
                     })
                 })
@@ -174,6 +177,38 @@ angular.module('phoenix.services', ['ngCordova'])
             getUrlApi: function () {
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
+            synchronize: function () {
+                var self = this;
+              return  $http.get(this.getUrlApi())
+                    .success(function (data, status, headers, config) {
+
+                        //Vider la table des points de vente
+                        self.deleteAllSalepoints();
+                        //Remplir la table des points de vente
+                        angular.forEach(data.salepoints, function (object, key) {
+                            var salepoint = {};
+                            salepoint.code = object['code'];
+                            salepoint.libelle = object['libelle'];
+                            salepoint.adresse = object['adresse'];
+                            salepoint.latitude = object['latitude'];
+                            salepoint.longitude = object['longitude'];
+                            self.createSalePoint(salepoint);
+                        });
+
+                        //Vider la table des produits
+                        self.deleteAllProducts(),
+                            //Remplir la table des produits
+                            angular.forEach(data.products, function (object, key) {
+                                var product = {};
+                                product.code = object['code'];
+                                product.libelle = object['libelle'];
+                                product.pointvente_id = object['pointvente_id'];
+                                self.createProduct(product);
+                            })
+                        return data.salepoints;
+                    })
+
+            }
         }
 
     })
@@ -373,7 +408,7 @@ angular.module('phoenix.services', ['ngCordova'])
     /**
      * Google map
      */
-    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, ConnectivityMonitor, Marker) {
+    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, ConnectivityMonitor, Marker) {
 
         var markerCache = [];
         var apiKey = false;
@@ -409,10 +444,6 @@ angular.module('phoenix.services', ['ngCordova'])
             }
         }
 
-
-
-
-
         function initMap() {
 
             var options = { timeout: 10000, enableHighAccuracy: true };
@@ -430,12 +461,12 @@ angular.module('phoenix.services', ['ngCordova'])
                     };
 
                     map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
                     google.maps.event.addListenerOnce(map, 'idle', function () {
-
-                        initCallBack();
-                        enableMap();
-
+                        $q.all([initCallBack()]).then(
+                            function () {
+                                enableMap();
+                            }
+                        );
                     });
 
                     /**
@@ -719,10 +750,7 @@ angular.module('phoenix.services', ['ngCordova'])
                 else {
                     if (ConnectivityMonitor.isOnline()) {
                         initMap();
-                        enableMap();
-
                     } else {
-
                         disableMap();
                     }
                 }
@@ -792,15 +820,11 @@ angular.module('phoenix.services', ['ngCordova'])
                 }
             },
             initDiection: function () {
-                // var directionsService1 = new google.maps.DirectionsService();
-                // var directionsDisplay1 = new google.maps.DirectionsRenderer();
                 directionsService = new google.maps.DirectionsService;
                 directionsDisplay = new google.maps.DirectionsRenderer;
-               // directionsDisplay.setMap(map);
-              //  directionsDisplay.setPanel(directionsPanel);
 
             },
-            routeToShop: function (marker,directionsPanel) {
+            routeToShop: function (marker, directionsPanel) {
                 this.clearMarker();
                 var startMarkerPos = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
                 var endMarkerPos = new google.maps.LatLng(marker.lat, marker.lng);
@@ -815,7 +839,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         directionsDisplay.setDirections(response);
                         directionsDisplay.setMap(map);
                         directionsDisplay.setPanel(directionsPanel);
-                      
+
 
                     } else {
                         console.info(status);

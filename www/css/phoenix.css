@@ -87,9 +87,6 @@ height: 100%
     z-index: 1;
   }
 
-
-
-
   #list {
     position: absolute !important;
     bottom: 15px !important;
@@ -98,22 +95,17 @@ height: 100%
     height: 15% !important;
   }
 
-
-
+.slider {
+    visibility: visible! important;
+  }
 
   .slider-pager .slider-pager-page {
     display: none;
   }
 
-
-
-
   .swiper-container-horizontal .swiper-pagination {
     display: none;
   }
-
-
-
 
   .avatar {
     max-width: 30px;

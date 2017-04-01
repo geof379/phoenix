@@ -1,26 +1,25 @@
 <ion-view view-title="Dashboard">
   <ion-content>
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="synchroniser()">
+    </ion-refresher>
     <ion-list>
       <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.code}}" class="no-border ">
         <div class="card">
           <div class="item  item-icon-right">
-
-
             <span class="badge" style="top:0px !important;text-align: center">
               <a ng-href="#/app/shopMap/:{{shop.code}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
             </span> {{shop.libelle}}|| {{shop.libelle}}
           </div>
-
         </div>
       </ion-item>
 
       <div ng-show="!pointsvente.length" class="emptyMsg">
         <i class="icon ion-trash-b"></i>
-        <button  class="round-overlay-button bottom-right button button-icon ion-loop light" ng-click="synchroniser()"></button>
+        <button class="round-overlay-button bottom-right button button-icon ion-loop light" ng-click="synchroniser()"></button>
       </div>
     </ion-list>
   </ion-content>
-
+  <!--
   <script id="my-popover.html" type="text/ng-template">
     <ion-popover-view>
       <div class="item item-text-wrap">
@@ -46,5 +45,6 @@
 
       </ion-content>
     </ion-popover-view>
+    -->
   </script>
 </ion-view>
