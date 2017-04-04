@@ -1,7 +1,34 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
+    $scope.username = AuthService.username();
+ 
+    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Unauthorized!',
+        template: 'You are not allowed to access this resource.'
+      });
+    });
+  
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
+      AuthService.logout();
+      $state.go('login');
+      var alertPopup = $ionicPopup.alert({
+        title: 'Session Lost!',
+        template: 'Sorry, You have to login again.'
+      });
+    });
+  
+    $scope.setCurrentUsername = function(name) {
+      $scope.username = name;
+    };
 
+    $scope.logout = function() {
+      AuthService.logout();
+      $state.go('app.login');
+    };
+
+    /*
     $scope.loggout = function () {
       $ionicHistory.clearCache();
       $ionicHistory.clearHistory();
@@ -15,7 +42,7 @@ angular.module('phoenix.controllers', [])
     });
 
     $scope.userInfo = {};
-
+    */
 
 
 
@@ -204,7 +231,6 @@ angular.module('phoenix.controllers', [])
 
   })
 
-
   .controller('DashboardCtrl', function ($scope, $q, DataService, MultipleViewsManager, $ionicPlatform) {
     var getRandomColor = function () {
       var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
@@ -243,7 +269,8 @@ angular.module('phoenix.controllers', [])
     $scope.menus = [
       { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
-      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' }
+      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
+      { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
     ];
 
     $scope.isItemActive = function (menu) {
@@ -253,6 +280,7 @@ angular.module('phoenix.controllers', [])
       return style;
     };
   })
+
   .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
     $scope.shops = {};
     DataService.getSalePoints(function (result) {
@@ -301,6 +329,54 @@ angular.module('phoenix.controllers', [])
     })
   */
 
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService){
+      $scope.data = {};
+ 
+      $scope.login = function(data) {
+          AuthService.login(data.username, data.password).then(function(authenticated) {
+             
+              $state.go('app.shoplist', {}, {reload: true});
+              $scope.setCurrentUsername(data.username);
+          }, function(err) {
+              var alertPopup = $ionicPopup.alert({
+                title: 'Login failed!',
+                template: 'Please check your credentials!'
+              });
+          });
+      };
+      /*$scope.authenticate = function(){
+          if ($scope.user.username==undefined || $scope.user.password==undefined) {
+              console.log('Le nom utilisateur et le mot de passe sont requis.');
+          } 
+          else {
+              $http.post(DataService.getUrlApi(),
+                  {
+                      'lg': $scope.agent.username,
+                      'pwd': $scope.agent.password,
+                      'tp':1
+                  }
+              ).success(function(data, status, headers, config){
+                  console.log(data); 
+                  if (data.status) {
+                      // add nom & prenoms
+                      localStorageService.set("username",data.useragent.nom);
+                      localStorageService.set("userToken",data.useragent.prenom);
+                      localStorageService.set("typeTransport", 'DRIVING'); 
+                      // Remplir la table des unités 
+                      
+                      //$scope.hide();
+                      $state.go('app.dashboard', {}, {reload: true});  
+                    } else {
+                      //$scope.hide();
+                      //popErrorModal1(data.message);
+                    }
+              }).error(function(err, status, headers, config) {
+                  console.log(err);    
+              }); 
+          }  
+      }   */
+
+  })
 
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {

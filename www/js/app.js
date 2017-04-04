@@ -6,6 +6,11 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
 
+  .constant('AUTH_EVENTS', {
+      notAuthenticated: 'auth-not-authenticated',
+      notAuthorized: 'auth-not-authorized'
+  })
+  
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -118,29 +123,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
-    /**  .state('masterDetail.shop', {
-        url: '/shops',
-
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/shoplist.html',
-            controller: function ($scope, $state, $stateParams) {
-              $scope.params = $stateParams;
-          
-            }
-          }
-        }
-      })
-
-      .state('masterDetail.single', {
-        url: '/shops/:shopId',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/productlist.html',
-            controller: 'ProductlistCtrl'
-          }
-        }
-      })*/
+     
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
