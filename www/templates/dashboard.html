@@ -1,19 +1,21 @@
 <ion-view view-title="Dashboard">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.code}}" class="no-border ">
+      <ion-item ng-repeat="shop in pointsvente" class="no-border">
         <div class="card">
-          <div class="item  item-icon-right">
-
-
-            <span class="badge" style="top:0px !important;text-align: center">
-              <a ng-href="#/app/shopMap/:{{shop.code}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
-            </span> {{shop.libelle}}|| {{shop.libelle}}
+          <div class="item item-button-right">
+            {{shop.libelle}}
+            <div class="buttons">
+              <a class="button" href="#/masterDetail/shops/{{shop.code}}">
+                <i class="icon ion-ios-list-outline"></i>
+              </a>
+              <a class="button" href="#/app/location">
+                <i class="icon ion-ios-location"></i>
+              </a>
+            </div>
           </div>
-
         </div>
-      </ion-item>
-
+      </ion-item>     
       <div ng-show="!pointsvente.length" class="emptyMsg">
         <i class="icon ion-trash-b"></i>
         <button class="round-overlay-button bottom-right button button-icon ion-loop light" ng-click="synchroniser()"></button>

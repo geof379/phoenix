@@ -2,6 +2,23 @@ angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $http, DataService) {
 
+    // Create the login modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modal = modal;
+    });
+
+    // Open the login modal (add a login function)
+    $scope.login = function () {
+      $scope.modal.show();
+    };
+
+    // Triggered in the login modal to close it
+    $scope.closeLogin = function () {
+      $scope.modal.hide();
+    };
+
     $scope.loggout = function () {
       $ionicHistory.clearCache();
       $ionicHistory.clearHistory();
@@ -170,7 +187,7 @@ angular.module('phoenix.controllers', [])
     MultipleViewsManager.updated('view-shop', function (params) {
       DataService.getProducts(params.shopCode, function (result) {
         $scope.products = result;
-       console.log(result);
+        console.log(result);
       })
     });
 
@@ -197,7 +214,7 @@ angular.module('phoenix.controllers', [])
       });
     }
   })
-  .controller('ShopListCtrl', function ($scope, $state,$stateParams, MultipleViewsManager, DataService) {
+  .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService) {
 
 
     $scope.pointsvente = {};
@@ -207,11 +224,11 @@ angular.module('phoenix.controllers', [])
 
 
     if (MultipleViewsManager.isActive()) {
-      if($stateParams.shopCode){
-        console.log($stateParams.shopCode +"aaaa1112");
+      if ($stateParams.shopCode) {
+        console.log($stateParams.shopCode + "aaaa1112");
         $scope.selectedShopCode = $stateParams.shopCode;
       }
-        console.log($scope.selectedShopCode+"aaaa");
+      console.log($scope.selectedShopCode + "aaaa");
       MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
     }
 
@@ -224,7 +241,7 @@ angular.module('phoenix.controllers', [])
         myEl.addClass("mode-detail");
 
       } else {
-        
+
         $state.go('view-shop', { shopCode: shop.code });
       }
     };
@@ -257,7 +274,8 @@ angular.module('phoenix.controllers', [])
       { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
       { name: 'Synchronize', href: '#', action: 'synchroniser()', icon: 'ion-gear-a' },
-      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' }
+      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
+
     ];
 
     $scope.isItemActive = function (menu) {
@@ -360,11 +378,15 @@ angular.module('phoenix.controllers', [])
         return $ionDrawerVerticalDelegate.getState() == state;
       }
 
-    });
+    })
+  
+  })
 
-    //   });
+  ;
 
-  });
+
+
+
 
 
 

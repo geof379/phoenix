@@ -170,6 +170,7 @@ angular.module('phoenix.services', ['ngCordova'])
                     })
                 })
             },
+          
 
             getUrlApi: function () {
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
