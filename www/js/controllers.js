@@ -271,6 +271,7 @@ angular.module('phoenix.controllers', [])
       { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
       { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
       { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
+      { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
     ];
 
     $scope.isItemActive = function (menu) {
@@ -330,54 +331,29 @@ angular.module('phoenix.controllers', [])
   */
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService){
-      $scope.data = {};
- 
-      $scope.login = function(data) {
-          AuthService.login(data.username, data.password).then(function(authenticated) {
-             
-              $state.go('app.shoplist', {}, {reload: true});
-              $scope.setCurrentUsername(data.username);
-          }, function(err) {
-              var alertPopup = $ionicPopup.alert({
-                title: 'Login failed!',
-                template: 'Please check your credentials!'
-              });
-          });
-      };
-      /*$scope.authenticate = function(){
-          if ($scope.user.username==undefined || $scope.user.password==undefined) {
-              console.log('Le nom utilisateur et le mot de passe sont requis.');
-          } 
-          else {
-              $http.post(DataService.getUrlApi(),
-                  {
-                      'lg': $scope.agent.username,
-                      'pwd': $scope.agent.password,
-                      'tp':1
-                  }
-              ).success(function(data, status, headers, config){
-                  console.log(data); 
-                  if (data.status) {
-                      // add nom & prenoms
-                      localStorageService.set("username",data.useragent.nom);
-                      localStorageService.set("userToken",data.useragent.prenom);
-                      localStorageService.set("typeTransport", 'DRIVING'); 
-                      // Remplir la table des unités 
-                      
-                      //$scope.hide();
-                      $state.go('app.dashboard', {}, {reload: true});  
-                    } else {
-                      //$scope.hide();
-                      //popErrorModal1(data.message);
-                    }
-              }).error(function(err, status, headers, config) {
-                  console.log(err);    
-              }); 
-          }  
-      }   */
+	$scope.data = {};
+
+	$scope.login = function(data) {
+		AuthService.login(data.username, data.password).then(function(authenticated) {
+			$state.go('app.shoplist', {}, {reload: true});
+			$scope.setCurrentUsername(data.username);
+		}, function(err) {
+			var alertPopup = $ionicPopup.alert({
+				title: 'Login failed!',
+				template: 'Please check your credentials!'
+			});
+		});
+	}; 
 
   })
 
+  .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){
+	$scope.data = {};
+
+	$scope.setting = function(data) {
+		 
+	}; 
+  })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
 
