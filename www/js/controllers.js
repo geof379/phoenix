@@ -1,7 +1,7 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
-    $scope.username = AuthService.username();
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService) {
+    /*$scope.username = AuthService.username();
  
     $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
       var alertPopup = $ionicPopup.alert({
@@ -27,7 +27,7 @@ angular.module('phoenix.controllers', [])
       AuthService.logout();
       $state.go('app.login');
     };
-
+*/
     /*
     $scope.loggout = function () {
       $ionicHistory.clearCache();
@@ -334,10 +334,12 @@ angular.module('phoenix.controllers', [])
 	$scope.data = {};
 
 	$scope.login = function(data) {
-		AuthService.login(data.username, data.password).then(function(authenticated) {
+		AuthService.login(data.email, data.password)
+    .then(function(authenticated) {
 			$state.go('app.shoplist', {}, {reload: true});
-			$scope.setCurrentUsername(data.username);
+			$scope.setCurrentUsername(data.email);
 		}, function(err) {
+      console.log(err);
 			var alertPopup = $ionicPopup.alert({
 				title: 'Login failed!',
 				template: 'Please check your credentials!'

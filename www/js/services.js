@@ -213,14 +213,14 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
-    .service('AuthService', function($q, $http) {
+   /* .service('AuthService', function($q, $http) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var username = '';
         var isAuthenticated = false; 
         var authToken;
 		
 		function getUrlApiAuth() {
-			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate/';
+			return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
 		}
         
         function loadUserCredentials() {
@@ -255,41 +255,21 @@ angular.module('phoenix.services', ['ngCordova'])
         var login = function(name, pw) {
 			var url = getUrlApiAuth();
 			var _data = {
-				'username':  name, 
+				'email':  name, 
 				'password': pw 
 			};
 			var deferred = $q.defer();
 			//deferred.resolve();
-			$http({
-				method: 'POST',
-				url: url,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-				transformRequest: function(obj) {
-					var str = [];
-					for(var p in obj)
-					    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-					return str.join("&");
-					
-				},
-				data: _data
-			})
-            .then(function successCallback(response){       
+            $http.post(getUrlApiAuth(), {id: "id",email: "email",password: "password"})
+            .success(function (data) {
                 storeUserCredentials(name + '.yourServerToken'); 
 				deferred.resolve('Login success.');
-            }, function errorCallback(response) { 
-				console.log(response);
-				deferred.reject('Login Failed.');
-            });  
-			 	
-            /*return $q(function(resolve, reject) {
-				if ((name == 'admin' && pw == '1') || (name == 'user' && pw == '1')) {
-					// Make a request and receive your auth token from your server
-					storeUserCredentials(name + '.yourServerToken');
-					resolve('Login success.');
-				} else {
-					reject('Login Failed.');
-				}
-            });*/
+            })
+            .error(function(data, status) {
+                 console.error('Repos error', status, data);
+                 deferred.reject('Login Failed.');
+            })
+			 
         };
         
         var logout = function() {
@@ -313,8 +293,9 @@ angular.module('phoenix.services', ['ngCordova'])
             username: function() {return username;} 
         };
     })
-
-    .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+*/
+    /*.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+        $q.resolve(response);
         return {
             responseError: function (response) {
             $rootScope.$broadcast({
@@ -324,7 +305,7 @@ angular.module('phoenix.services', ['ngCordova'])
             return $q.reject(response);
             }
         };
-    })
+    })*/
 
     // gerer les erreurs
     .factory('ErrorService', function (ionicToast, $ionicPopup, $ionicLoading) {
@@ -964,8 +945,9 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
 
-    })
-    
+    });
+    /*
     .config(function ($httpProvider) {
         $httpProvider.interceptors.push('AuthInterceptor');
     });
+*/
