@@ -25,8 +25,10 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
+
       setTimeout(function () {
-        navigator.splashscreen.hide();
+        if(navigator.splashscreen)
+          navigator.splashscreen.hide();
       }, 300);
     });
   })

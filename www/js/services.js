@@ -213,7 +213,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
-   /* .service('AuthService', function($q, $http) {
+   .service('AuthService', function($q, $http) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var username = '';
         var isAuthenticated = false; 
@@ -293,7 +293,7 @@ angular.module('phoenix.services', ['ngCordova'])
             username: function() {return username;} 
         };
     })
-*/
+
     /*.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
         $q.resolve(response);
         return {
