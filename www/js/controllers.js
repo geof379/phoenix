@@ -141,8 +141,7 @@ angular.module('phoenix.controllers', [])
   })*/
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
     $scope.products = {};
-    $scope.currentSalepoint;
-
+    $scope.currentSalepoint; 
 
     MultipleViewsManager.updated('view-shop', function (params) {
       $q.all([
@@ -330,23 +329,17 @@ angular.module('phoenix.controllers', [])
     })
   */
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService){
-	$scope.data = {};
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){
+      $scope.data = {};
 
-	$scope.login = function(data) {
-		AuthService.login(data.email, data.password)
-    .then(function(authenticated) {
-			$state.go('app.shoplist', {}, {reload: true});
-			$scope.setCurrentUsername(data.email);
-		}, function(err) {
-      console.log(err);
-			var alertPopup = $ionicPopup.alert({
-				title: 'Login failed!',
-				template: 'Please check your credentials!'
-			});
-		});
-	}; 
-
+      $scope.login = function(data) {
+          $q.all([ AuthService.login(data.email, data.password)])
+          .then(function(res) {
+            console.log(res);
+            $state.go('app.shoplist', {}, {reload: true});
+            //$scope.setCurrentUsername(data.email);
+          })
+      }; 
   })
 
   .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){

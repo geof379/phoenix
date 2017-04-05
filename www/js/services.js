@@ -213,7 +213,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
-   .service('AuthService', function($q, $http) {
+   .factory('AuthService', function($q, $http, $ionicLoading) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var username = '';
         var isAuthenticated = false; 
@@ -252,18 +252,20 @@ angular.module('phoenix.services', ['ngCordova'])
             window.localStorage.removeItem(LOCAL_TOKEN_KEY);
         }
         
-        var login = function(name, pw) {
+        var login = function(email, password) {
 			var url = getUrlApiAuth();
-			var _data = {
-				'email':  name, 
-				'password': pw 
-			};
+			 
 			var deferred = $q.defer();
-			//deferred.resolve();
-            $http.post(getUrlApiAuth(), {id: "id",email: "email",password: "password"})
+			//deferred.resolve(); 
+            var Indata = {email:email, password: password}
+            return $http({
+                url: url,
+                method: "POST",
+                params: Indata
+            })
             .success(function (data) {
-                storeUserCredentials(name + '.yourServerToken'); 
-				deferred.resolve('Login success.');
+                //storeUserCredentials(name + '.yourServerToken'); 
+				deferred.resolve(data);
             })
             .error(function(data, status) {
                  console.error('Repos error', status, data);
@@ -271,7 +273,7 @@ angular.module('phoenix.services', ['ngCordova'])
             })
 			 
         };
-        
+        /*
         var logout = function() {
             destroyUserCredentials();
         };
@@ -284,13 +286,13 @@ angular.module('phoenix.services', ['ngCordova'])
         };
         
         loadUserCredentials();
-        
+        */
         return {
             login: login,
-            logout: logout,
-            isAuthorized: isAuthorized,
-            isAuthenticated: function() {return isAuthenticated;},
-            username: function() {return username;} 
+            //logout: logout,
+            //isAuthorized: isAuthorized,
+            //isAuthenticated: function() {return isAuthenticated;},
+            //username: function() {return username;} 
         };
     })
 
