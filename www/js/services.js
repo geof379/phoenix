@@ -109,8 +109,7 @@ angular.module('phoenix.services', ['ngCordova'])
              * Sauvegarde du statut des produits
              */
             transfertUpdate: function (produit, callback) {
-                var pointvente_id = produit.pointvente_id;
-
+                var pointvente_id = produit.pointvente_id; 
 
                 var query = 'UPDATE produit SET transfert = ? WHERE code = ?';
                 return $cordovaSQLite.execute(db, query, [produit.statut, produit.code])
@@ -177,9 +176,11 @@ angular.module('phoenix.services', ['ngCordova'])
             getUrlApi: function () {
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
+			
             synchronize: function () {
                 var self = this;
-                return $http.get(this.getUrlApi())
+
+				return  $http.get(this.getUrlApi())
                     .success(function (data, status, headers, config) {
 
                         //Vider la table des points de vente
@@ -206,11 +207,124 @@ angular.module('phoenix.services', ['ngCordova'])
                                 self.createProduct(product);
                             })
                         return data.salepoints;
-                    })
+				})
 
             }
         }
 
+    })
+
+    .service('AuthService', function($q, $http) {
+        var LOCAL_TOKEN_KEY = 'yourTokenKey';
+        var username = '';
+        var isAuthenticated = false; 
+        var authToken;
+		
+		function getUrlApiAuth() {
+			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate/';
+		}
+        
+        function loadUserCredentials() {
+            var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+            if (token) {
+                useCredentials(token);
+            }
+        }
+        
+        function storeUserCredentials(token) {
+            window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+            window.localStorage.setItem("typeTransport", 'DRIVING');
+            useCredentials(token); 
+        }
+        
+        function useCredentials(token) {
+            username = token.split('.')[0];
+            isAuthenticated = true;
+            authToken = token;  
+            // Set the token as header for your requests!
+            $http.defaults.headers.common['X-Auth-Token'] = token;
+        }
+        
+        function destroyUserCredentials() {
+            authToken = undefined;
+            username = '';
+            isAuthenticated = false;
+            $http.defaults.headers.common['X-Auth-Token'] = undefined;
+            window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+        }
+        
+        var login = function(name, pw) {
+			var url = getUrlApiAuth();
+			var _data = {
+				'username':  name, 
+				'password': pw 
+			};
+			var deferred = $q.defer();
+			//deferred.resolve();
+			$http({
+				method: 'POST',
+				url: url,
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				transformRequest: function(obj) {
+					var str = [];
+					for(var p in obj)
+					    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+					return str.join("&");
+					
+				},
+				data: _data
+			})
+            .then(function successCallback(response){       
+                storeUserCredentials(name + '.yourServerToken'); 
+				deferred.resolve('Login success.');
+            }, function errorCallback(response) { 
+				console.log(response);
+				deferred.reject('Login Failed.');
+            });  
+			 	
+            /*return $q(function(resolve, reject) {
+				if ((name == 'admin' && pw == '1') || (name == 'user' && pw == '1')) {
+					// Make a request and receive your auth token from your server
+					storeUserCredentials(name + '.yourServerToken');
+					resolve('Login success.');
+				} else {
+					reject('Login Failed.');
+				}
+            });*/
+        };
+        
+        var logout = function() {
+            destroyUserCredentials();
+        };
+        
+        var isAuthorized = function(authorizedRoles) {
+            if (!angular.isArray(authorizedRoles)) {
+            authorizedRoles = [authorizedRoles];
+            }
+            return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+        };
+        
+        loadUserCredentials();
+        
+        return {
+            login: login,
+            logout: logout,
+            isAuthorized: isAuthorized,
+            isAuthenticated: function() {return isAuthenticated;},
+            username: function() {return username;} 
+        };
+    })
+
+    .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+        return {
+            responseError: function (response) {
+            $rootScope.$broadcast({
+                401: AUTH_EVENTS.notAuthenticated,
+                403: AUTH_EVENTS.notAuthorized
+            }[response.status], response);
+            return $q.reject(response);
+            }
+        };
     })
 
     // gerer les erreurs
@@ -300,7 +414,6 @@ angular.module('phoenix.services', ['ngCordova'])
      * // Some fake testing data
     */
     .factory('ShopService', function () {
-
 
         var shops = [
             { libelle: 'Max&Cie', code: 1, latitude: 45.491403, longitude: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
@@ -436,6 +549,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
             });
         }
+
         function checkLoaded() {
             if (typeof google == "undefined" || typeof google.maps == "undefined") {
                 loadGoogleMaps();
@@ -861,4 +975,8 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
 
+    })
+    
+    .config(function ($httpProvider) {
+        $httpProvider.interceptors.push('AuthInterceptor');
     });
