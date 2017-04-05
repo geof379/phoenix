@@ -1,25 +1,28 @@
 <ion-view view-title="Dashboard">
   <ion-content>
-    <ion-refresher pulling-text="Pull to refresh..." on-refresh="synchroniser()">
-    </ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="shop in pointsvente" ng-href="#/masterDetail/shops/{{shop.code}}" class="no-border ">
+      <ion-item ng-repeat="shop in pointsvente" class="no-border">
         <div class="card">
-          <div class="item  item-icon-right">
-            <span class="badge" style="top:0px !important;text-align: center">
-              <a ng-href="#/app/shopMap/:{{shop.code}}" style="right: -20px !important;"><i class="icon myicon ion-map"></i>   </a>
-            </span> {{shop.libelle}}|| {{shop.libelle}}
+          <div class="item item-button-right">
+            {{shop.libelle}}
+            <div class="buttons">
+              <a class="button" href="#/masterDetail/shops/{{shop.code}}">
+                <i class="icon ion-ios-list-outline"></i>
+              </a>
+              <a class="button" href="#/app/location">
+                <i class="icon ion-ios-location"></i>
+              </a>
+            </div>
           </div>
         </div>
-      </ion-item>
-
+      </ion-item>     
       <div ng-show="!pointsvente.length" class="emptyMsg">
         <i class="icon ion-trash-b"></i>
         <button class="round-overlay-button bottom-right button button-icon ion-loop light" ng-click="synchroniser()"></button>
       </div>
     </ion-list>
   </ion-content>
-  <!--
+
   <script id="my-popover.html" type="text/ng-template">
     <ion-popover-view>
       <div class="item item-text-wrap">
@@ -27,7 +30,7 @@
         <p>Geoffroy Ayeboua </p>
         <p>MHD</p>
       </div>
-      <ion-content id="shop-info" cache-view="false" class="list" scroll="false">
+      <ion-content id="shop-info" class="list" scroll="false">
 
         <a class="button-full  item item-icon-left " href="#">
           <i class="calm rounded-icon icon ion-email"></i>
@@ -45,6 +48,5 @@
 
       </ion-content>
     </ion-popover-view>
-    -->
   </script>
 </ion-view>

@@ -60,6 +60,16 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
+
+       .state('app.location', {
+        url: '/location',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/location.html',
+            controller: 'MapCtrl'
+          }
+        }
+      })
 	  
       .state('app.profile', {
         url: '/profile',
