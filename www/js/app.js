@@ -6,10 +6,16 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
 
+  .constant('AUTH_EVENTS', {
+      notAuthenticated: 'auth-not-authenticated',
+      notAuthorized: 'auth-not-authorized'
+  })
+  
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
+
       if (window.cordova && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         cordova.plugins.Keyboard.disableScroll(true);
@@ -19,6 +25,9 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
+      setTimeout(function () {
+        navigator.splashscreen.hide();
+      }, 300);
     });
   })
 
@@ -41,6 +50,18 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
+	  
+	  .state('app.setting', {
+        url: '/setting',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/setting.html',
+            controller: 'SettingCtrl'
+          }
+        }
+      })	  
+
+   
 
       .state('app.profile', {
         url: '/profile',
@@ -51,7 +72,6 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
-
       .state('app.map', {
         url: '/map',
         views: {
@@ -61,18 +81,6 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
-
-      .state('app.location', {
-        url: '/location',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/location.html',
-            controller: 'MapCtrl'
-          }
-        }
-      })
-
-
       .state('app.dashboard', {
         url: '/dashboard',
         views: {
@@ -128,31 +136,8 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
-    /**  .state('masterDetail.shop', {
-        url: '/shops',
-
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/shoplist.html',
-            controller: function ($scope, $state, $stateParams) {
-              $scope.params = $stateParams;
-          
-            }
-          }
-        }
-      })
-
-      .state('masterDetail.single', {
-        url: '/shops/:shopId',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/productlist.html',
-            controller: 'ProductlistCtrl'
-          }
-        }
-      })*/
+     
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
   })
-
