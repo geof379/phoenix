@@ -220,7 +220,7 @@ angular.module('phoenix.services', ['ngCordova'])
         var authToken;
 		
 		function getUrlApiAuth() {
-			return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
+			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
 		}
         
         function loadUserCredentials() {

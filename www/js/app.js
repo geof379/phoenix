@@ -48,7 +48,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         views: {
           'menuContent': {
             templateUrl: 'templates/login.html',
-            controller: 'AppCtrl'
+            controller: 'LoginCtrl'
           }
         }
       })
