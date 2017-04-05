@@ -121,7 +121,6 @@ angular.module('phoenix.controllers', [])
       $q.all([
         DataService.getProducts(params.shopCode, function (result) {
           $scope.products = result;
-
         })
       ]).then(function () {
         console.log($scope.products);
@@ -132,7 +131,6 @@ angular.module('phoenix.controllers', [])
     $scope.updatePrice = function (produit) {
       $scope.produit = produit;
       if ($scope.produit.prix > 0) {
-
         var collectData = {};
         collectData.code = $scope.produit.code;
         collectData.prix = $scope.produit.prix;
@@ -170,7 +168,6 @@ angular.module('phoenix.controllers', [])
       $scope.pointsvente = result;
     });
 
-
     if (MultipleViewsManager.isActive()) {
       if ($stateParams.shopCode) {
         $scope.selectedShopCode = $stateParams.shopCode;
@@ -200,7 +197,6 @@ angular.module('phoenix.controllers', [])
         myEl.addClass("mode-master");
       }
     };
-
 
   })
 
@@ -322,8 +318,21 @@ angular.module('phoenix.controllers', [])
     ]).then(function () {
       GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
         GoogleMaps.initDiection();
-
+        GoogleMaps.getUserPosition().then(
+          function (position) {
+            var oldSearchList = $scope.searchlists;
+            var currentPoint = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            angular.forEach(oldSearchList, function (object, key) {
+              var shopMarker = Marker.getMarker(object);
+              
+              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= 10) {
+                $scope.searchlists.push(object);
+              }
+            })
+          }
+        );
         $ionicSlideBoxDelegate.update();
+      
         routeTo($scope.searchlists[0]);
         // GoogleMaps.loadMapDataMarkers($scope.searchlists);
         //===============================================slide=============================================

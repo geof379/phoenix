@@ -179,7 +179,7 @@ angular.module('phoenix.services', ['ngCordova'])
             },
             synchronize: function () {
                 var self = this;
-              return  $http.get(this.getUrlApi())
+                return $http.get(this.getUrlApi())
                     .success(function (data, status, headers, config) {
 
                         //Vider la table des points de vente
@@ -298,7 +298,8 @@ angular.module('phoenix.services', ['ngCordova'])
     /**  
      * 
      * // Some fake testing data
-    */ .factory('ShopService', function () {
+    */
+    .factory('ShopService', function () {
 
 
         var shops = [
@@ -446,9 +447,9 @@ angular.module('phoenix.services', ['ngCordova'])
 
         function initMap() {
 
-            var options = { timeout: 10000, enableHighAccuracy: true };
+            var self = this;
 
-            $cordovaGeolocation.getCurrentPosition(options)
+            userPosition()
                 .then(function (position) {
                     currentPosition = position;
                     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -476,7 +477,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         initCallBack(mapData);
                         enableMap();
                     });
-*/
+                    */
 
 
                 }, function (error) {
@@ -691,31 +692,7 @@ angular.module('phoenix.services', ['ngCordova'])
             return getDistanceBetweenPoints(center, bounds.northeast, 'miles');
         }
 
-        function getDistanceBetweenPoints(pos1, pos2, units) {
 
-            var earthRadius = {
-                miles: 3958.8,
-                km: 6371
-            };
-
-            var R = earthRadius[units || 'miles'];
-            var lat1 = pos1.lat;
-            var lon1 = pos1.lng;
-            var lat2 = pos2.lat;
-            var lon2 = pos2.lng;
-
-            var dLat = toRad((lat2 - lat1));
-            var dLon = toRad((lon2 - lon1));
-            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                Math.sin(dLon / 2) *
-                Math.sin(dLon / 2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            var d = R * c;
-
-            return d;
-
-        }
 
         function toRad(x) {
             return x * Math.PI / 180;
@@ -732,9 +709,17 @@ angular.module('phoenix.services', ['ngCordova'])
             });
 
         }
+        function userPosition() {
+            var options = { timeout: 10000, enableHighAccuracy: true };
+            return $cordovaGeolocation.getCurrentPosition(options);
+        }
+
 
         return {
 
+            getUserPosition: function (callback) {
+                return userPosition();
+            },
             init: function (key, callback) {
                 initCallBack = callback;
                 if (typeof key != "undefined") {
@@ -846,6 +831,31 @@ angular.module('phoenix.services', ['ngCordova'])
                     }
                 });
 
+
+            },
+            getDistanceBetweenPoints: function (position, marker, units) {
+
+                var earthRadius = {
+                    miles: 3958.8,
+                    km: 6371
+                };
+
+                var R = earthRadius[units || 'km'];
+                var lat1 = position.coords.latitude;
+                var lon1 = position.coords.longitude;
+                var lat2 = marker.lat;
+                var lon2 = marker.lng;
+
+                var dLat = toRad((lat2 - lat1));
+                var dLon = toRad((lon2 - lon1));
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                    Math.sin(dLon / 2) *
+                    Math.sin(dLon / 2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = R * c;
+                
+                return d;
 
             }
         }
