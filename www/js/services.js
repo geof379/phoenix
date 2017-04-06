@@ -267,9 +267,8 @@ angular.module('phoenix.services', ['ngCordova'])
                 //storeUserCredentials(name + '.yourServerToken'); 
 				deferred.resolve(data);
             })
-            .error(function(data, status) {
-                 console.error('Repos error', status, data);
-                 deferred.reject('Login Failed.');
+            .error(function(data, status) { 
+                 deferred.reject(data);
             })
 			 
         };

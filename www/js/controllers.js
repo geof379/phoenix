@@ -1,6 +1,17 @@
 angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService) {
+    $scope.settingsList = [
+        { text: "Wireless", checked: true },
+        { text: "GPS", checked: false },
+        { text: "Bluetooth", checked: false }
+    ];
+    $scope.pushNotificationChange = function() {
+    console.log('Push Notification Change', $scope.pushNotification.checked);
+  };
+  
+  $scope.pushNotification = { checked: true };
+  $scope.emailNotification = 'Subscribed';
     /*$scope.username = AuthService.username();
  
     $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
@@ -330,28 +341,30 @@ angular.module('phoenix.controllers', [])
   */
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){
+      $scope.data = {
+        email: '',
+        password : ''
+      };
       $scope.notificationMessage = null;
       $scope.loginErrors = false;
-      $scope.login = function(data) {
-          if (data.email === null || data.password === null) {
-              $scope.notificationMessage = "Please insert credentials";
-          } 
-          else {
-              $q.all([ AuthService.login(data.email, data.password)])
-              .then(function(response) {
-                  if(response[0].data.error === false){
-                      $scope.setCurrentUsername(data.email);
-                      $state.go('app.shoplist', {}, {reload: true});
-                  }
-                  else{
-                      $scope.notificationMessage = response[0].data.message;
-                      $scope.loginErrors = true;
-                  }
-                  console.log(response[0].data);                  
-              })
-          }
+      $scope.login = function(data) { 
+          $q.all([ AuthService.login(data.email, data.password)])
+          .then(function(response) {
+              if(response[0].data.error === false){
+                  $scope.setCurrentUsername(data.email);
+                  $state.go('app.shoplist', {}, {reload: true});
+              }
+              else{
+                  $scope.notificationMessage = response[0].data.message;
+                  $scope.loginErrors = true;
+              }                  
+          })
+          .catch(function(response){
+              $scope.notificationMessage = response.data.message;
+              $scope.loginErrors = true; 
+          });
+      }
           
-      }; 
   })
 
   .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){

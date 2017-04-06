@@ -1,15 +1,14 @@
 <ion-view view-title="Login"> 
-    <ion-content >
-        <div id="loginForm">
+    <ion-content padding="true" scroll="false">
+        <div id="loginForm" >
             <div class="appLogo row row-top">
                 <img src="img/phoenix-logo.png">
             </div>
-            <div class="row row-center" ng-controller="LoginCtrl"> 
-                <!-- <div ng-hide="loginErrors" class="row">{{notificationMessage}}ghhj</div>-->
-
+            <div class="row row-center" ng-controller="LoginCtrl">  
                 <div class="loginInput list col">
+                    <div ng-show="loginErrors" class="form-error">{{notificationMessage}}</div>
                     <label class="item item-input">
-                        <input required type="text" placeholder="Username" ng-model="data.email">
+                        <input required="required" type="text" placeholder="Username" ng-model="data.email">
                     </label>
                     <label class="item item-input"> 
                         <input required type="password" placeholder="Password" ng-model="data.password">

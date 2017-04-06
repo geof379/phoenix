@@ -1,29 +1,12 @@
-<ion-view view-title="Profile">
-  <ion-content>
-    <div align="center" class="pageProfile">
-
-      <div class=" profile item">
-        <div class="row"><img src="img/user_male.png"></div>
-        <div class="row">
-          <h2>Settings </h2>
-        </div> 
-      </div>
-      <div class=" loginInput list col" >
-
-        <div class="list" style="margin:auto; margin-top: 10px">
-          <label class="item item-input">
-          <input type="text" placeholder="Type transport" ng-model="loginData.username">
-        </label>
-	  <label class="item item-input">
-          <input type="password" placeholder="Other" ng-model="loginData.password">
-        </label>
-          <label class="item-input item no-border no-margin">
-          <button class="button button-positive center" style="margin: auto; margin-top: 60px; width: 40%"  type="submit">OK</button>
-        </label>
+<ion-view view-title="Settings" ng-controller="AppCtrl">
+    <ion-content>
+       <div class="list">
+            <div class="item item-divider">Settings</div>
+            <ion-toggle ng-repeat="item in settingsList"
+                        ng-model="item.checked" 
+                        ng-checked="item.checked">
+              {{ item.text }}
+            </ion-toggle>
         </div>
-
-      </div>
-
-    </div>
-  </ion-content>
+    </ion-content>
 </ion-view>
