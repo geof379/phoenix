@@ -265,35 +265,35 @@ angular.module('phoenix.controllers', [])
   })
   .controller('LeftMenuCtrl', function ($scope, $location) {
 
-    $scope.menus = [
-      { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
-      { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
-      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
-      { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
-      { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
-    ];
+      $scope.menus = [
+        { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
+        { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
+        { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
+        { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
+        { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
+      ];
 
-    $scope.isItemActive = function (menu) {
-      var currentRoute = $location.path().substring(1) || '#/app/map';
-      var active = menu === currentRoute ? 'active' : '';
-      var style = active + ' item icon-left ' + menu.icon;
-      return style;
-    };
+      $scope.isItemActive = function (menu) {
+        var currentRoute = $location.path().substring(1) || '#/app/map';
+        var active = menu === currentRoute ? 'active' : '';
+        var style = active + ' item icon-left ' + menu.icon;
+        return style;
+      };
   })
 
   .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
-    $scope.shops = {};
-    DataService.getSalePoints(function (result) {
-      $scope.shops = result;
-      //  $scope.shops = ShopService.all();
+      $scope.shops = {};
+      DataService.getSalePoints(function (result) {
+          $scope.shops = result;
+          //  $scope.shops = ShopService.all();
 
-      $scope.menus = [];
-      for (i = 0; i < $scope.shops.length; i++) {
-        $scope.menus.push({
-          name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
-        })
-      }
-    });
+          $scope.menus = [];
+          for (i = 0; i < $scope.shops.length; i++) {
+            $scope.menus.push({
+              name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
+            })
+          }
+      });
   })
   /**
     .controller('PopOverCtrl', function ($scope, $ionicPopover) {
@@ -330,15 +330,27 @@ angular.module('phoenix.controllers', [])
   */
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){
-      $scope.data = {};
-
+      $scope.notificationMessage = null;
+      $scope.loginErrors = false;
       $scope.login = function(data) {
-          $q.all([ AuthService.login(data.email, data.password)])
-          .then(function(res) {
-            console.log(res);
-            $state.go('app.shoplist', {}, {reload: true});
-            //$scope.setCurrentUsername(data.email);
-          })
+          if (data.email === null || data.password === null) {
+              $scope.notificationMessage = "Please insert credentials";
+          } 
+          else {
+              $q.all([ AuthService.login(data.email, data.password)])
+              .then(function(response) {
+                  if(response[0].data.error === false){
+                      $scope.setCurrentUsername(data.email);
+                      $state.go('app.shoplist', {}, {reload: true});
+                  }
+                  else{
+                      $scope.notificationMessage = response[0].data.message;
+                      $scope.loginErrors = true;
+                  }
+                  console.log(response[0].data);                  
+              })
+          }
+          
       }; 
   })
 

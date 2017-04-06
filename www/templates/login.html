@@ -5,12 +5,14 @@
                 <img src="img/phoenix-logo.png">
             </div>
             <div class="row row-center" ng-controller="LoginCtrl"> 
+                <!-- <div ng-hide="loginErrors" class="row">{{notificationMessage}}ghhj</div>-->
+
                 <div class="loginInput list col">
                     <label class="item item-input">
-                        <input type="text" placeholder="Username" ng-model="data.email">
+                        <input required type="text" placeholder="Username" ng-model="data.email">
                     </label>
                     <label class="item item-input"> 
-                        <input type="password" placeholder="Password" ng-model="data.password">
+                        <input required type="password" placeholder="Password" ng-model="data.password">
                     </label>
                     <label class="item item-input" style="text-align: center">
                         <button ng-click="login(data)" class="button button-positive center icon-left ion-unlocked" style="margin: auto; margin-top: 60px; width: 40%" >Log in</button>
