@@ -350,6 +350,7 @@ angular.module('phoenix.controllers', [])
       $scope.login = function(data) { 
           $q.all([ AuthService.login(data.email, data.password)])
           .then(function(response) {
+            console.log(response);
               if(response[0].data.error === false){
                   $scope.setCurrentUsername(data.email);
                   $state.go('app.shoplist', {}, {reload: true});
