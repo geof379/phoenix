@@ -215,6 +215,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
    .factory('AuthService', function($q, $http, $ionicLoading) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
+        var LOCAL_USERDATA = 'userdata'; 
         var username = '';
         var isAuthenticated = false; 
         var authToken;
@@ -224,24 +225,24 @@ angular.module('phoenix.services', ['ngCordova'])
 		}
         
         function loadUserCredentials() {
-            var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-            if (token) {
-                useCredentials(token);
+            var user = window.localStorage.getItem(LOCAL_USERDATA);
+            if (user) {
+                useCredentials(user);
             }
         }
         
-        function storeUserCredentials(token) {
-            window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-            window.localStorage.setItem("typeTransport", 'DRIVING');
-            useCredentials(token); 
+        function storeUserCredentials(user) {
+            window.localStorage.setItem(LOCAL_TOKEN_KEY, user.apiKey);
+            window.localStorage.setItem(LOCAL_USERDATA, JSON.stringify(user));
+            useCredentials(user); 
         }
         
-        function useCredentials(token) {
-            username = token.split('.')[0];
+        function useCredentials(user) {
+            username = user.name;
             isAuthenticated = true;
             authToken = token;  
             // Set the token as header for your requests!
-            $http.defaults.headers.common['X-Auth-Token'] = token;
+            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey;
         }
         
         function destroyUserCredentials() {
@@ -250,21 +251,28 @@ angular.module('phoenix.services', ['ngCordova'])
             isAuthenticated = false;
             $http.defaults.headers.common['X-Auth-Token'] = undefined;
             window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+            window.localStorage.removeItem(LOCAL_USERDATA);
         }
         
         var login = function(email, password) {
-			var url = getUrlApiAuth();
-			 
+			var url = getUrlApiAuth(); 
 			var deferred = $q.defer();
-			//deferred.resolve(); 
-            var Indata = {email:email, password: password}
+            var Indata = {'email':email, 'password': password};
             return $http({
                 url: url,
                 method: "POST",
-                params: Indata
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				transformRequest: function(obj) {
+					var str = [];
+					for(var p in obj)
+					    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+					return str.join("&");
+				},
+                data: Indata
             })
-            .success(function (data) {
-                //storeUserCredentials(name + '.yourServerToken'); 
+            .success(function (data) { 
+                if(data.error === false)
+                    storeUserCredentials(data); 
 				deferred.resolve(data);
             })
             .error(function(data, status) { 

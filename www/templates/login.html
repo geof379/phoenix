@@ -1,23 +1,25 @@
 <ion-view view-title="Login"> 
     <ion-content padding="true" >
-        <div id="loginForm" >
-            <div class="appLogo row row-top">
-                <img src="img/phoenix-logo.png">
+        <form type="POST">
+            <div id="loginForm" >
+                <div class="appLogo row row-top">
+                    <img src="img/phoenix-logo.png">
+                </div>
+                <div class="row row-center" ng-controller="LoginCtrl">  
+                    <div class="loginInput list col">
+                        <div ng-show="loginErrors" class="form-error">{{notificationMessage}}</div>
+                        <label class="item item-input">
+                            <input required="required" type="text" placeholder="Username" ng-model="data.email">
+                        </label>
+                        <label class="item item-input"> 
+                            <input required="required" type="password" placeholder="Password" ng-model="data.password">
+                        </label>
+                        <label class="item item-input" style="text-align: center">
+                            <button ng-click="login(data)" class="button button-positive center icon-left ion-unlocked" style="margin: auto; margin-top: 60px; width: 40%" >Log in</button>
+                        </label> 
+                    </div> 
+                </div>
             </div>
-            <div class="row row-center" ng-controller="LoginCtrl">  
-                <div class="loginInput list col">
-                    <div ng-show="loginErrors" class="form-error">{{notificationMessage}}</div>
-                    <label class="item item-input">
-                        <input required="required" type="text" placeholder="Username" ng-model="data.email">
-                    </label>
-                    <label class="item item-input"> 
-                        <input required type="password" placeholder="Password" ng-model="data.password">
-                    </label>
-                    <label class="item item-input" style="text-align: center">
-                        <button ng-click="login(data)" class="button button-positive center icon-left ion-unlocked" style="margin: auto; margin-top: 60px; width: 40%" >Log in</button>
-                    </label> 
-                </div> 
-            </div>
-        </div>
+        </form>
     </ion-content>
 </ion-view>

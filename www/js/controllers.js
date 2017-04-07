@@ -340,19 +340,17 @@ angular.module('phoenix.controllers', [])
     })
   */
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){
-      $scope.data = {
-        email: '',
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){     
+      $scope.data = { 
         password : ''
-      };
+      }; 
       $scope.notificationMessage = null;
       $scope.loginErrors = false;
       $scope.login = function(data) { 
           $q.all([ AuthService.login(data.email, data.password)])
-          .then(function(response) {
-            console.log(response);
+          .then(function(response) { 
               if(response[0].data.error === false){
-                  $scope.setCurrentUsername(data.email);
+                  //$scope.setCurrentUsername(data.email);
                   $state.go('app.shoplist', {}, {reload: true});
               }
               else{
@@ -364,16 +362,15 @@ angular.module('phoenix.controllers', [])
               $scope.notificationMessage = response.data.message;
               $scope.loginErrors = true; 
           });
-      }
-          
+      }          
   })
 
   .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){
-	$scope.data = {};
+      $scope.data = {};
 
-	$scope.setting = function(data) {
-		 
-	}; 
+      $scope.setting = function(data) {
+        
+      }; 
   })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
