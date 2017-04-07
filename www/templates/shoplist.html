@@ -1,20 +1,32 @@
 <ion-view view-title="List">
 
-    <ion-content>
+  <ion-content>
 
-      <ion-list>
-        <ion-item ng-repeat="shop in pointsvente" 
-        class="item  item-icon-right"
-				ng-click="changeShop(shop)">
-          {{shop.libelle}}
-          <i class="icon ion-ios-arrow-forward"></i>
-  
+    <ion-list>
+      <ion-item ng-repeat="shop in pointsvente" 
+       ng-click="changeShop(shop)"class="no-border">
+       
+        <div class="card">
+          <div class="item item-button-right">
+            {{shop.libelle}}
+            <div class="buttons">
+              <a class="button" href="#/masterDetail/shops/{{shop.code}}">
+                <i class="icon ion-ios-list-outline"></i>
+              </a>
+              <a class="button" href="#/app/location">
+                <i class="icon ion-ios-location"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+
         <ion-option-button class="button-light "> <i class="icon ion-location icon-positive"></i></ion-option-button>
         <ion-option-button class="button-light "> <i class="icon ion-ios-reload  icon-balanced"></i></ion-option-button>
-        </ion-item>
-      </ion-list>
-     
-    </ion-content>
+      </ion-item>
+    </ion-list>
 
-  	<multiple-views-support width="35%" />
+  </ion-content>
+
+  <multiple-views-support width="35%" />
 </ion-view>

@@ -36,7 +36,7 @@
         </div>
       </div>
       <ul id="menu" class="list">
-        <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}">
+        <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}" ng-click="{{menu.action}}">
              {{menu.name}}
             </a>
        
