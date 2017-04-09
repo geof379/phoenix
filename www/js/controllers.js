@@ -2,15 +2,15 @@ angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
     $scope.username = AuthService.username();
- 
-    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
+
+    $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
       var alertPopup = $ionicPopup.alert({
         title: 'Unauthorized!',
         template: 'You are not allowed to access this resource.'
       });
     });
-  
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
+
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event) {
       AuthService.logout();
       $state.go('login');
       var alertPopup = $ionicPopup.alert({
@@ -18,12 +18,12 @@ angular.module('phoenix.controllers', [])
         template: 'Sorry, You have to login again.'
       });
     });
-  
-    $scope.setCurrentUsername = function(name) {
+
+    $scope.setCurrentUsername = function (name) {
       $scope.username = name;
     };
 
-    $scope.logout = function() {
+    $scope.logout = function () {
       AuthService.logout();
       $state.go('app.login');
     };
@@ -34,11 +34,13 @@ angular.module('phoenix.controllers', [])
       $ionicHistory.clearHistory();
       $state.go('login');
     };
+
     $scope.$on('loggout-bye', function () {
       $ionicHistory.clearCache();
       $ionicHistory.clearHistory();
       $state.go('login');
     });
+
     $scope.userInfo = {};
     */
 
@@ -113,6 +115,7 @@ angular.module('phoenix.controllers', [])
     DataService.getProducts($scope.currentSalepoint, function (result) {
       $scope.products = result;
     });
+
     $scope.updatePrice = function (produit) {
       $scope.produit = produit;
       if ($scope.produit.prix > 0) {
@@ -125,9 +128,11 @@ angular.module('phoenix.controllers', [])
         })
       }
     }
+
     $scope.enableAction = function () {
       $ionicLoading.hide();
     }
+
     $scope.disableAction = function (message) {
       $ionicLoading.show({
         template: message
@@ -325,29 +330,29 @@ angular.module('phoenix.controllers', [])
     })
   */
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService){
-	$scope.data = {};
+  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, AuthService) {
+    $scope.data = {};
 
-	$scope.login = function(data) {
-		AuthService.login(data.username, data.password).then(function(authenticated) {
-			$state.go('app.shoplist', {}, {reload: true});
-			$scope.setCurrentUsername(data.username);
-		}, function(err) {
-			var alertPopup = $ionicPopup.alert({
-				title: 'Login failed!',
-				template: 'Please check your credentials!'
-			});
-		});
-	}; 
+    $scope.login = function (data) {
+      AuthService.login(data.username, data.password).then(function (authenticated) {
+        $state.go('app.shoplist', {}, { reload: true });
+        $scope.setCurrentUsername(data.username);
+      }, function (err) {
+        var alertPopup = $ionicPopup.alert({
+          title: 'Login failed!',
+          template: 'Please check your credentials!'
+        });
+      });
+    };
 
   })
 
-  .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){
-	$scope.data = {};
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService) {
+    $scope.data = {};
 
-	$scope.setting = function(data) {
-		 
-	}; 
+    $scope.setting = function (data) {
+
+    };
   })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
@@ -389,4 +394,35 @@ angular.module('phoenix.controllers', [])
     });
 
 
-  });
+  })
+
+  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker) {
+    console.log($stateParams.shop);
+    $scope.shop = JSON.parse($stateParams.shop);
+    
+    var routeTo = function (data) {
+      $scope.currentObject = data;
+      GoogleMaps.addMarker(Marker.getMarker($scope.shop));
+      GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
+    }
+
+ 
+      GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
+        GoogleMaps.initDiection();
+
+        $ionicSlideBoxDelegate.update();
+        routeTo($scope.shop);
+      
+
+      });
+
+    });
+
+
+  
+
+;
+
+
+
+

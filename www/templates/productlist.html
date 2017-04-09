@@ -5,31 +5,18 @@
 
     <div class="list">
       <label class="item item-input">
-    <i class="icon ion-search placeholder-icon"></i>
-    <input type="text" placeholder="Search">
-  </label>
-
-      <div class="item item-divider">
-
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="text" placeholder="Search">
+      </label>
+      <div class="item item-divider"></div>
+        <label class="item  item-input  icon-left" ng-repeat="product in products">
+          <span class="input-label">{{product.libelle}}</span>
+          <input type="number"  style="text-align:right;"  ng-model="product.prix">
+        </label>
       </div>
-      <label class="item  item-input  icon-left" ng-repeat="product in products">
-       
-    <span class="input-label">{{product.libelle}}</span>
-    <input type="number"  style="text-align:right;"  ng-bind="{{product.prix}}">
-   
-  </label>
 
-
-
-
-
-    </div>
-
-    <div ng-show="!products.length" class="emptyMsg"><i class="icon ion-trash-b"></i>
-     
-    </div>
-
-    <button ng-show="products.length" class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
+    <div ng-show="!products.length" class="emptyMsg"><i class="icon ion-trash-b"></i> </div>
+    <button ng-show="products.length" ng-click="updateProducts()" class="round-overlay-button bottom-right button button-icon ion-checkmark-round light"></button>
 
   </ion-content>
   <multiple-views-support width="65%" />

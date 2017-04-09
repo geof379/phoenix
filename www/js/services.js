@@ -736,6 +736,8 @@ angular.module('phoenix.services', ['ngCordova'])
                 map: map,
                 animation: google.maps.Animation.DROP,
                 position: markerPos
+                
+                
             });
 
             markerCache.push(marker);

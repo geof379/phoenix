@@ -4,7 +4,7 @@
 
       <ion-list>
         <ion-item ng-repeat="shop in pointsvente" 
-        ng-class="{ 'active': selectedShopCode === shop.code}"
+        class="item  item-icon-right"
 				ng-click="changeShop(shop)">
           {{shop.libelle}}
           <i class="icon ion-ios-arrow-forward"></i>

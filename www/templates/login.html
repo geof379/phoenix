@@ -1,24 +1,22 @@
-<ion-view view-title="Login">
-  <ion-content >
-    <div id="loginForm">
-      <div class="appLogo row row-top">
-        <img src="img/phoenix-logo.png">
-      </div>
-      <div class="row row-center">
-
-        <div class="loginInput list col">
-          <label class="item item-input">
-          <input type="text" placeholder="Username" ng-model="loginData.username">
-        </label>
-          <label class="item item-input">
-          
-          <input type="password" placeholder="Password" ng-model="loginData.password">
-        </label>
-          <label class="item item-input" style="text-align: center">
-          <button class="button button-positive center" style="margin: auto; margin-top: 60px; width: 40%" type="submit">Log in</button>
-        </label>
+<ion-view view-title="Login"> 
+    <ion-content >
+        <div id="loginForm">
+            <div class="appLogo row row-top">
+                <img src="img/phoenix-logo.png">
+            </div>
+            <div class="row row-center" ng-controller="LoginCtrl"> 
+                <div class="loginInput list col">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Username" ng-model="data.username">
+                    </label>
+                    <label class="item item-input"> 
+                        <input type="password" placeholder="Password" ng-model="data.password">
+                    </label>
+                    <label class="item item-input" style="text-align: center">
+                        <button ng-click="login(data)" class="button button-positive center icon-left ion-unlocked" style="margin: auto; margin-top: 60px; width: 40%" >Log in</button>
+                    </label> 
+                </div> 
+            </div>
         </div>
-      </div>
-    </div>
-  </ion-content>
+    </ion-content>
 </ion-view>
