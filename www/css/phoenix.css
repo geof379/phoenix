@@ -286,8 +286,9 @@ Login
   .form-error {
     margin: 5px 0;
     padding: 2px 0 2px 16px;
-    color: red;
-    border-bottom: 2px solid red;
+    color:#a94442;
+    border-bottom: 1px solid #ebccd1;
+    background-color: #f2dede;
     text-align: center;
   }
  

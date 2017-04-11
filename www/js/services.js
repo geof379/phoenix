@@ -216,6 +216,7 @@ angular.module('phoenix.services', ['ngCordova'])
    .factory('AuthService', function($q, $http, $ionicLoading) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var LOCAL_USERDATA = 'userdata'; 
+        var CONNECTED = 'is_connected'; 
         var username = '';
         var isAuthenticated = false; 
         var authToken;
@@ -224,23 +225,25 @@ angular.module('phoenix.services', ['ngCordova'])
 			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
 		}
         
-        function loadUserCredentials() {
+        var loadUserCredentials = function loadUserCredentials() {
             var user = window.localStorage.getItem(LOCAL_USERDATA);
             if (user) {
                 useCredentials(user);
             }
+            return user;
         }
         
         function storeUserCredentials(user) {
             window.localStorage.setItem(LOCAL_TOKEN_KEY, user.apiKey);
             window.localStorage.setItem(LOCAL_USERDATA, JSON.stringify(user));
+            window.localStorage.setItem(CONNECTED, true);             
             useCredentials(user); 
         }
         
         function useCredentials(user) {
             username = user.name;
             isAuthenticated = true;
-            authToken = token;  
+            authToken = user.apiKey;  
             // Set the token as header for your requests!
             $http.defaults.headers.common['X-Auth-Token'] = user.apiKey;
         }
@@ -252,6 +255,7 @@ angular.module('phoenix.services', ['ngCordova'])
             $http.defaults.headers.common['X-Auth-Token'] = undefined;
             window.localStorage.removeItem(LOCAL_TOKEN_KEY);
             window.localStorage.removeItem(LOCAL_USERDATA);
+            window.localStorage.removeItem(CONNECTED);
         }
         
         var login = function(email, password) {
@@ -280,23 +284,25 @@ angular.module('phoenix.services', ['ngCordova'])
             })
 			 
         };
-        /*
+        
         var logout = function() {
             destroyUserCredentials();
         };
-        
+        /*
         var isAuthorized = function(authorizedRoles) {
             if (!angular.isArray(authorizedRoles)) {
             authorizedRoles = [authorizedRoles];
             }
             return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
         };
-        
-        loadUserCredentials();
         */
+        loadUserCredentials();
+        
         return {
             login: login,
-            //logout: logout,
+            loadUserCredentials: loadUserCredentials,
+            isConnected: function() { return window.localStorage.getItem(CONNECTED);},
+            logout: logout,
             //isAuthorized: isAuthorized,
             //isAuthenticated: function() {return isAuthenticated;},
             //username: function() {return username;} 

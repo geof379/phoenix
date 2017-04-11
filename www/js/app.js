@@ -64,11 +64,11 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
       })
 
        .state('app.location', {
-        url: '/location',
+        url: '/location/:shop',
         views: {
           'menuContent': {
             templateUrl: 'templates/location.html',
-            controller: 'MapCtrl'
+            controller: 'LocationCtrl'
           }
         }
       })

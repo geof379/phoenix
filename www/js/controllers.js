@@ -274,15 +274,23 @@ angular.module('phoenix.controllers', [])
     };
 
   })
-  .controller('LeftMenuCtrl', function ($scope, $location) {
+  .controller('LeftMenuCtrl', function ($scope, $location, AuthService) {
 
       $scope.menus = [
         { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
         { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
-        { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
-        { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
+        { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },        
         { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
       ];
+      if(AuthService.isConnected()){
+          $scope.menus.push({ name: 'Logout', href: '#/app/login', action: '', icon: 'ion-person' });
+      }
+      else{
+          $scope.menus.push({ name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' });
+      }
+      var user = AuthService.isConnected();
+      console.log(user);
+
 
       $scope.isItemActive = function (menu) {
         var currentRoute = $location.path().substring(1) || '#/app/map';
@@ -412,7 +420,29 @@ angular.module('phoenix.controllers', [])
     });
 
 
-  });
+  })
+  
+  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker) {
+        console.log($stateParams.shop);
+        $scope.shop = JSON.parse($stateParams.shop);
+        
+        var routeTo = function (data) {
+          $scope.currentObject = data;
+          GoogleMaps.addMarker(Marker.getMarker($scope.shop));
+          GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
+        } 
+        
+        GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
+          GoogleMaps.initDiection();
+
+          $ionicSlideBoxDelegate.update();
+          routeTo($scope.shop);
+        
+
+        });
+
+    })
+  ;
 
 
 
