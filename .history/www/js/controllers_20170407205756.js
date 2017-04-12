@@ -1,16 +1,27 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
-    $scope.username = AuthService.username();
-
-    $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService) {
+    $scope.settingsList = [
+        { text: "Wireless", checked: true },
+        { text: "GPS", checked: false },
+        { text: "Bluetooth", checked: false }
+    ];
+    $scope.pushNotificationChange = function() {
+    console.log('Push Notification Change', $scope.pushNotification.checked);
+  };
+  
+  $scope.pushNotification = { checked: true };
+  $scope.emailNotification = 'Subscribed';
+    /*$scope.username = AuthService.username();
+ 
+    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
       var alertPopup = $ionicPopup.alert({
         title: 'Unauthorized!',
         template: 'You are not allowed to access this resource.'
       });
     });
-
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event) {
+  
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
       AuthService.logout();
       $state.go('login');
       var alertPopup = $ionicPopup.alert({
@@ -18,16 +29,16 @@ angular.module('phoenix.controllers', [])
         template: 'Sorry, You have to login again.'
       });
     });
-
-    $scope.setCurrentUsername = function (name) {
+  
+    $scope.setCurrentUsername = function(name) {
       $scope.username = name;
     };
 
-    $scope.logout = function () {
+    $scope.logout = function() {
       AuthService.logout();
       $state.go('app.login');
     };
-
+*/
     /*
     $scope.loggout = function () {
       $ionicHistory.clearCache();
@@ -141,24 +152,24 @@ angular.module('phoenix.controllers', [])
   })*/
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
     $scope.products = {};
-    $scope.currentSalepoint;
-
+    $scope.currentSalepoint; 
 
     MultipleViewsManager.updated('view-shop', function (params) {
       $q.all([
         DataService.getProducts(params.shopCode, function (result) {
           $scope.products = result;
+
         })
       ]).then(function () {
         console.log($scope.products);
       })
-
     });
 
 
     $scope.updatePrice = function (produit) {
       $scope.produit = produit;
       if ($scope.produit.prix > 0) {
+
         var collectData = {};
         collectData.code = $scope.produit.code;
         collectData.prix = $scope.produit.prix;
@@ -190,54 +201,35 @@ angular.module('phoenix.controllers', [])
       });
     }
   })
-  .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q) {
+  .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService) {
     $scope.pointsvente = {};
+    DataService.getSalePoints(function (result) {
+      $scope.pointsvente = result;
+    });
 
-    $q.all([
-      DataService.getSalePoints(function (result) {
-        $scope.pointsvente = result;
-      })]).then(
-      function () {
-        if (MultipleViewsManager.isActive()) {
 
-          if ($stateParams.shopCode) {
-            if ($stateParams.shopCode !== "===y") {
-              $scope.selectedShopCode = $stateParams.shopCode;
-              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-              myEl = angular.element(document.querySelector('#list-view'));
-              myEl.removeClass("mode-master");
-              myEl.addClass("mode-detail");
-            } else {
-              $scope.selectedShopCode = $scope.pointsvente[0].code;
-              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-              myEl = angular.element(document.querySelector('#list-view'));
-              myEl.addClass("mode-master");
-              myEl.removeClass("mode-detail");
-            }
-          }
-        }
+    if (MultipleViewsManager.isActive()) {
+      if ($stateParams.shopCode) {
+        $scope.selectedShopCode = $stateParams.shopCode;
       }
-      );
-
-
+      MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+      myEl = angular.element(document.querySelector('#list-view'));
+      myEl.removeClass("mode-master");
+      myEl.addClass("mode-detail");
+    }
 
     $scope.changeShop = function (shop) {
-      if (shop !== undefined) {
-        $scope.selectedShopCode = shop.code;
-      } else {
-        $scope.selectedShopCode = $scope.pointsvente[0];
-      }
+      console.log(shop);
+      $scope.selectedShopCode = shop.code;
       if (MultipleViewsManager.isActive()) {
-        MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+        MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
         myEl = angular.element(document.querySelector('#list-view'));
         myEl.removeClass("mode-master");
         myEl.addClass("mode-detail");
       } else {
-        $state.go('view-shop', { shopCode: $scope.selectedShopCode });
-      
+        $state.go('view-shop', { shopCode: shop.code });
       }
-
-    }
+    };
 
     $scope.detailToMaster = function () {
       if (MultipleViewsManager.isActive()) {
@@ -245,6 +237,7 @@ angular.module('phoenix.controllers', [])
         myEl.addClass("mode-master");
       }
     };
+
 
   })
 
@@ -281,47 +274,37 @@ angular.module('phoenix.controllers', [])
     };
 
   })
-  .controller('LeftMenuCtrl', function ($scope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
+  .controller('LeftMenuCtrl', function ($scope, $location) {
 
+      $scope.menus = [
+        { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
+        { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
+        { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
+        { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
+        { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
+      ];
 
-    $scope.pointsvente = {};
-    DataService.getSalePoints(function (result) {
-      $scope.pointsvente = result;
-    });
-
-
-    $scope.menus = [
-      { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-      { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
-      { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
-      { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
-      { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
-      { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
-    ];
-
-
-
-    $scope.isItemActive = function (menu) {
-      var currentRoute = $location.path().substring(1) || '#/app/map';
-      var active = menu === currentRoute ? 'active' : '';
-      var style = active + ' item icon-left ' + menu.icon;
-      return style;
-    };
+      $scope.isItemActive = function (menu) {
+        var currentRoute = $location.path().substring(1) || '#/app/map';
+        var active = menu === currentRoute ? 'active' : '';
+        var style = active + ' item icon-left ' + menu.icon;
+        return style;
+      };
   })
 
   .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
-    $scope.shops = {};
-    DataService.getSalePoints(function (result) {
-      $scope.shops = result;
-      //  $scope.shops = ShopService.all();
+      $scope.shops = {};
+      DataService.getSalePoints(function (result) {
+          $scope.shops = result;
+          //  $scope.shops = ShopService.all();
 
-      $scope.menus = [];
-      for (i = 0; i < $scope.shops.length; i++) {
-        $scope.menus.push({
-          name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
-        })
-      }
-    });
+          $scope.menus = [];
+          for (i = 0; i < $scope.shops.length; i++) {
+            $scope.menus.push({
+              name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
+            })
+          }
+      });
   })
   /**
     .controller('PopOverCtrl', function ($scope, $ionicPopover) {
@@ -357,29 +340,40 @@ angular.module('phoenix.controllers', [])
     })
   */
 
-  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, AuthService) {
-    $scope.data = {};
-
-    $scope.login = function (data) {
-      AuthService.login(data.username, data.password).then(function (authenticated) {
-        $state.go('app.shoplist', {}, { reload: true });
-        $scope.setCurrentUsername(data.username);
-      }, function (err) {
-        var alertPopup = $ionicPopup.alert({
-          title: 'Login failed!',
-          template: 'Please check your credentials!'
-        });
-      });
-    };
-
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService){
+      $scope.data = {
+        email: '',
+        password : ''
+      };
+      $scope.notificationMessage = null;
+      $scope.loginErrors = false;
+      $scope.login = function(data) { 
+          $q.all([ AuthService.login(data.email, data.password)])
+          .then(function(response) {
+            console.log(response);
+              if(response[0].data.error === false){
+                  $scope.setCurrentUsername(data.email);
+                  $state.go('app.shoplist', {}, {reload: true});
+              }
+              else{
+                  $scope.notificationMessage = response[0].data.message;
+                  $scope.loginErrors = true;
+              }                  
+          })
+          .catch(function(response){
+              $scope.notificationMessage = response.data.message;
+              $scope.loginErrors = true; 
+          });
+      }
+          
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService) {
-    $scope.data = {};
+  .controller('SettingCtrl', function($scope, $state, $ionicPopup, AuthService){
+	$scope.data = {};
 
-    $scope.setting = function (data) {
-
-    };
+	$scope.setting = function(data) {
+		 
+	}; 
   })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
@@ -401,21 +395,8 @@ angular.module('phoenix.controllers', [])
     ]).then(function () {
       GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
         GoogleMaps.initDiection();
-        GoogleMaps.getUserPosition().then(
-          function (position) {
-            var oldSearchList = $scope.searchlists;
-            var currentPoint = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            angular.forEach(oldSearchList, function (object, key) {
-              var shopMarker = Marker.getMarker(object);
 
-              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= 10) {
-                if ($scope.searchlists.indexOf(object) < 0) $scope.searchlists.push(object);
-              }
-            })
-          }
-        );
         $ionicSlideBoxDelegate.update();
-
         routeTo($scope.searchlists[0]);
         // GoogleMaps.loadMapDataMarkers($scope.searchlists);
         //===============================================slide=============================================

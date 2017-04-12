@@ -3,24 +3,8 @@
     <ion-list>
       <ion-item class="no-border">
         <div class="card">
-          <div class="item item-text-wrap item-icon-right" style="border-top:#387ef5 4px solid">
-            <i class="icon ion-ios-cloud-outline">
-           
-            <span class="badge icon-badge cloudbadge badge-assertive">
-               23
-            </span>
-          </i> yeah
-          </div>
+          <div class="item item-button-right">
 
-          <div class="item item-body">
-
-            <p>
-              The header is created from a Thumbnail List item, the content is from a card-body consisting of an image and paragraph text.
-            </p>
-            <p>
-              <a href="#" class="subdued">1 Like</a>
-              <a href="#" class="subdued">5 Comments</a>
-            </p>
           </div>
         </div>
       </ion-item>
@@ -30,9 +14,9 @@
             <i class="icon ion-ios-cloud-outline">
            
             <span class="badge icon-badge cloudbadge badge-assertive">
-               54
+               {{playlist.id}}
             </span>
-          </i> yo
+          </i> {{playlist.title}}
           </div>
 
           <div class="item item-body">

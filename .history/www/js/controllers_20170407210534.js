@@ -201,7 +201,7 @@ angular.module('phoenix.controllers', [])
         if (MultipleViewsManager.isActive()) {
 
           if ($stateParams.shopCode) {
-            if ($stateParams.shopCode !== "===y") {
+            if ($stateParams.shopCode === "===y") {
               $scope.selectedShopCode = $stateParams.shopCode;
               MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
               myEl = angular.element(document.querySelector('#list-view'));
@@ -228,13 +228,13 @@ angular.module('phoenix.controllers', [])
         $scope.selectedShopCode = $scope.pointsvente[0];
       }
       if (MultipleViewsManager.isActive()) {
-        MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+        MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
         myEl = angular.element(document.querySelector('#list-view'));
         myEl.removeClass("mode-master");
         myEl.addClass("mode-detail");
       } else {
-        $state.go('view-shop', { shopCode: $scope.selectedShopCode });
-      
+        $state.go('view-shop', { shopCode: shop.code });
+        console.log("aaaaaaaaaaaaaaa");
       }
 
     }
@@ -291,9 +291,9 @@ angular.module('phoenix.controllers', [])
 
 
     $scope.menus = [
-      { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
+      { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
       { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
-      { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
+      { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
       { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
       { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
       { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }

@@ -293,7 +293,7 @@ angular.module('phoenix.controllers', [])
     $scope.menus = [
       { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
       { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
-      { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
+      { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
       { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },
       { name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' },
       { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
