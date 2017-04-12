@@ -7,13 +7,12 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
         function useSqlLite() {
-            db = $cordovaSQLite.openDB({ name: dbName, location: 1 });
-            console.log('useSqlLite');
+            db = $cordovaSQLite.openDB({ name: dbName, location: 1 }); 
         }
 
         function initDatabase() {
-            var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(20), adresse varchar(20), latitude varchar(20), longitude varchar(20), done INTEGER DEFAULT 0 )';
-            var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(20), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, gps TEXT DEFAULT NULL)';
+            var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), adresse varchar(20), latitude varchar(20), longitude varchar(20), username varchar(60), done INTEGER DEFAULT 0 )';
+            var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, username varchar(60), gps varchar(60))';
 
             $cordovaSQLite.execute(db, query_pv).then(function (res1) {
             }, onErrorQuery);
@@ -39,9 +38,8 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
             * Afficher les points de ventes
             */
-            getSalePoints: function (cb) {
-                var query = 'SELECT * FROM pointvente ORDER BY libelle';
-
+            getSalePoints: function (username, cb) {
+                var query = 'SELECT * FROM pointvente WHERE username ="'+username+'" ORDER BY libelle';
                 return $cordovaSQLite.execute(db, query)
                     .then(function (result) {
                         var data = [];
@@ -62,35 +60,32 @@ angular.module('phoenix.services', ['ngCordova'])
                 }, function (err) {
                     callback(err);
                 })
-
             },
 
             /*
              * Création de point de vente
              */
             createSalePoint: function (pointvente) {
-                var query = 'INSERT INTO pointvente (code, libelle, adresse, latitude, longitude) VALUES (?,?,?,?,?) ';
-                return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude])
+                var query = 'INSERT INTO pointvente (code, libelle, adresse, latitude, longitude, username) VALUES (?,?,?,?,?,?) ';
+                return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude, pointvente.username])
                     .then(function (res) { }, onErrorQuery);
             },
 
             /*
              * Vider la table des pointventes
              */
-            deleteAllSalepoints: function () {
-                var query = 'DELETE FROM pointvente';
+            deleteAllSalepoints: function (username) {
+                var query = 'DELETE FROM pointvente WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
-                    .then(function (res) {
-
-                    }, onErrorQuery);
+                    .then(function (res) {}, onErrorQuery);
             },
 
             /*
              * Création de point de produit
              */
             createProduct: function (produit) {
-                var query = 'INSERT INTO produit (code, libelle, pointvente_id) VALUES (?,?,?) ';
-                return $cordovaSQLite.execute(db, query, [produit.code, produit.libelle, produit.pointvente_id])
+                var query = 'INSERT INTO produit (code, libelle, pointvente_id, username) VALUES (?,?,?,?) ';
+                return $cordovaSQLite.execute(db, query, [produit.code, produit.libelle, produit.pointvente_id, produit.username])
                     .then(function (res) { }, onErrorQuery);
             },
 
@@ -127,12 +122,10 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
              * Vider la table des produits
              */
-            deleteAllProducts: function () {
-                var query = 'DELETE FROM produit';
+            deleteAllProducts: function (username) {
+                var query = 'DELETE FROM produit WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
-                    .then(function (res) {
-
-                    }, onErrorQuery);
+                    .then(function (res) { }, onErrorQuery);
             },
 
             /*
@@ -149,9 +142,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         }
                     })
 
-                    callback(data);
-
-
+                    callback(data); 
                 })
 
             },
@@ -177,13 +168,13 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 			
-            synchronize: function () {
-                var self = this;
-				return  $http.get(this.getUrlApi())
+            synchronize: function (username) {
+                var self = this; var username = 'user1@phoenix.com';
+                var url = this.getUrlApi()+'/'+username;
+				return  $http.get(url)
                     .success(function (data, status, headers, config) {
-
                         //Vider la table des points de vente
-                        self.deleteAllSalepoints();
+                        self.deleteAllSalepoints(username);
                         //Remplir la table des points de vente
                         angular.forEach(data.salepoints, function (object, key) {
                             var salepoint = {};
@@ -192,6 +183,7 @@ angular.module('phoenix.services', ['ngCordova'])
                             salepoint.adresse = object['adresse'];
                             salepoint.latitude = object['latitude'];
                             salepoint.longitude = object['longitude'];
+                            salepoint.username = object['username'];
                             self.createSalePoint(salepoint);
                         });
 
@@ -203,6 +195,7 @@ angular.module('phoenix.services', ['ngCordova'])
                                 product.code = object['code'];
                                 product.libelle = object['libelle'];
                                 product.pointvente_id = object['pointvente_id'];
+                                product.username = username;
                                 self.createProduct(product);
                             })
                         return data.salepoints;
@@ -217,7 +210,7 @@ angular.module('phoenix.services', ['ngCordova'])
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var LOCAL_USERDATA = 'userdata'; 
         var CONNECTED = 'is_connected'; 
-        var username = '';
+        var username = 'user1@phoenix.com';
         var isAuthenticated = false; 
         var authToken;
 		
