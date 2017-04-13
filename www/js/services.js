@@ -206,49 +206,46 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
-   .factory('AuthService', function($q, $http, $ionicLoading) {
-        var LOCAL_TOKEN_KEY = 'yourTokenKey';
-        var LOCAL_USERDATA = 'userdata'; 
-        var CONNECTED = 'is_connected'; 
+   .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
         var username = 'user1@phoenix.com';
-        var isAuthenticated = false; 
-        var authToken;
-		
+       
 		function getUrlApiAuth() {
 			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
 		}
         
-        var loadUserCredentials = function loadUserCredentials() {
-            var user = window.localStorage.getItem(LOCAL_USERDATA);
-            if (user) {
-                useCredentials(user);
-            }
-            return user;
+        function loadUserCredentials() {
+            var user = localStorageService.get('userdata'); 
+            return JSON.parse(user);
         }
+
+        function getCurrentUsername() {
+            var user = loadUserCredentials();
+            if(user)
+                return user.Name;
+            else
+                return null;
+        }
+
+        function getCurrentEmail() {
+            var user = loadUserCredentials();
+            if(user)
+                return user.Name;
+            else
+                return null;
+        }          
         
         function storeUserCredentials(user) {
-            window.localStorage.setItem(LOCAL_TOKEN_KEY, user.apiKey);
-            window.localStorage.setItem(LOCAL_USERDATA, JSON.stringify(user));
-            window.localStorage.setItem(CONNECTED, true);             
-            useCredentials(user); 
+            localStorageService.set('userdata', JSON.stringify(user));
+            localStorageService.set('userTokenKey', user.apiKey);  
+            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey; 
         }
         
-        function useCredentials(user) {
-            username = user.name;
-            isAuthenticated = true;
-            authToken = user.apiKey;  
-            // Set the token as header for your requests!
-            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey;
-        }
-        
-        function destroyUserCredentials() {
-            authToken = undefined;
-            username = '';
-            isAuthenticated = false;
+        function destroyUserCredentials() { 
             $http.defaults.headers.common['X-Auth-Token'] = undefined;
-            window.localStorage.removeItem(LOCAL_TOKEN_KEY);
-            window.localStorage.removeItem(LOCAL_USERDATA);
-            window.localStorage.removeItem(CONNECTED);
+            //$window.localStorage.clear();
+            localStorage.clear();
+            $ionicHistory.clearCache();
+            $ionicHistory.clearHistory();
         }
         
         var login = function(email, password) {
@@ -281,24 +278,17 @@ angular.module('phoenix.services', ['ngCordova'])
         var logout = function() {
             destroyUserCredentials();
         };
-        /*
-        var isAuthorized = function(authorizedRoles) {
-            if (!angular.isArray(authorizedRoles)) {
-            authorizedRoles = [authorizedRoles];
-            }
-            return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
-        };
-        */
+       
         loadUserCredentials();
         
         return {
             login: login,
-            loadUserCredentials: loadUserCredentials,
-            isConnected: function() { return window.localStorage.getItem(CONNECTED);},
+            loadUserCredentials: function() {return loadUserCredentials();} ,
+            getCurrentEmail: function() {return getCurrentEmail();} ,
+            getCurrentUsername: function() {return getCurrentUsername();} ,
             logout: logout,
+            getCurrentUser: function() {return loadUserCredentials();} 
             //isAuthorized: isAuthorized,
-            //isAuthenticated: function() {return isAuthenticated;},
-            //username: function() {return username;} 
         };
     })
 

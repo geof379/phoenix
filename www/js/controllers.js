@@ -1,17 +1,10 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, localStorageService) {
-    $scope.username = localStorageService.get("username");
-    console.log($scope.username);
-
-    $scope.loggout = function(){
-        console.log('fdfd');
-        $ionicHistory.clearCache();
-        $ionicHistory.clearHistory();
-        $state.go('app.login');
-    };
-
-    
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, localStorageService, AuthService) {
+    $scope.user = AuthService.getCurrentUser();
+     
+    console.log($scope.user);
+ 
     $scope.settingsList = [
         { text: "Wireless", checked: true },
         { text: "GPS", checked: false },
@@ -19,56 +12,37 @@ angular.module('phoenix.controllers', [])
     ];
     $scope.pushNotificationChange = function() {
         console.log('Push Notification Change', $scope.pushNotification.checked);
-    };
-
-     
+    }; 
     
     $scope.pushNotification = { checked: true };
     $scope.emailNotification = 'Subscribed';
     /*$scope.username = AuthService.username();
- 
-    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Unauthorized!',
-        template: 'You are not allowed to access this resource.'
-      });
-    });
-  
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
-      AuthService.logout();
-      $state.go('login');
-      var alertPopup = $ionicPopup.alert({
-        title: 'Session Lost!',
-        template: 'Sorry, You have to login again.'
-      });
-    });
-  
+   
     $scope.setCurrentUsername = function(name) {
       $scope.username = name;
     };
-
-    $scope.logout = function() {
-      AuthService.logout();
-      $state.go('app.login');
-    };
 */
-      
+
+    $scope.loggout = function(){ 
+        AuthService.logout();  
+        $state.go('app.login', {}, {reload: true}); 
+    };
 
     /*
      * Transferer des données de la base locale vers le serveur
-     */
+     */ 
     $scope.transferer = function () {
       disableAction('Processing..');
       DataService.getAllProducts(function (results) {
         var products = [];
         angular.forEach(results, function (object, key) {
-          var product = {};
-          product.code = object['code'];
-          product.prix = object['prix'];
-          product.pointvente_id = object['pointvente_id'];
-          if (object['prix'] > 0) {
-            products.push(product);
-          }
+            var product = {};
+            product.code = object['code'];
+            product.prix = object['prix'];
+            product.pointvente_id = object['pointvente_id'];
+            if (object['prix'] > 0) {
+                products.push(product);
+            }
         })
 
         //Lancer le transfert
@@ -95,25 +69,22 @@ angular.module('phoenix.controllers', [])
             })
 
           }).error(function (data, status, headers, config) {
-            //ErrorService.hideLoading();
-
+             enableAction(); 
           })
           .then(function (data, status, headers, config) {
-            enableAction();
-
+              enableAction(); 
           });
       });
     };
 
-
     var enableAction = function () {
-      $ionicLoading.hide();
+        $ionicLoading.hide();
     }
 
     var disableAction = function (message) {
-      $ionicLoading.show({
-        template: message
-      });
+        $ionicLoading.show({
+            template: message
+        });
     }
   })
 
@@ -274,26 +245,18 @@ angular.module('phoenix.controllers', [])
   .controller('LeftMenuCtrl', function ($scope, $location, AuthService) {
 
       $scope.menus = [
-        { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
-        { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },
-        { name: 'Transfer', href: '#', action: 'transferer()', icon: 'ion-android-arrow-forward' },        
-        { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' },
-        { name: 'Logout', href: '#', action: 'loggout()', icon: 'ion-log-out' }
-      ];
-      /*if(AuthService.isConnected()){
-          $scope.menus.push({ name: 'Logout', href: '#/app/login', action: '', icon: 'ion-person' });
-      }
-      else{
-          $scope.menus.push({ name: 'Login', href: '#/app/login', action: '', icon: 'ion-person' });
-      }*/
-      var user = AuthService.isConnected();
+          { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
+          { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },        
+          { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' } 
+      ]; 
       
       $scope.isItemActive = function (menu) {
-        var currentRoute = $location.path().substring(1) || '#/app/map';
-        var active = menu === currentRoute ? 'active' : '';
-        var style = active + ' item icon-left ' + menu.icon;
-        return style;
-      };
+          var currentRoute = $location.path().substring(1) || '#/app/map';
+          var active = menu === currentRoute ? 'active' : '';
+          var style = active + ' item icon-left ' + menu.icon;
+          return style;
+      }; 
+
   })
 
   .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
@@ -303,9 +266,9 @@ angular.module('phoenix.controllers', [])
           $scope.shops = result; 
           $scope.menus = [];
           for (i = 0; i < $scope.shops.length; i++) {
-            $scope.menus.push({
-              name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
-            })
+              $scope.menus.push({
+                name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
+              })
           }
       });
   })
@@ -343,7 +306,7 @@ angular.module('phoenix.controllers', [])
     })
   */
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService, localStorageService){     
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService, localStorageService){   
        
       $scope.notificationMessage = null;
       $scope.loginErrors = false;
@@ -351,7 +314,6 @@ angular.module('phoenix.controllers', [])
           $q.all([ AuthService.login(data.email, data.password)])
           .then(function(response) { 
               if(response[0].data.error === false){
-                  localStorageService.set('username', data.email);  
                   $scope.username = data.email;
                   $state.go('app.shoplist', {}, {reload: true});
               }
@@ -375,7 +337,7 @@ angular.module('phoenix.controllers', [])
   })
 
   .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
-
+    $scope.username = 'user1@phoenix.com';
     $scope.searchlists = [];
     var routeTo = function (data) {
       $scope.currentObject = data;
@@ -383,7 +345,7 @@ angular.module('phoenix.controllers', [])
       GoogleMaps.routeToShop(Marker.getMarker($scope.currentObject), document.getElementById('routes'));
     }
     $q.all([
-      DataService.getSalePoints(function (result) {
+      DataService.getSalePoints($scope.username, function (result) {
         $scope.searchlists = result;
       })
       ,
