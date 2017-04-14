@@ -7,13 +7,12 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
         function useSqlLite() {
-            db = $cordovaSQLite.openDB({ name: dbName, location: 1 });
-            console.log('useSqlLite');
+            db = $cordovaSQLite.openDB({ name: dbName, location: 1 }); 
         }
 
         function initDatabase() {
-            var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(20), adresse varchar(20), latitude varchar(20), longitude varchar(20), done INTEGER DEFAULT 0 )';
-            var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(20), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, gps TEXT DEFAULT NULL)';
+            var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), adresse varchar(20), latitude varchar(20), longitude varchar(20), username varchar(60), done INTEGER DEFAULT 0 )';
+            var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, username varchar(60), gps varchar(60))';
 
             $cordovaSQLite.execute(db, query_pv).then(function (res1) {
             }, onErrorQuery);
@@ -39,9 +38,8 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
             * Afficher les points de ventes
             */
-            getSalePoints: function (cb) {
-                var query = 'SELECT * FROM pointvente ORDER BY libelle';
-
+            getSalePoints: function (username, cb) {
+                var query = 'SELECT * FROM pointvente WHERE username ="'+username+'" ORDER BY libelle';
                 return $cordovaSQLite.execute(db, query)
                     .then(function (result) {
                         var data = [];
@@ -62,35 +60,32 @@ angular.module('phoenix.services', ['ngCordova'])
                 }, function (err) {
                     callback(err);
                 })
-
             },
 
             /*
              * Création de point de vente
              */
             createSalePoint: function (pointvente) {
-                var query = 'INSERT INTO pointvente (code, libelle, adresse, latitude, longitude) VALUES (?,?,?,?,?) ';
-                return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude])
+                var query = 'INSERT INTO pointvente (code, libelle, adresse, latitude, longitude, username) VALUES (?,?,?,?,?,?) ';
+                return $cordovaSQLite.execute(db, query, [pointvente.code, pointvente.libelle, pointvente.adresse, pointvente.latitude, pointvente.longitude, pointvente.username])
                     .then(function (res) { }, onErrorQuery);
             },
 
             /*
              * Vider la table des pointventes
              */
-            deleteAllSalepoints: function () {
-                var query = 'DELETE FROM pointvente';
+            deleteAllSalepoints: function (username) {
+                var query = 'DELETE FROM pointvente WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
-                    .then(function (res) {
-
-                    }, onErrorQuery);
+                    .then(function (res) {}, onErrorQuery);
             },
 
             /*
              * Création de point de produit
              */
             createProduct: function (produit) {
-                var query = 'INSERT INTO produit (code, libelle, pointvente_id) VALUES (?,?,?) ';
-                return $cordovaSQLite.execute(db, query, [produit.code, produit.libelle, produit.pointvente_id])
+                var query = 'INSERT INTO produit (code, libelle, pointvente_id, username) VALUES (?,?,?,?) ';
+                return $cordovaSQLite.execute(db, query, [produit.code, produit.libelle, produit.pointvente_id, produit.username])
                     .then(function (res) { }, onErrorQuery);
             },
 
@@ -127,12 +122,10 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
              * Vider la table des produits
              */
-            deleteAllProducts: function () {
-                var query = 'DELETE FROM produit';
+            deleteAllProducts: function (username) {
+                var query = 'DELETE FROM produit WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
-                    .then(function (res) {
-
-                    }, onErrorQuery);
+                    .then(function (res) { }, onErrorQuery);
             },
 
             /*
@@ -149,9 +142,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         }
                     })
 
-                    callback(data);
-
-
+                    callback(data); 
                 })
 
             },
@@ -177,14 +168,20 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 			
+<<<<<<< HEAD
             synchronize: function () {
                 var self = this;
 
 				return  $http.get(this.getUrlApi())
+=======
+            synchronize: function (username) {
+                var self = this; var username = 'user1@phoenix.com';
+                var url = this.getUrlApi()+'/'+username;
+				return  $http.get(url)
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
                     .success(function (data, status, headers, config) {
-
                         //Vider la table des points de vente
-                        self.deleteAllSalepoints();
+                        self.deleteAllSalepoints(username);
                         //Remplir la table des points de vente
                         angular.forEach(data.salepoints, function (object, key) {
                             var salepoint = {};
@@ -193,6 +190,7 @@ angular.module('phoenix.services', ['ngCordova'])
                             salepoint.adresse = object['adresse'];
                             salepoint.latitude = object['latitude'];
                             salepoint.longitude = object['longitude'];
+                            salepoint.username = object['username'];
                             self.createSalePoint(salepoint);
                         });
 
@@ -204,6 +202,7 @@ angular.module('phoenix.services', ['ngCordova'])
                                 product.code = object['code'];
                                 product.libelle = object['libelle'];
                                 product.pointvente_id = object['pointvente_id'];
+                                product.username = username;
                                 self.createProduct(product);
                             })
                         return data.salepoints;
@@ -214,6 +213,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
+<<<<<<< HEAD
     .service('AuthService', function($q, $http) {
         var LOCAL_TOKEN_KEY = 'yourTokenKey';
         var username = '';
@@ -265,11 +265,64 @@ angular.module('phoenix.services', ['ngCordova'])
 				method: 'POST',
 				url: url,
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+=======
+   .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
+        var username = 'user1@phoenix.com';
+       
+		function getUrlApiAuth() {
+			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
+		}
+        
+        function loadUserCredentials() {
+            var user = localStorageService.get('userdata'); 
+            return JSON.parse(user);
+        }
+
+        function getCurrentUsername() {
+            var user = loadUserCredentials();
+            if(user)
+                return user.name;
+            else
+                return null;
+        }
+
+        function getCurrentEmail() {
+            var user = loadUserCredentials();
+            if(user)
+                return user.email;
+            else
+                return null;
+        }          
+        
+        function storeUserCredentials(user) {
+            localStorageService.set('userdata', JSON.stringify(user));
+            localStorageService.set('userTokenKey', user.apiKey);  
+            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey; 
+        }
+        
+        function destroyUserCredentials() { 
+            $http.defaults.headers.common['X-Auth-Token'] = undefined;
+            //$window.localStorage.clear();
+            localStorage.clear();
+            $ionicHistory.clearCache();
+            $ionicHistory.clearHistory();
+        }
+        
+        var login = function(email, password) {
+			var url = getUrlApiAuth(); 
+			var deferred = $q.defer();
+            var Indata = {'email':email, 'password': password};
+            return $http({
+                url: url,
+                method: "POST",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 				transformRequest: function(obj) {
 					var str = [];
 					for(var p in obj)
 					    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 					return str.join("&");
+<<<<<<< HEAD
 					
 				},
 				data: _data
@@ -291,11 +344,26 @@ angular.module('phoenix.services', ['ngCordova'])
 					reject('Login Failed.');
 				}
             });*/
+=======
+				},
+                data: Indata
+            })
+            .success(function (data) { 
+                if(data.error === false)
+                    storeUserCredentials(data); 
+				deferred.resolve(data);
+            })
+            .error(function(data, status) { 
+                 deferred.reject(data);
+            })
+			 
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
         };
         
         var logout = function() {
             destroyUserCredentials();
         };
+<<<<<<< HEAD
         
         var isAuthorized = function(authorizedRoles) {
             if (!angular.isArray(authorizedRoles)) {
@@ -304,10 +372,14 @@ angular.module('phoenix.services', ['ngCordova'])
             return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
         };
         
+=======
+       
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
         loadUserCredentials();
         
         return {
             login: login,
+<<<<<<< HEAD
             logout: logout,
             isAuthorized: isAuthorized,
             isAuthenticated: function() {return isAuthenticated;},
@@ -316,6 +388,19 @@ angular.module('phoenix.services', ['ngCordova'])
     })
 
     .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+=======
+            loadUserCredentials: function() {return loadUserCredentials();} ,
+            getCurrentEmail: function() {return getCurrentEmail();} ,
+            getCurrentUsername: function() {return getCurrentUsername();} ,
+            logout: logout,
+            getCurrentUser: function() {return loadUserCredentials();} 
+            //isAuthorized: isAuthorized,
+        };
+    })
+
+    /*.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+        $q.resolve(response);
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
         return {
             responseError: function (response) {
             $rootScope.$broadcast({
@@ -325,7 +410,11 @@ angular.module('phoenix.services', ['ngCordova'])
             return $q.reject(response);
             }
         };
+<<<<<<< HEAD
     })
+=======
+    })*/
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
     // gerer les erreurs
     .factory('ErrorService', function (ionicToast, $ionicPopup, $ionicLoading) {
@@ -412,8 +501,12 @@ angular.module('phoenix.services', ['ngCordova'])
     /**  
      * 
      * // Some fake testing data
+<<<<<<< HEAD
     */
     .factory('ShopService', function () {
+=======
+    */ .factory('ShopService', function () {
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
         var shops = [
             { libelle: 'Max&Cie', code: 1, latitude: 45.491403, longitude: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
@@ -980,3 +1073,8 @@ angular.module('phoenix.services', ['ngCordova'])
     .config(function ($httpProvider) {
         $httpProvider.interceptors.push('AuthInterceptor');
     });
+    /*
+    .config(function ($httpProvider) {
+        $httpProvider.interceptors.push('AuthInterceptor');
+    });
+*/

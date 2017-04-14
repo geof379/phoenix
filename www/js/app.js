@@ -4,13 +4,20 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews'])
+angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', 'ngCordova', 'ionic.contrib.drawer.vertical', 'ionicMultipleViews','LocalStorageModule'])
 
   .constant('AUTH_EVENTS', {
+<<<<<<< HEAD
     notAuthenticated: 'auth-not-authenticated',
     notAuthorized: 'auth-not-authorized'
   })
 
+=======
+      notAuthenticated: 'auth-not-authenticated',
+      notAuthorized: 'auth-not-authorized'
+  })
+  
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -25,8 +32,10 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
+
       setTimeout(function () {
-        navigator.splashscreen.hide();
+        if(navigator.splashscreen)
+          navigator.splashscreen.hide();
       }, 300);
     });
   })
@@ -42,14 +51,36 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
       })
 
       .state('app.login', {
-        url: '/login',
+          url: '/login',
+          views: {
+            'menuContent': {
+              templateUrl: "templates/login.html",
+              controller: 'LoginCtrl'
+            }
+          } 
+          
+      })
+	  
+	  .state('app.setting', {
+        url: '/setting',
         views: {
           'menuContent': {
-            templateUrl: 'templates/login.html',
-            controller: 'AppCtrl'
+            templateUrl: 'templates/setting.html',
+            controller: 'SettingCtrl'
           }
         }
       })
+
+       .state('app.location', {
+        url: '/location/:shop',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/location.html',
+            controller: 'LocationCtrl'
+          }
+        }
+      })
+<<<<<<< HEAD
 
       .state('app.setting', {
         url: '/setting',
@@ -71,6 +102,9 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         }
       })
 
+=======
+	  
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
       .state('app.profile', {
         url: '/profile',
         views: {
@@ -144,7 +178,11 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
+<<<<<<< HEAD
 
+=======
+     
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
