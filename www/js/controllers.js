@@ -1,10 +1,8 @@
 angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, localStorageService, AuthService) {
-    $scope.user = AuthService.getCurrentUser();
-     
-    console.log($scope.user);
- 
+    $scope.user = AuthService.getCurrentUser(); 
+    
     $scope.settingsList = [
         { text: "Wireless", checked: true },
         { text: "GPS", checked: false },
@@ -120,13 +118,11 @@ angular.module('phoenix.controllers', [])
   })*/
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
     $scope.products = {};
-    $scope.currentSalepoint; 
-
+    $scope.currentSalepoint;  
     MultipleViewsManager.updated('view-shop', function (params) {
       $q.all([
         DataService.getProducts(params.shopCode, function (result) {
-          $scope.products = result;
-
+          $scope.products = result; 
         })
       ]).then(function () {
         console.log($scope.products);
@@ -170,7 +166,7 @@ angular.module('phoenix.controllers', [])
   })
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService) {
       $scope.pointsvente = {};
-      $scope.username = 'user1@phoenix.com';
+      $scope.username = AuthService.getCurrentEmail();
       DataService.getSalePoints($scope.username, function (result) {
         $scope.pointsvente = result;
       });
@@ -207,7 +203,7 @@ angular.module('phoenix.controllers', [])
       }; 
   })
 
-  .controller('DashboardCtrl', function ($scope, $q, DataService, MultipleViewsManager, $ionicPlatform) {
+  .controller('DashboardCtrl', function ($scope, $q, DataService, MultipleViewsManager, $ionicPlatform, AuthService) {
       var getRandomColor = function () {
         var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
         return str.trim();
@@ -215,7 +211,7 @@ angular.module('phoenix.controllers', [])
 
       $ionicPlatform.ready(function () {
         $scope.pointsvente = {};
-        $scope.username = 'user1@phoenix.com';
+        $scope.username = AuthService.getCurrentEmail(); 
         DataService.getSalePoints($scope.username, function (result) {
           $scope.pointsvente = result;
         });
@@ -242,14 +238,12 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('LeftMenuCtrl', function ($scope, $location, AuthService) {
-
+  .controller('LeftMenuCtrl', function ($scope, $location, AuthService) { 
       $scope.menus = [
           { name: 'List Shops', href: '#/app/dashboard', action: '', icon: 'ion-ios-list-outline' },
           { name: 'Map', href: '#/app/map', action: '', icon: 'ion-home' },        
           { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' } 
-      ]; 
-      
+      ];  
       $scope.isItemActive = function (menu) {
           var currentRoute = $location.path().substring(1) || '#/app/map';
           var active = menu === currentRoute ? 'active' : '';
@@ -259,9 +253,9 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
+  .controller('ShopMenuCtrl', function ($scope, $location, DataService, AuthService) {
       $scope.shops = {};
-      $scope.username = 'user1@phoenix.com';
+      $scope.username = AuthService.getCurrentEmail();
       DataService.getSalePoints($scope.username, function (result) {
           $scope.shops = result; 
           $scope.menus = [];
@@ -307,7 +301,6 @@ angular.module('phoenix.controllers', [])
   */
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, $q, AuthService, localStorageService){   
-       
       $scope.notificationMessage = null;
       $scope.loginErrors = false;
       $scope.login = function(data) { 
@@ -315,7 +308,7 @@ angular.module('phoenix.controllers', [])
           .then(function(response) { 
               if(response[0].data.error === false){
                   $scope.username = data.email;
-                  $state.go('app.shoplist', {}, {reload: true});
+                  $state.go('app.dashboard', {}, {reload: true});
               }
               else{
                   $scope.notificationMessage = response[0].data.message;
@@ -336,8 +329,9 @@ angular.module('phoenix.controllers', [])
       }; 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
-    $scope.username = 'user1@phoenix.com';
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService) {
+    $scope.username = AuthService.getCurrentEmail();
+    
     $scope.searchlists = [];
     var routeTo = function (data) {
       $scope.currentObject = data;
@@ -391,9 +385,7 @@ angular.module('phoenix.controllers', [])
           GoogleMaps.initDiection();
 
           $ionicSlideBoxDelegate.update();
-          routeTo($scope.shop);
-        
-
+          routeTo($scope.shop); 
         });
 
     })

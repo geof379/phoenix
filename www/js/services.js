@@ -221,7 +221,7 @@ angular.module('phoenix.services', ['ngCordova'])
         function getCurrentUsername() {
             var user = loadUserCredentials();
             if(user)
-                return user.Name;
+                return user.name;
             else
                 return null;
         }
@@ -229,7 +229,7 @@ angular.module('phoenix.services', ['ngCordova'])
         function getCurrentEmail() {
             var user = loadUserCredentials();
             if(user)
-                return user.Name;
+                return user.email;
             else
                 return null;
         }          
