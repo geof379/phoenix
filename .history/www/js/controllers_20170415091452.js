@@ -426,7 +426,8 @@ angular.module('phoenix.controllers', [])
     });
 
 
-  });
+  })
+  ;
 
 
 

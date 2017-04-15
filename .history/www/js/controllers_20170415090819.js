@@ -404,29 +404,22 @@ angular.module('phoenix.controllers', [])
   .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, AuthService) {
 
     $scope.shop = JSON.parse($stateParams.shop);
-    
-
-    DataService.getProducts($scope.shop.code, function (result) {
-      $scope.products = result;
-    })
-
 
     var routeTo = function (data) {
       $scope.currentObject = data;
       GoogleMaps.addMarker(Marker.getMarker($scope.shop));
       GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
     }
-    
-      GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
+
+    GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
       GoogleMaps.initDiection();
 
       $ionicSlideBoxDelegate.update();
       routeTo($scope.shop);
-
     });
 
-
-  });
+  })
+  ;
 
 
 

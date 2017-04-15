@@ -55,7 +55,15 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           
       })
 	  
-	
+	  .state('app.setting', {
+        url: '/setting',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/setting.html',
+            controller: 'SettingCtrl'
+          }
+        }
+      })
 
        .state('app.location', {
         url: '/location/:shop',
@@ -78,7 +86,15 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         }
       })
 
-     
+      .state('app.location', {
+        url: '/location',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/location.html',
+            controller: 'MapCtrl'
+          }
+        }
+      })
 
 
       .state('app.profile', {

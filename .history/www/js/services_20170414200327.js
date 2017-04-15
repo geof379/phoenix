@@ -208,12 +208,12 @@ angular.module('phoenix.services', ['ngCordova'])
     })
 
 
- .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
+   .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
         var username = 'user1@phoenix.com';
        
-  function getUrlApiAuth() {
-   return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
-  }
+		function getUrlApiAuth() {
+			return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
+		}
         
         function loadUserCredentials() {
             var user = localStorageService.get('userdata'); 
@@ -251,50 +251,61 @@ angular.module('phoenix.services', ['ngCordova'])
         }
         
         var login = function(email, password) {
-   var url = getUrlApiAuth(); 
-   var deferred = $q.defer();
+			var url = getUrlApiAuth(); 
+			var deferred = $q.defer();
             var Indata = {'email':email, 'password': password};
             return $http({
                 url: url,
                 method: "POST",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    transformRequest: function(obj) {
-     var str = [];
-     for(var p in obj)
-         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-     return str.join("&");
-    },
+
+				transformRequest: function(obj) {
+					var str = [];
+					for(var p in obj)
+					    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+					return str.join("&");
+
+				},
                 data: Indata
             })
             .success(function (data) { 
                 if(data.error === false)
                     storeUserCredentials(data); 
-    deferred.resolve(data);
+				deferred.resolve(data);
             })
             .error(function(data, status) { 
                  deferred.reject(data);
             })
-    
+			 
+
         };
         
         var logout = function() {
             destroyUserCredentials();
         };
-       
+
+        
+        var isAuthorized = function(authorizedRoles) {
+            if (!angular.isArray(authorizedRoles)) {
+            authorizedRoles = [authorizedRoles];
+            }
+            return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+        };
+
         loadUserCredentials();
         
         return {
             login: login,
-            loadUserCredentials: function() {return loadUserCredentials();} ,
-            getCurrentEmail: function() {return getCurrentEmail();} ,
-            getCurrentUsername: function() {return getCurrentUsername();} ,
+<<<<<<< HEAD
             logout: logout,
-            getCurrentUser: function() {return loadUserCredentials();} 
-            //isAuthorized: isAuthorized,
+            isAuthorized: isAuthorized,
+            isAuthenticated: function() {return isAuthenticated;},
+            username: function() {return username;} 
         };
     })
 
 
+    })
 
     /*.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
         $q.resolve(response);
@@ -312,7 +323,7 @@ angular.module('phoenix.services', ['ngCordova'])
     })
 =======
     })*/
-
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
     // gerer les erreurs
     .factory('ErrorService', function (ionicToast, $ionicPopup, $ionicLoading) {
@@ -402,6 +413,9 @@ angular.module('phoenix.services', ['ngCordova'])
 <<<<<<< HEAD
     */
     .factory('ShopService', function () {
+=======
+    */ .factory('ShopService', function () {
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
         var shops = [
             { libelle: 'Max&Cie', code: 1, latitude: 45.491403, longitude: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
@@ -964,7 +978,10 @@ angular.module('phoenix.services', ['ngCordova'])
 
 
     })
-  
+    
+    .config(function ($httpProvider) {
+        $httpProvider.interceptors.push('AuthInterceptor');
+    });
     /*
     .config(function ($httpProvider) {
         $httpProvider.interceptors.push('AuthInterceptor');

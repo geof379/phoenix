@@ -58,7 +58,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
 	
 
        .state('app.location', {
-        url: '/location/:shop',
+        url: '/location',
         views: {
           'menuContent': {
             templateUrl: 'templates/location.html',

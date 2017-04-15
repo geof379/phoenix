@@ -55,7 +55,15 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           
       })
 	  
-	
+	  .state('app.setting', {
+        url: '/setting',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/setting.html',
+            controller: 'SettingCtrl'
+          }
+        }
+      })
 
        .state('app.location', {
         url: '/location/:shop',
@@ -78,7 +86,15 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
         }
       })
 
-     
+      .state('app.location', {
+        url: '/location',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/location.html',
+            controller: 'MapCtrl'
+          }
+        }
+      })
 
 
       .state('app.profile', {
@@ -154,7 +170,11 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
           }
         }
       })
+<<<<<<< HEAD
 
+=======
+     
+>>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/dashboard');
