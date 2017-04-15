@@ -7,8 +7,8 @@ angular.module('phoenix.controllers', [])
      * Déconnexion
      */
     $scope.loggout = function () {
-      AuthService.logout();
-      $state.go('app.login', {}, { reload: true });
+        AuthService.logout();
+        $state.go('app.login', {}, { reload: true });
     }; 
 
     /*
@@ -297,26 +297,7 @@ angular.module('phoenix.controllers', [])
           return style;
       };
   })
-
-  .controller('ShopMenuCtrl', function ($scope, $location, DataService) {
-    $scope.shops = {};
-    $scope.username = AuthService.getCurrentEmail();
-    DataService.getSalePoints($scope.username, function (result) {
-        $scope.shops = result;
-        //  $scope.shops = ShopService.all();
-
-        $scope.menus = [];
-        for (i = 0; i < $scope.shops.length; i++) {
-          $scope.menus.push({
-            name: $scope.shops[i].libelle, href: '#/masterDetail/shops/' + $scope.shops[i].code,
-          })
-        }
-    });
-
-
-  })
-
-
+ 
   .controller('LoginCtrl', function ($scope, $state, $ionicPopup, $q, AuthService, localStorageService) {
     $scope.notificationMessage = null;
     $scope.loginErrors = false;
