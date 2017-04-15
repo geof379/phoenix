@@ -270,15 +270,7 @@ angular.module('phoenix.controllers', [])
       }
     };
 
-    $scope.graph = {};
-    $scope.graph.data = [
-      //Awake
-      [16, 15, 20, 12, 16, 12, 8],
-      //Asleep
-      [8, 9, 4, 12, 8, 12, 14]
-    ];
-    $scope.graph.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    $scope.graph.series = ['Awake', 'Asleep'];
+
 
 
 
@@ -412,7 +404,7 @@ angular.module('phoenix.controllers', [])
   .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService) {
 
     $scope.shop = JSON.parse($stateParams.shop);
-
+    
 
     DataService.getProducts($scope.shop.code, function (result) {
       $scope.products = result;
@@ -424,10 +416,13 @@ angular.module('phoenix.controllers', [])
       GoogleMaps.addMarker(Marker.getMarker($scope.shop));
       GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
     }
-
-    GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
+    
+      GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
       GoogleMaps.initDiection();
+
+      $ionicSlideBoxDelegate.update();
       routeTo($scope.shop);
+
     });
 
 
