@@ -28,25 +28,7 @@ angular.module('phoenix.controllers', [])
       $state.go('app.login');
     };
 
-    /*
-    $scope.loggout = function () {
-      $ionicHistory.clearCache();
-      $ionicHistory.clearHistory();
-      $state.go('login');
-    };
-
-    $scope.$on('loggout-bye', function () {
-      $ionicHistory.clearCache();
-      $ionicHistory.clearHistory();
-      $state.go('login');
-    });
-
-    $scope.userInfo = {};
-    */
-
-
-
-    /*
+     /*
      * Transferer des données de la base locale vers le serveur
      */
     $scope.transferer = function () {
@@ -108,37 +90,7 @@ angular.module('phoenix.controllers', [])
       });
     }
   })
-
-  /**.controller('ProductlistCtrl', function ($scope, $stateParams, DataService, $ionicLoading) {
-    $scope.products = {};
-    $scope.currentSalepoint = $stateParams.shopId;
-    DataService.getProducts($scope.currentSalepoint, function (result) {
-      $scope.products = result;
-    });
-
-    $scope.updatePrice = function (produit) {
-      $scope.produit = produit;
-      if ($scope.produit.prix > 0) {
-        $scope.disableAction('Processing..');
-        var collectData = {};
-        collectData.code = $scope.produit.code;
-        collectData.prix = $scope.produit.prix;
-        DataService.updateProduct(collectData, function (r) {
-          $scope.enableAction();
-        })
-      }
-    }
-
-    $scope.enableAction = function () {
-      $ionicLoading.hide();
-    }
-
-    $scope.disableAction = function (message) {
-      $ionicLoading.show({
-        template: message
-      });
-    }
-  })*/
+ 
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
     $scope.products = {};
     $scope.currentSalepoint;
@@ -248,11 +200,7 @@ angular.module('phoenix.controllers', [])
       * Récupération des données du serveur et alimentation de la base locale
       */
     $scope.synchroniser = function () {
-      /*$http.get(DataService.getUrlApi(), {
-          headers: {'Authorization': 'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='}
-      })*/
-
-
+    
       DataService.synchronize().then(
         function () {
           DataService.getSalePoints(function (result) {
@@ -296,39 +244,6 @@ angular.module('phoenix.controllers', [])
       }
     });
   })
-  /**
-    .controller('PopOverCtrl', function ($scope, $ionicPopover) {
-  
-  
-      $ionicPopover.fromTemplateUrl('my-popover.html', {
-        scope: $scope
-      }).then(function (popover) {
-        $scope.popover = popover;
-      });
-  
-  
-      $scope.onPopover = function ($event, index) {
-        $scope.index = { 'value': index };
-        $scope.popover.show($event);
-      };
-  
-      $scope.closePopover = function () {
-        $scope.popover.hide();
-      };
-      //Cleanup the popover when we're done with it!
-      $scope.$on('$destroy', function () {
-        $scope.popover.remove();
-      });
-      // Execute action on hidden popover
-      $scope.$on('popover.hidden', function () {
-        // Execute action
-      });
-      // Execute action on remove popover
-      $scope.$on('popover.removed', function () {
-        // Execute action
-      });
-    })
-  */
 
   .controller('LoginCtrl', function ($scope, $state, $ionicPopup, AuthService) {
     $scope.data = {};
@@ -396,32 +311,31 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker) {
-    console.log($stateParams.shop);
+  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker) {
+
     $scope.shop = JSON.parse($stateParams.shop);
     
+
+    DataService.getProducts($scope.shop.code, function (result) {
+      $scope.products = result;
+    })
+
+
     var routeTo = function (data) {
       $scope.currentObject = data;
       GoogleMaps.addMarker(Marker.getMarker($scope.shop));
       GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
     }
-
- 
+    
       GoogleMaps.init("AIzaSyCvDocNIDKkmNmn_ADoA-m7wUPZLmc4Ncc", function () {
-        GoogleMaps.initDiection();
+      GoogleMaps.initDiection();
 
-        $ionicSlideBoxDelegate.update();
-        routeTo($scope.shop);
-      
-
-      });
+      $ionicSlideBoxDelegate.update();
+      routeTo($scope.shop);
 
     });
 
-
-  
-
-;
+  });
 
 
 
