@@ -92,43 +92,31 @@ angular.module('phoenix.controllers', [])
       }
     }
 
-    $scope.enableAction = function () {
-      $ionicLoading.hide();
-    }
-
-    $scope.disableAction = function (message) {
-      $ionicLoading.show({
-        template: message
-      });
-    }
+     
   })*/
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
       $scope.products = {};
       $scope.currentSalepoint;
       MultipleViewsManager.updated('view-shop', function (params) {
         $q.all([
-          DataService.getProducts(params.shopCode, function (result) {
-
-            $scope.products = result;
-
-          })
-        ]).then(function () {
-          console.log($scope.products);
-        })
+            DataService.getProducts(params.shopCode, function (result) { 
+                $scope.products = result; 
+            })
+        ]).then(function () {})
 
       });
 
 
     $scope.updatePrice = function (produit) {
-      $scope.produit = produit;
-      if ($scope.produit.prix > 0) {
-        var collectData = {};
-        collectData.code = $scope.produit.code;
-        collectData.prix = $scope.produit.prix;
-        DataService.updateProduct(collectData, function (r) {
+        $scope.produit = produit;
+        if ($scope.produit.prix > 0) {
+            var collectData = {};
+            collectData.code = $scope.produit.code;
+            collectData.prix = $scope.produit.prix;
+            DataService.updateProduct(collectData, function (r) {
 
-        })
-      }
+            })
+        }
     }
 
     $scope.updateProducts = function () {
@@ -298,25 +286,28 @@ angular.module('phoenix.controllers', [])
       };
   })
  
-  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, $q, AuthService, localStorageService) {
+  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, $q, AuthService, localStorageService, ErrorService) {
     $scope.notificationMessage = null;
     $scope.loginErrors = false;
     $scope.login = function (data) {
+      ErrorService.disableAction('Processing..');
       $q.all([
         AuthService.login(data.email, data.password)])
         .then(function (response) {
-          if (response[0].data.error === false) {
-            $scope.username = data.email;
-            $state.go('app.dashboard', {}, { reload: true });
-          }
-          else {
-            $scope.notificationMessage = response[0].data.message;
-            $scope.loginErrors = true;
-          }
+            if (response[0].data.error === false) {
+              $scope.username = data.email;
+              $state.go('app.dashboard', {}, { reload: true });
+            }
+            else {
+              $scope.notificationMessage = response[0].data.message;
+              $scope.loginErrors = true;
+            }
+            ErrorService.enableAction();
         })
         .catch(function (response) {
-          $scope.notificationMessage = response.data.message;
-          $scope.loginErrors = true;
+            $scope.notificationMessage = response[0].data.message;
+            $scope.loginErrors = true;
+            ErrorService.enableAction();
         });
     }
   })
