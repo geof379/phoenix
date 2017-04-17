@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
     $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
 
@@ -25,11 +25,6 @@ angular.module('phoenix.controllers', [])
         ErrorService.enableAction();
       })
     };
-
-    $scope.readSettings = function () {
-      $scope.travel_mode = localStorageService.get('travel_mode');
-      $scope.distance = localStorageService.get('distance');
-    }
 
   })
 
@@ -60,6 +55,7 @@ angular.module('phoenix.controllers', [])
           collectData.code = $scope.produit.code;
           collectData.prix = $scope.produit.prix;
           DataService.updateProduct(collectData, function (r) {
+
           })
         }
       }
@@ -78,6 +74,7 @@ angular.module('phoenix.controllers', [])
       })]).then(
       function () {
         if (MultipleViewsManager.isActive()) {
+
           if ($stateParams.shopCode) {
             if ($stateParams.shopCode !== "===y") {
               $scope.selectedShopCode = $stateParams.shopCode;
@@ -86,13 +83,11 @@ angular.module('phoenix.controllers', [])
               myEl.removeClass("mode-master");
               myEl.addClass("mode-detail");
             } else {
-              if ($scope.pointsvente[0] !== undefined) {
               $scope.selectedShopCode = $scope.pointsvente[0].code;
-                MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-                myEl = angular.element(document.querySelector('#list-view'));
-                myEl.addClass("mode-master");
-                myEl.removeClass("mode-detail");
-              }
+              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+              myEl = angular.element(document.querySelector('#list-view'));
+              myEl.addClass("mode-master");
+              myEl.removeClass("mode-detail");
             }
           }
         }
@@ -104,12 +99,14 @@ angular.module('phoenix.controllers', [])
       * Récupération des données du serveur et alimentation de la base locale
       */
     $scope.synchroniser = function () {
+
       DataService.synchronize().then(function () {
         DataService.getSalePoints($scope.username, function (result) {
           $scope.pointsvente = result;
         });
         $scope.$broadcast('scroll.refreshComplete');
       })
+
     };
 
     $scope.changeShop = function (shop) {
@@ -119,10 +116,12 @@ angular.module('phoenix.controllers', [])
         $scope.selectedShopCode = $scope.pointsvente[0];
       }
       if (MultipleViewsManager.isActive()) {
+
         MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
         myEl = angular.element(document.querySelector('#list-view'));
         myEl.removeClass("mode-master");
         myEl.addClass("mode-detail");
+
       } else {
         $state.go('view-shop', { shopCode: $scope.selectedShopCode });
       }
@@ -208,11 +207,13 @@ angular.module('phoenix.controllers', [])
       $q.all([
         AuthService.login(data.email, data.password)])
         .then(function (response) {
+
           if (response[0].data.error === false) {
             $scope.username = data.email;
             $ionicHistory.nextViewOptions({
               disableBack: true
             });
+
             $state.go('app.dashboard', {}, { reload: true });
           }
           else {
@@ -230,7 +231,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService) {
     $scope.data = {};
     $ionicHistory.nextViewOptions({
       disableBack: true
@@ -241,9 +242,8 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService) {
     $scope.username = AuthService.getCurrentEmail();
-
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -271,7 +271,7 @@ angular.module('phoenix.controllers', [])
             angular.forEach(oldSearchList, function (object, key) {
               var shopMarker = Marker.getMarker(object);
 
-              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= localStorageService.get('distance')) {
+              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= 10) {
                 if ($scope.searchlists.indexOf(object) < 0) $scope.searchlists.push(object);
               }
             })

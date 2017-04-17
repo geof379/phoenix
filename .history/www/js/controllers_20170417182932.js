@@ -86,7 +86,7 @@ angular.module('phoenix.controllers', [])
               myEl.removeClass("mode-master");
               myEl.addClass("mode-detail");
             } else {
-              if ($scope.pointsvente[0] !== undefined) {
+              if ($scope.pointsvente !== undefined) {
               $scope.selectedShopCode = $scope.pointsvente[0].code;
                 MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
                 myEl = angular.element(document.querySelector('#list-view'));

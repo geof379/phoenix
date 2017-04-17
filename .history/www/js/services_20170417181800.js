@@ -20,9 +20,8 @@ angular.module('phoenix.services', ['ngCordova'])
 
         }
 
-        function initSetting() {
-            localStorageService.set('travel_mode', 'DRIVING');
-            localStorageService.set('Distance', '30');
+        function initSetting(){
+localStorageService.set('travel_mode', 'DRIVIN');
         }
 
         $ionicPlatform.ready(function () {
@@ -33,7 +32,6 @@ angular.module('phoenix.services', ['ngCordova'])
                 useWebSql();
             }
             initDatabase();
-            initSetting();
         })
 
         function onErrorQuery(err) {
@@ -163,7 +161,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         var data = [];
                         for (i = 0, max = results.rows.length; i < max; i++) {
                             data.push(results.rows.item(i));
-                        }
+                        } 
                         cb(data);
                     })
                 })
@@ -173,10 +171,10 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 
-            synchronize: function (username) {
-                var self = this;
-                var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
+            synchronize: function (username) { 
+                var self = this;  
+                var url = this.getUrlApi()+'/'+username;
+				return  $http.get(url)  
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -209,17 +207,17 @@ angular.module('phoenix.services', ['ngCordova'])
             },
 
             transfer: function (username) {
-                var self = this;
-                var products = [];
+                var self = this;  
+                var products = []; 
                 this.getProductsByUser(username, function (results) {
-
+                    
                     angular.forEach(results, function (object, key) {
                         var product = {};
                         product.code = object['code'];
                         product.prix = object['prix'];
                         product.pointvente_id = object['pointvente_id'];
-                        if (object['prix'] > 0)
-                            products.push(product);
+                        if (object['prix'] > 0)  
+                            products.push(product); 
                     })
                     var deferred = $q.defer();
                     //Lancer le transfert
@@ -235,35 +233,35 @@ angular.module('phoenix.services', ['ngCordova'])
                         },
                         data: JSON.stringify(products)
                     })
-                        .success(function (data, status, headers, config) {
-                            angular.forEach(products, function (produit, key) {
-                                var collectData = {};
-                                collectData.code = produit.code;
-                                collectData.statut = 1;
-                                collectData.pointvente_id = produit.pointvente_id;
-                                self.transfertUpdate(collectData, function (r) { })
-                            })
-
-                        }).error(function (error) {
-                            deferred.reject(error);
+                    .success(function (data, status, headers, config) {
+                        angular.forEach(products, function (produit, key) {
+                            var collectData = {};
+                            collectData.code = produit.code;
+                            collectData.statut = 1;
+                            collectData.pointvente_id = produit.pointvente_id;
+                            self.transfertUpdate(collectData, function (r) { })
                         })
-                        .then(function (data, status, headers, config) {
-                            deferred.resolve(data);
-                        });
-                });
+
+                    }).error(function (error) {
+                        deferred.reject(error);
+                    })
+                    .then(function (data, status, headers, config) {
+                        deferred.resolve(data);
+                    });
+                }); 
 
             }
         }
 
     })
 
-
-    .factory('AuthService', function ($q, $http, $ionicLoading, localStorageService, $ionicHistory) {
-
+ 
+ .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
+        
         function getUrlApiAuth() {
-            return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
+                return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
         }
-
+ 
         function loadUserCredentials() {
             var user = localStorageService.get('userdata');
             return JSON.parse(user);
@@ -297,8 +295,8 @@ angular.module('phoenix.services', ['ngCordova'])
             localStorage.clear();
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();
-        }
-
+        } 
+         
 
         var login = function (email, password) {
             var url = getUrlApiAuth();
@@ -310,21 +308,21 @@ angular.module('phoenix.services', ['ngCordova'])
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 transformRequest: function (obj) {
                     var str = [];
-                    for (var p in obj)
+                    for (var p in obj) 
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
                 },
                 data: Indata
+            }) 
+            .success(function (data) { 
+                if(data.error === false)
+                    storeUserCredentials(data); 
+                deferred.resolve(data);
             })
-                .success(function (data) {
-                    if (data.error === false)
-                        storeUserCredentials(data);
-                    deferred.resolve(data);
-                })
-                .error(function (data, status) {
-                    deferred.reject(data);
-                })
-
+            .error(function(data, status) { 
+                deferred.reject(data);
+            })
+     
         };
 
         var logout = function () {
@@ -341,7 +339,7 @@ angular.module('phoenix.services', ['ngCordova'])
             logout: logout,
             getCurrentUser: function () { return loadUserCredentials(); }
         };
-    })
+    }) 
 
     // gerer les erreurs
     .factory('ErrorService', function ($ionicLoading) {
@@ -470,7 +468,7 @@ angular.module('phoenix.services', ['ngCordova'])
     /**
      * Google map
      */
-    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, localStorageService,ConnectivityMonitor, Marker) {
+    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, ConnectivityMonitor, Marker) {
 
         var markerCache = [];
         var apiKey = false;
@@ -875,7 +873,7 @@ angular.module('phoenix.services', ['ngCordova'])
                 var request = {
                     origin: startMarkerPos,
                     destination: endMarkerPos,
-                    travelMode: localStorageService.get('travel_mode')
+                    travelMode: google.maps.TravelMode.DRIVING
                 };
                 directionsService.route(request, function (response, status) {
 

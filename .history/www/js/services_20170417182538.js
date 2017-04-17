@@ -470,7 +470,7 @@ angular.module('phoenix.services', ['ngCordova'])
     /**
      * Google map
      */
-    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, localStorageService,ConnectivityMonitor, Marker) {
+    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, ConnectivityMonitor, Marker) {
 
         var markerCache = [];
         var apiKey = false;
