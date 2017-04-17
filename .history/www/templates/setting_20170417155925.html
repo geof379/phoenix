@@ -1,0 +1,27 @@
+<ion-view view-title="Settings" ng-controller="AppCtrl">
+    <ion-content>
+
+        <div class=" card ">
+            <div class="item">
+                This is a basic Card which contains an item that has wrapping text.
+            </div>
+        </div>
+
+        <div class="list">
+
+            <div class="item item-divider"> Route options </div>
+            <ion-list>
+                <ion-radio ng-model="choice" ng-value="'A'">DRIVING</ion-radio>
+                <ion-radio ng-model="choice" ng-value="'B'">BICYCLING</ion-radio>
+                <ion-radio ng-model="choice" ng-value="'B'">BICYCLING</ion-radio>
+                 <ion-radio ng-model="choice" ng-value="'B'">BICYCLING</ion-radio>
+            </ion-list>
+            <div class="item item-divider"> Distance around </div>
+            <div class="item range">
+                <i class="icon ion-ios-sunny-outline"></i>
+                <input type="range" name="volume" min="0" max="100" value="33">
+                <i class="icon ion-ios-sunny"></i>
+            </div>
+            
+    </ion-content>
+</ion-view>
