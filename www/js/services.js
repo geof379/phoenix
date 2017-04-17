@@ -167,17 +167,10 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 
-            synchronize: function (username) {
-<<<<<<< HEAD
+            synchronize: function (username) { 
                 var self = this;  
                 var url = this.getUrlApi()+'/'+username;
-				return  $http.get(url) 
-=======
-                var self = this; var username = 'user1@phoenix.com';
-                var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
-
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
+				return  $http.get(url)  
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -258,23 +251,13 @@ angular.module('phoenix.services', ['ngCordova'])
 
     })
 
-
-<<<<<<< HEAD
+ 
  .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
         
         function getUrlApiAuth() {
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
         }
-        
-=======
-    .factory('AuthService', function ($q, $http, $ionicLoading, localStorageService, $ionicHistory) {
-        var username = 'user1@phoenix.com';
-
-        function getUrlApiAuth() {
-            return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
-        }
-
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
+ 
         function loadUserCredentials() {
             var user = localStorageService.get('userdata');
             return JSON.parse(user);
@@ -308,21 +291,8 @@ angular.module('phoenix.services', ['ngCordova'])
             localStorage.clear();
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();
-        }
-<<<<<<< HEAD
-        
-        var login = function(email, password) {
-            var url = getUrlApiAuth(); 
-            var deferred = $q.defer();
-            var Indata = {'email':email, 'password': password};
-            return $http({
-                url: url,
-                method: "POST",
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                transformRequest: function(obj) {
-                    var str = [];
-                    for(var p in obj)
-=======
+        } 
+         
 
         var login = function (email, password) {
             var url = getUrlApiAuth();
@@ -334,14 +304,12 @@ angular.module('phoenix.services', ['ngCordova'])
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 transformRequest: function (obj) {
                     var str = [];
-                    for (var p in obj)
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
+                    for (var p in obj) 
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
                 },
                 data: Indata
-            })
-<<<<<<< HEAD
+            }) 
             .success(function (data) { 
                 if(data.error === false)
                     storeUserCredentials(data); 
@@ -350,18 +318,7 @@ angular.module('phoenix.services', ['ngCordova'])
             .error(function(data, status) { 
                 deferred.reject(data);
             })
-    
-=======
-                .success(function (data) {
-                    if (data.error === false)
-                        storeUserCredentials(data);
-                    deferred.resolve(data);
-                })
-                .error(function (data, status) {
-                    deferred.reject(data);
-                })
-
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
+     
         };
 
         var logout = function () {
@@ -378,9 +335,7 @@ angular.module('phoenix.services', ['ngCordova'])
             logout: logout,
             getCurrentUser: function () { return loadUserCredentials(); }
         };
-    })
-
-
+    }) 
 
     // gerer les erreurs
     .factory('ErrorService', function ($ionicLoading) {
