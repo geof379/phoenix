@@ -29,16 +29,14 @@
             <div class="profile" style="height: 20%;">
                 <div class="item item-avatar">
                     <img src="img/user_male.png">
-
-                    <h2>HI </h2>
-                    <p>{{user.name}}</p>
-
+                    <h2>Geoffroy Ayeboua </h2>
+                    <p>MHD</p>
                 </div>
             </div>
 
             <ul id="menu" class="list">
                 <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}"> {{menu.name}} </a>
-                <a class="ng-binding item ion-android-arrow-forward" menu-close ng-click="transferer()"> Transfer</a>
+
             </ul>
 
 
@@ -51,10 +49,10 @@
 
         </ion-content>
         <ion-footer-bar>
-            <bar-footer class="button-bar footer">
-                <a class=" col col-80 button item item-left ion-android-exit " style="text-align:left" ng-click="loggout()"> Logout</a>
-                <a class=" col col-20 button item item-icon-left ion-settings" ng-href="#/app/setting"></a>
-            </bar-footer>
-        </ion-footer-bar>
+      <bar-footer class="button-bar footer">
+          <a class=" col col-80 button item item-left ion-android-exit " style="text-align:left" ng-click="loggout()"> Logout</a>
+          <a class=" col col-20 button item item-icon-left ion-settings" ng-href="#/app/setting"></a>
+      </bar-footer>
+    </ion-footer-bar>
     </ion-side-menu>
 </ion-side-menus>

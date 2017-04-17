@@ -235,7 +235,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService) {
     $scope.data = {};
     $ionicHistory.nextViewOptions({
       disableBack: true
