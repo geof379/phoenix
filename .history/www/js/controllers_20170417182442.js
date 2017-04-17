@@ -86,13 +86,11 @@ angular.module('phoenix.controllers', [])
               myEl.removeClass("mode-master");
               myEl.addClass("mode-detail");
             } else {
-              if ($scope.pointsvente[0] !== undefined) {
               $scope.selectedShopCode = $scope.pointsvente[0].code;
-                MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-                myEl = angular.element(document.querySelector('#list-view'));
-                myEl.addClass("mode-master");
-                myEl.removeClass("mode-detail");
-              }
+              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+              myEl = angular.element(document.querySelector('#list-view'));
+              myEl.addClass("mode-master");
+              myEl.removeClass("mode-detail");
             }
           }
         }
@@ -230,7 +228,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService,localStorageService) {
     $scope.data = {};
     $ionicHistory.nextViewOptions({
       disableBack: true
@@ -241,9 +239,10 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService,localStorageService) {
     $scope.username = AuthService.getCurrentEmail();
-
+    $scope.distance = localStorageService.get('distance');
+    if()
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -271,7 +270,7 @@ angular.module('phoenix.controllers', [])
             angular.forEach(oldSearchList, function (object, key) {
               var shopMarker = Marker.getMarker(object);
 
-              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= localStorageService.get('distance')) {
+              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= 10) {
                 if ($scope.searchlists.indexOf(object) < 0) $scope.searchlists.push(object);
               }
             })

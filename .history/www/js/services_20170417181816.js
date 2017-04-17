@@ -22,7 +22,7 @@ angular.module('phoenix.services', ['ngCordova'])
 
         function initSetting() {
             localStorageService.set('travel_mode', 'DRIVING');
-            localStorageService.set('Distance', '30');
+            localStorageService.set('Distance', 'DRIVING');
         }
 
         $ionicPlatform.ready(function () {
@@ -33,7 +33,6 @@ angular.module('phoenix.services', ['ngCordova'])
                 useWebSql();
             }
             initDatabase();
-            initSetting();
         })
 
         function onErrorQuery(err) {
@@ -470,7 +469,7 @@ angular.module('phoenix.services', ['ngCordova'])
     /**
      * Google map
      */
-    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, localStorageService,ConnectivityMonitor, Marker) {
+    .factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $q, $cordovaNetwork, ConnectivityMonitor, Marker) {
 
         var markerCache = [];
         var apiKey = false;
@@ -875,7 +874,7 @@ angular.module('phoenix.services', ['ngCordova'])
                 var request = {
                     origin: startMarkerPos,
                     destination: endMarkerPos,
-                    travelMode: localStorageService.get('travel_mode')
+                    travelMode: google.maps.TravelMode.DRIVING
                 };
                 directionsService.route(request, function (response, status) {
 

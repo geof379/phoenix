@@ -86,13 +86,11 @@ angular.module('phoenix.controllers', [])
               myEl.removeClass("mode-master");
               myEl.addClass("mode-detail");
             } else {
-              if ($scope.pointsvente[0] !== undefined) {
-              $scope.selectedShopCode = $scope.pointsvente[0].code;
-                MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-                myEl = angular.element(document.querySelector('#list-view'));
-                myEl.addClass("mode-master");
-                myEl.removeClass("mode-detail");
-              }
+            if($scope.pointsvente !== undefined){}  $scope.selectedShopCode = $scope.pointsvente[0].code;
+              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+              myEl = angular.element(document.querySelector('#list-view'));
+              myEl.addClass("mode-master");
+              myEl.removeClass("mode-detail");
             }
           }
         }
@@ -230,7 +228,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService,localStorageService) {
     $scope.data = {};
     $ionicHistory.nextViewOptions({
       disableBack: true
@@ -241,9 +239,9 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService,localStorageService) {
     $scope.username = AuthService.getCurrentEmail();
-
+    
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 

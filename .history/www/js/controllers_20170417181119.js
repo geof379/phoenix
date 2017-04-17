@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
     $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
 
@@ -26,9 +26,9 @@ angular.module('phoenix.controllers', [])
       })
     };
 
-    $scope.readSettings = function () {
-      $scope.travel_mode = localStorageService.get('travel_mode');
-      $scope.distance = localStorageService.get('distance');
+    $scope.readSettings = function(){
+$scope.travel_mode = "";
+$scope.distance = "";
     }
 
   })
@@ -86,13 +86,11 @@ angular.module('phoenix.controllers', [])
               myEl.removeClass("mode-master");
               myEl.addClass("mode-detail");
             } else {
-              if ($scope.pointsvente[0] !== undefined) {
               $scope.selectedShopCode = $scope.pointsvente[0].code;
-                MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-                myEl = angular.element(document.querySelector('#list-view'));
-                myEl.addClass("mode-master");
-                myEl.removeClass("mode-detail");
-              }
+              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+              myEl = angular.element(document.querySelector('#list-view'));
+              myEl.addClass("mode-master");
+              myEl.removeClass("mode-detail");
             }
           }
         }
@@ -230,7 +228,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService) {
     $scope.data = {};
     $ionicHistory.nextViewOptions({
       disableBack: true
@@ -241,9 +239,8 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService) {
     $scope.username = AuthService.getCurrentEmail();
-
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -271,7 +268,7 @@ angular.module('phoenix.controllers', [])
             angular.forEach(oldSearchList, function (object, key) {
               var shopMarker = Marker.getMarker(object);
 
-              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= localStorageService.get('distance')) {
+              if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= 10) {
                 if ($scope.searchlists.indexOf(object) < 0) $scope.searchlists.push(object);
               }
             })
