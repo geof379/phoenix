@@ -150,15 +150,14 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
              * Liste des produits dont le prix a été saisi
              */
-            getAllProducts: function (cb) {
+            getProductsByUser: function (username, cb) {
                 $ionicPlatform.ready(function () {
-                    var query = 'SELECT code, prix, pointvente_id FROM produit';
-                    $cordovaSQLite.execute(db, query).then(function (results) {
+                    var query = 'SELECT code, prix, pointvente_id FROM produit WHERE username = ?';
+                    $cordovaSQLite.execute(db, query, [username]).then(function (results) {
                         var data = [];
                         for (i = 0, max = results.rows.length; i < max; i++) {
                             data.push(results.rows.item(i));
-                        }
-
+                        } 
                         cb(data);
                     })
                 })
@@ -168,11 +167,10 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 
-            synchronize: function (username) {
-                var self = this; var username = 'user1@phoenix.com';
-                var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
-
+            synchronize: function (username) { 
+                var self = this;  
+                var url = this.getUrlApi()+'/'+username;
+				return  $http.get(url)  
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -202,19 +200,64 @@ angular.module('phoenix.services', ['ngCordova'])
                         return data.salepoints;
                     })
 
+            },
+
+            transfer: function (username) {
+                var self = this;  
+                var products = []; 
+                this.getProductsByUser(username, function (results) {
+                    
+                    angular.forEach(results, function (object, key) {
+                        var product = {};
+                        product.code = object['code'];
+                        product.prix = object['prix'];
+                        product.pointvente_id = object['pointvente_id'];
+                        if (object['prix'] > 0)  
+                            products.push(product); 
+                    })
+                    var deferred = $q.defer();
+                    //Lancer le transfert
+                    return $http({
+                        method: 'POST',
+                        url: self.getUrlApi(),
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        transformRequest: function (obj) {
+                            var str = [];
+                            for (var p in obj)
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            return str.join("&");
+                        },
+                        data: JSON.stringify(products)
+                    })
+                    .success(function (data, status, headers, config) {
+                        angular.forEach(products, function (produit, key) {
+                            var collectData = {};
+                            collectData.code = produit.code;
+                            collectData.statut = 1;
+                            collectData.pointvente_id = produit.pointvente_id;
+                            self.transfertUpdate(collectData, function (r) { })
+                        })
+
+                    }).error(function (error) {
+                        deferred.reject(error);
+                    })
+                    .then(function (data, status, headers, config) {
+                        deferred.resolve(data);
+                    });
+                }); 
+
             }
         }
 
     })
 
-
-    .factory('AuthService', function ($q, $http, $ionicLoading, localStorageService, $ionicHistory) {
-        var username = 'user1@phoenix.com';
-
+ 
+ .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
+        
         function getUrlApiAuth() {
-            return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
+                return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
         }
-
+ 
         function loadUserCredentials() {
             var user = localStorageService.get('userdata');
             return JSON.parse(user);
@@ -248,7 +291,8 @@ angular.module('phoenix.services', ['ngCordova'])
             localStorage.clear();
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();
-        }
+        } 
+         
 
         var login = function (email, password) {
             var url = getUrlApiAuth();
@@ -260,21 +304,21 @@ angular.module('phoenix.services', ['ngCordova'])
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 transformRequest: function (obj) {
                     var str = [];
-                    for (var p in obj)
+                    for (var p in obj) 
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
                 },
                 data: Indata
+            }) 
+            .success(function (data) { 
+                if(data.error === false)
+                    storeUserCredentials(data); 
+                deferred.resolve(data);
             })
-                .success(function (data) {
-                    if (data.error === false)
-                        storeUserCredentials(data);
-                    deferred.resolve(data);
-                })
-                .error(function (data, status) {
-                    deferred.reject(data);
-                })
-
+            .error(function(data, status) { 
+                deferred.reject(data);
+            })
+     
         };
 
         var logout = function () {
@@ -291,9 +335,7 @@ angular.module('phoenix.services', ['ngCordova'])
             logout: logout,
             getCurrentUser: function () { return loadUserCredentials(); }
         };
-    })
-
-
+    }) 
 
     // gerer les erreurs
     .factory('ErrorService', function ($ionicLoading) {
