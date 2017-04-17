@@ -1,65 +1,128 @@
 angular.module('phoenix.controllers', [])
- 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
-      $scope.user = AuthService.getCurrentUser(); 
-      $scope.username = AuthService.getCurrentEmail();
 
-      /*
-      * Déconnexion
-      */
-      $scope.loggout = function () {
-          AuthService.logout();
-          $state.go('app.login', {}, { reload: true });
-      }; 
- 
-      /*
-      * Transferer des données de la base locale vers le serveur
-      */
-      $scope.transferer = function () {   
-          ErrorService.disableAction('Processing..');
-          $q.all([
-              DataService.transfer($scope.username, function (results) {
-                  console.log('Transfer done.');
-              })
-          ]).then(function () {
-              ErrorService.enableAction();
-          })
-      }; 
- 
-  })
-   
-  .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, ErrorService) {
-      $scope.products = {};
-      $scope.currentSalepoint;
-      MultipleViewsManager.updated('view-shop', function (params) {
-          $q.all([
-              DataService.getProducts(params.shopCode, function (result) { 
-                  $scope.products = result; 
-              })
-          ])
-          .then(function () {}) 
-       
-          $scope.updateProducts = function () {
-              ErrorService.disableAction('Processing..');
-              var self = this;
-              angular.forEach($scope.products, function (object, key) { 
-                  self.updatePrice(object);
-              })
-              ErrorService.enableAction();
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
+    $scope.user = AuthService.getCurrentUser();
+
+    /*
+     * Déconnexion
+     */
+    $scope.loggout = function () {
+      AuthService.logout();
+      $state.go('app.login', {}, { reload: true });
+    };
+
+    /*
+     * Transferer des données de la base locale vers le serveur
+     */
+    $scope.transferer = function () {
+      disableAction('Processing..');
+      DataService.getAllProducts(function (results) {
+        var products = [];
+        angular.forEach(results, function (object, key) {
+          var product = {};
+          product.code = object['code'];
+          product.prix = object['prix'];
+          product.pointvente_id = object['pointvente_id'];
+          if (object['prix'] > 0) {
+            products.push(product);
           }
- 
-          $scope.updatePrice = function (produit) {
-              $scope.produit = produit;
-              if ($scope.produit.prix > 0) {
-                  var collectData = {};
-                  collectData.code = $scope.produit.code;
-                  collectData.prix = $scope.produit.prix;
-                  DataService.updateProduct(collectData, function (r) {
+        })
 
-                  })
-              }
-          }  
+        //Lancer le transfert
+        $http({
+          method: 'POST',
+          url: DataService.getUrlApi(),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          transformRequest: function (obj) {
+            var str = [];
+            for (var p in obj)
+              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            return str.join("&");
+          },
+          data: products
+        })
+          .success(function (data, status, headers, config) {
+
+            angular.forEach(products, function (produit, key) {
+              var collectData = {};
+              collectData.code = produit.code;
+              collectData.statut = 1;
+              collectData.pointvente_id = produit.pointvente_id;
+              DataService.transfertUpdate(collectData, function (r) { })
+            })
+
+          }).error(function (data, status, headers, config) {
+            enableAction();
+          })
+          .then(function (data, status, headers, config) {
+            enableAction();
+          });
+      });
+    };
+
+    var enableAction = function () {
+      $ionicLoading.hide();
+    }
+
+    var disableAction = function (message) {
+      $ionicLoading.show({
+        template: message
+      });
+    }
+  })
+
+
+  .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
+    $scope.products = {};
+    $scope.currentSalepoint;
+    MultipleViewsManager.updated('view-shop', function (params) {
+      $q.all([
+        DataService.getProducts(params.shopCode, function (result) {
+
+          $scope.products = result;
+
+        })
+      ]).then(function () {
+        console.log($scope.products);
       })
+
+
+
+
+
+    $scope.updatePrice = function (produit) {
+        $scope.produit = produit;
+        if ($scope.produit.prix > 0) {
+            var collectData = {};
+            collectData.code = $scope.produit.code;
+            collectData.prix = $scope.produit.prix;
+            DataService.updateProduct(collectData, function (r) {
+
+            })
+        }
+    }
+
+    $scope.updateProducts = function () {
+      $scope.disableAction('Processing..');
+      var self = this;
+
+      angular.forEach($scope.products, function (object, key) {
+        self.updatePrice(object);
+      })
+      $scope.enableAction();
+
+    }
+
+    $scope.enableAction = function () {
+      $ionicLoading.hide();
+    }
+
+    $scope.disableAction = function (message) {
+      $ionicLoading.show({
+        template: message
+      });
+    }
+  })
 
   })
 
@@ -99,8 +162,13 @@ angular.module('phoenix.controllers', [])
       * Récupération des données du serveur et alimentation de la base locale
       */
     $scope.synchroniser = function () {
-      
-      DataService.synchronize().then(function () { 
+      /*$http.get(DataService.getUrlApi(), {
+          headers: {'Authorization': 'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='}
+      })*/
+
+
+      DataService.synchronize().then(function () {
+        $scope.username = 'user1@phoenix.com';
         DataService.getSalePoints($scope.username, function (result) {
           $scope.pointsvente = result;
         });
@@ -139,66 +207,71 @@ angular.module('phoenix.controllers', [])
   })
 
   .controller('DashboardCtrl', function ($scope, $q, DataService, MultipleViewsManager, $ionicPlatform, AuthService, $state) {
-      $scope.username = AuthService.getCurrentEmail();
-      if ($scope.username === 'undefined' || $scope.username === null)
-        $state.go('app.login');
+    $scope.username = AuthService.getCurrentEmail();
+    if ($scope.username === 'undefined' || $scope.username === null)
+      $state.go('app.login');
 
-      var getRandomColor = function () {
-        var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
-        return str.trim();
-      };
+    var getRandomColor = function () {
+      var str = "4px solid #" + Math.floor(Math.random() * 16777215).toString(16) + " !important";
+      return str.trim();
+    };
 
-      $ionicPlatform.ready(function () {
+    $ionicPlatform.ready(function () {
 
-        DataService.getSalePoints($scope.username, function (result) {
-          $scope.pointsvente = result;
-        });
-      })
+      DataService.getSalePoints($scope.username, function (result) {
+        $scope.pointsvente = result;
+      });
+    })
 
-      $scope.changeShop = function (shop) {
-        $scope.selectedShopCode = shop.code;
-        if (MultipleViewsManager.isActive()) {
-          MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
-          myEl = angular.element(document.querySelector('#list-view'));
-          myEl.removeClass("mode-master");
-          myEl.addClass("mode-detail");
-        } else {
-          $state.go('view-shop', { shopCode: shop.code });
-        }
-      };
+    $scope.changeShop = function (shop) {
+      $scope.selectedShopCode = shop.code;
+      if (MultipleViewsManager.isActive()) {
+        MultipleViewsManager.updateView('view-shop', { shopCode: shop.code });
+        myEl = angular.element(document.querySelector('#list-view'));
+        myEl.removeClass("mode-master");
+        myEl.addClass("mode-detail");
+      } else {
+        $state.go('view-shop', { shopCode: shop.code });
+      }
+    };
 
-      $scope.detailToMaster = function () {
-        if (MultipleViewsManager.isActive()) {
-          myEl = angular.element(document.querySelector('#list-view'));
-          myEl.addClass("mode-master");
-        }
-      };
+    $scope.detailToMaster = function () {
+      if (MultipleViewsManager.isActive()) {
+        myEl = angular.element(document.querySelector('#list-view'));
+        myEl.addClass("mode-master");
+      }
+    };
 
-      $scope.graph = {};
-      $scope.graph.data = [
-        //Awake
-        [16, 15, 20, 12, 16, 12, 8],
-        //Asleep
-        [8, 9, 4, 12, 8, 12, 14]
-      ];
-      $scope.graph.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      $scope.graph.series = ['Awake', 'Asleep']; 
+    $scope.graph = {};
+    $scope.graph.data = [
+      //Awake
+      [16, 15, 20, 12, 16, 12, 8],
+      //Asleep
+      [8, 9, 4, 12, 8, 12, 14]
+    ];
+    $scope.graph.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    $scope.graph.series = ['Awake', 'Asleep'];
+
+
 
   })
 
   .controller('LeftMenuCtrl', function ($scope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
-      $scope.menus = [
-          { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-          { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
-          { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' } 
-      ];
+    $scope.menus = [
+      { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
+      { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
+     
+      { name: 'Transferer', href: '', action: 'transferer()', icon: 'item ion-android-arrow-forward' },
+      
+    ];
 
-      $scope.isItemActive = function (menu) {
-        var currentRoute = $location.path().substring(1) || '#/app/map';
-        var active = menu === currentRoute ? 'active' : '';
-        var style = active + ' item icon-left ' + menu.icon;
-        return style;
-      };
+    $scope.isItemActive = function (menu) {
+      var currentRoute = $location.path().substring(1) || '#/app/map';
+      var active = menu === currentRoute ? 'active' : '';
+      var style = active + ' item icon-left ' + menu.icon;
+      return style;
+    };
   })
 
  
@@ -235,7 +308,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService,localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService,loca) {
     $scope.data = {};
     $scope.setting = function (data) {
 
@@ -303,6 +376,8 @@ angular.module('phoenix.controllers', [])
   .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService) {
 
     $scope.shop = JSON.parse($stateParams.shop);
+
+
     DataService.getProducts($scope.shop.code, function (result) {
       $scope.products = result;
     })

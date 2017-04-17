@@ -7,17 +7,17 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
         function useSqlLite() {
-            db = $cordovaSQLite.openDB({ name: dbName, location: 1 });
+            db = $cordovaSQLite.openDB({ name: dbName, location: 1 }); 
         }
 
         function initDatabase() {
             var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), adresse varchar(20), latitude varchar(20), longitude varchar(20), username varchar(60), done INTEGER DEFAULT 0 )';
             var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, username varchar(60), gps varchar(60))';
+var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, username varchar(60), gps varchar(60))';
             $cordovaSQLite.execute(db, query_pv).then(function (res1) {
             }, onErrorQuery);
             $cordovaSQLite.execute(db, query_pe).then(function (res2) {
             }, onErrorQuery);
-
         }
 
         $ionicPlatform.ready(function () {
@@ -39,7 +39,7 @@ angular.module('phoenix.services', ['ngCordova'])
             * Afficher les points de ventes
             */
             getSalePoints: function (username, cb) {
-                var query = 'SELECT * FROM pointvente WHERE username ="' + username + '" ORDER BY libelle';
+                var query = 'SELECT * FROM pointvente WHERE username ="'+username+'" ORDER BY libelle';
                 return $cordovaSQLite.execute(db, query)
                     .then(function (result) {
                         var data = [];
@@ -75,9 +75,9 @@ angular.module('phoenix.services', ['ngCordova'])
              * Vider la table des pointventes
              */
             deleteAllSalepoints: function (username) {
-                var query = 'DELETE FROM pointvente WHERE username ="' + username + '"';
+                var query = 'DELETE FROM pointvente WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
-                    .then(function (res) { }, onErrorQuery);
+                    .then(function (res) {}, onErrorQuery);
             },
 
             /*
@@ -104,7 +104,7 @@ angular.module('phoenix.services', ['ngCordova'])
              * Sauvegarde du statut des produits
              */
             transfertUpdate: function (produit, callback) {
-                var pointvente_id = produit.pointvente_id;
+                var pointvente_id = produit.pointvente_id; 
 
                 var query = 'UPDATE produit SET transfert = ? WHERE code = ?';
                 return $cordovaSQLite.execute(db, query, [produit.statut, produit.code])
@@ -123,7 +123,7 @@ angular.module('phoenix.services', ['ngCordova'])
              * Vider la table des produits
              */
             deleteAllProducts: function (username) {
-                var query = 'DELETE FROM produit WHERE username ="' + username + '"';
+                var query = 'DELETE FROM produit WHERE username ="'+username+'"';
                 return $cordovaSQLite.execute(db, query)
                     .then(function (res) { }, onErrorQuery);
             },
@@ -142,7 +142,7 @@ angular.module('phoenix.services', ['ngCordova'])
                         }
                     })
 
-                    callback(data);
+                    callback(data); 
                 })
 
             },
@@ -150,14 +150,15 @@ angular.module('phoenix.services', ['ngCordova'])
             /*
              * Liste des produits dont le prix a été saisi
              */
-            getProductsByUser: function (username, cb) {
+            getAllProducts: function (cb) {
                 $ionicPlatform.ready(function () {
-                    var query = 'SELECT code, prix, pointvente_id FROM produit WHERE username = ?';
-                    $cordovaSQLite.execute(db, query, [username]).then(function (results) {
+                    var query = 'SELECT code, prix, pointvente_id FROM produit';
+                    $cordovaSQLite.execute(db, query).then(function (results) {
                         var data = [];
                         for (i = 0, max = results.rows.length; i < max; i++) {
                             data.push(results.rows.item(i));
-                        } 
+                        }
+
                         cb(data);
                     })
                 })
@@ -168,16 +169,10 @@ angular.module('phoenix.services', ['ngCordova'])
             },
 
             synchronize: function (username) {
-<<<<<<< HEAD
-                var self = this;  
-                var url = this.getUrlApi()+'/'+username;
-				return  $http.get(url) 
-=======
                 var self = this; var username = 'user1@phoenix.com';
-                var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
+                var url = this.getUrlApi()+'/'+username;
+				return  $http.get(url)
 
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -205,53 +200,7 @@ angular.module('phoenix.services', ['ngCordova'])
                                 self.createProduct(product);
                             })
                         return data.salepoints;
-                    })
-
-            },
-
-            transfer: function (username) {
-                var self = this;  
-                var products = []; 
-                this.getProductsByUser(username, function (results) {
-                    
-                    angular.forEach(results, function (object, key) {
-                        var product = {};
-                        product.code = object['code'];
-                        product.prix = object['prix'];
-                        product.pointvente_id = object['pointvente_id'];
-                        if (object['prix'] > 0)  
-                            products.push(product); 
-                    })
-                    var deferred = $q.defer();
-                    //Lancer le transfert
-                    return $http({
-                        method: 'POST',
-                        url: self.getUrlApi(),
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        transformRequest: function (obj) {
-                            var str = [];
-                            for (var p in obj)
-                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                            return str.join("&");
-                        },
-                        data: JSON.stringify(products)
-                    })
-                    .success(function (data, status, headers, config) {
-                        angular.forEach(products, function (produit, key) {
-                            var collectData = {};
-                            collectData.code = produit.code;
-                            collectData.statut = 1;
-                            collectData.pointvente_id = produit.pointvente_id;
-                            self.transfertUpdate(collectData, function (r) { })
-                        })
-
-                    }).error(function (error) {
-                        deferred.reject(error);
-                    })
-                    .then(function (data, status, headers, config) {
-                        deferred.resolve(data);
-                    });
-                }); 
+				})
 
             }
         }
@@ -259,30 +208,21 @@ angular.module('phoenix.services', ['ngCordova'])
     })
 
 
-<<<<<<< HEAD
  .factory('AuthService', function($q, $http, $ionicLoading, localStorageService, $ionicHistory) { 
-        
-        function getUrlApiAuth() {
-                return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
-        }
-        
-=======
-    .factory('AuthService', function ($q, $http, $ionicLoading, localStorageService, $ionicHistory) {
         var username = 'user1@phoenix.com';
-
-        function getUrlApiAuth() {
-            return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
-        }
-
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
+       
+  function getUrlApiAuth() {
+   return 'http://www.e-sud.fr/client/phoenix/api/v1/authenticate';
+  }
+        
         function loadUserCredentials() {
-            var user = localStorageService.get('userdata');
+            var user = localStorageService.get('userdata'); 
             return JSON.parse(user);
         }
 
         function getCurrentUsername() {
             var user = loadUserCredentials();
-            if (user)
+            if(user)
                 return user.name;
             else
                 return null;
@@ -290,93 +230,66 @@ angular.module('phoenix.services', ['ngCordova'])
 
         function getCurrentEmail() {
             var user = loadUserCredentials();
-            if (user)
+            if(user)
                 return user.email;
             else
                 return null;
-        }
-
+        }          
+        
         function storeUserCredentials(user) {
             localStorageService.set('userdata', JSON.stringify(user));
-            localStorageService.set('userTokenKey', user.apiKey);
-            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey;
+            localStorageService.set('userTokenKey', user.apiKey);  
+            $http.defaults.headers.common['X-Auth-Token'] = user.apiKey; 
         }
-
-        function destroyUserCredentials() {
+        
+        function destroyUserCredentials() { 
             $http.defaults.headers.common['X-Auth-Token'] = undefined;
             //$window.localStorage.clear();
             localStorage.clear();
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();
         }
-<<<<<<< HEAD
         
         var login = function(email, password) {
-            var url = getUrlApiAuth(); 
-            var deferred = $q.defer();
+   var url = getUrlApiAuth(); 
+   var deferred = $q.defer();
             var Indata = {'email':email, 'password': password};
             return $http({
                 url: url,
                 method: "POST",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                transformRequest: function(obj) {
-                    var str = [];
-                    for(var p in obj)
-=======
-
-        var login = function (email, password) {
-            var url = getUrlApiAuth();
-            var deferred = $q.defer();
-            var Indata = { 'email': email, 'password': password };
-            return $http({
-                url: url,
-                method: "POST",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                transformRequest: function (obj) {
-                    var str = [];
-                    for (var p in obj)
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    return str.join("&");
-                },
+    transformRequest: function(obj) {
+     var str = [];
+     for(var p in obj)
+         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+     return str.join("&");
+    },
                 data: Indata
             })
-<<<<<<< HEAD
             .success(function (data) { 
                 if(data.error === false)
                     storeUserCredentials(data); 
-                deferred.resolve(data);
+    deferred.resolve(data);
             })
             .error(function(data, status) { 
-                deferred.reject(data);
+                 deferred.reject(data);
             })
     
-=======
-                .success(function (data) {
-                    if (data.error === false)
-                        storeUserCredentials(data);
-                    deferred.resolve(data);
-                })
-                .error(function (data, status) {
-                    deferred.reject(data);
-                })
-
->>>>>>> 4f381773de34faf2384b7b9b3d7457a8deef44a1
         };
-
-        var logout = function () {
+        
+        var logout = function() {
             destroyUserCredentials();
         };
-
+       
         loadUserCredentials();
-
+        
         return {
             login: login,
-            loadUserCredentials: function () { return loadUserCredentials(); },
-            getCurrentEmail: function () { return getCurrentEmail(); },
-            getCurrentUsername: function () { return getCurrentUsername(); },
+            loadUserCredentials: function() {return loadUserCredentials();} ,
+            getCurrentEmail: function() {return getCurrentEmail();} ,
+            getCurrentUsername: function() {return getCurrentUsername();} ,
             logout: logout,
-            getCurrentUser: function () { return loadUserCredentials(); }
+            getCurrentUser: function() {return loadUserCredentials();}  
         };
     })
 
@@ -385,11 +298,11 @@ angular.module('phoenix.services', ['ngCordova'])
     // gerer les erreurs
     .factory('ErrorService', function ($ionicLoading) {
 
-        return {
+        return {  
 
             enableAction: function () {
                 $ionicLoading.hide();
-            },
+            }, 
 
             disableAction: function (message) {
                 $ionicLoading.show({
@@ -399,7 +312,7 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
     })
-
+    
     .factory('ShopService', function () {
 
         var shops = [
@@ -430,7 +343,7 @@ angular.module('phoenix.services', ['ngCordova'])
             }
         }
     })
-
+    
 
     /** Connectivity monitor */
     .factory('ConnectivityMonitor', function ($rootScope, $cordovaNetwork) {
@@ -905,7 +818,7 @@ angular.module('phoenix.services', ['ngCordova'])
             },
             initDiection: function () {
                 directionsService = new google.maps.DirectionsService;
-                directionsDisplay = new google.maps.DirectionsRenderer;
+                directionsDisplay = new google.maps.DirectionsRenderer; 
             },
             routeToShop: function (marker, directionsPanel) {
                 this.clearMarker();
@@ -952,7 +865,7 @@ angular.module('phoenix.services', ['ngCordova'])
                     Math.sin(dLon / 2);
                 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                 var d = R * c;
-
+                
                 return d;
 
             }
