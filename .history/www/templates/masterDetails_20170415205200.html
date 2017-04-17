@@ -36,7 +36,7 @@
 
             <ul id="menu" class="list">
                 <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}"> {{menu.name}} </a>
-
+               
             </ul>
 
 
@@ -48,11 +48,6 @@
 
 
         </ion-content>
-        <ion-footer-bar>
-            <bar-footer class="button-bar footer">
-                <a class="button item icon-left ion-android-exit" menu-close ng-click="loggout()"> Logout</a>
-                <a class="button item ion-settings" menu-close ng-href="#/app/setting"></a>
-            </bar-footer>
-        </ion-footer-bar>
+
     </ion-side-menu>
 </ion-side-menus>

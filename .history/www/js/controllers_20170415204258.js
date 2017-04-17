@@ -257,9 +257,7 @@ angular.module('phoenix.controllers', [])
       { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
       { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
-     
-      { name: 'Transferer', href: '', action: 'transferer()', icon: 'item ion-android-arrow-forward' },
-      
+      { name: 'Setting', href: '#/app/setting', action: '', icon: 'ion-settings' }
     ];
 
     $scope.isItemActive = function (menu) {

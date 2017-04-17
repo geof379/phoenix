@@ -12,7 +12,9 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left" ng-controller="LeftMenuCtrl">
-
+    <ion-footer-bar>
+      <span class="padding"></span>
+    </ion-footer-bar>
     <ion-content>
 
       <div class="profile" style="height: 120px;">
@@ -24,19 +26,17 @@
       </div>
       <ul id="menu" class="list">
         <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}"> {{menu.name}}</a>
-
       </ul>
 
-
-
+      <!--
+  <bar-footer class="button-bar footer bar-positive">
+                <a class="button ion-home" menu-close ng-href="#/app/dashboard"></a>
+                <a class="button ion-gear-a" menu-close ng-href="#/app/profile"></a>
+                <i class="button ion-android-exit" menu-close ng-click="loggout()"></i>
+            </bar-footer>
+-->
 
     </ion-content>
-    <ion-footer-bar>
-      <bar-footer class="button-bar footer">
-        <a class="button " ng-click="loggout()"> Logout</a>
-        <a class="button" ng-href="#/app/setting"> <i class="item item-icon-left ion-settings"></i></a>
-      </bar-footer>
-    </ion-footer-bar>
 
   </ion-side-menu>
 </ion-side-menus>

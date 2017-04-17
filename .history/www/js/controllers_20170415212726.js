@@ -259,7 +259,7 @@ angular.module('phoenix.controllers', [])
       { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' },
      
       { name: 'Transferer', href: '', action: 'transferer()', icon: 'item ion-android-arrow-forward' },
-      
+      { name: 'Logout', href: '', action: 'loggout()', icon: 'item icon-left ion-android-exit' }
     ];
 
     $scope.isItemActive = function (menu) {
