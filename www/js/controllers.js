@@ -1,4 +1,4 @@
-multiplateforme de jeu en ligne multi-joueursangular.module('phoenix.controllers', [])
+angular.module('phoenix.controllers', [])
  
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
       $scope.user = AuthService.getCurrentUser(); 
