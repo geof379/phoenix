@@ -13,6 +13,7 @@ angular.module('phoenix.services', ['ngCordova'])
         function initDatabase() {
             var query_pv = 'CREATE TABLE IF NOT EXISTS pointvente(id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), adresse varchar(20), latitude varchar(20), longitude varchar(20), username varchar(60), done INTEGER DEFAULT 0 )';
             var query_pe = 'CREATE TABLE IF NOT EXISTS produit (id INTEGER PRIMARY KEY, code varchar(20), libelle varchar(60), pointvente_id varchar(20), prix float DEFAULT 0, transfert INTEGER DEFAULT 0, username varchar(60), gps varchar(60))';
+            var query_pa = 'CREATE TABLE IF NOT EXISTS param (id INTEGER PRIMARY KEY, travel_mode varchar(20), preferred_distance INTEGER DEFAULT 10, username varchar(60))';
             $cordovaSQLite.execute(db, query_pv).then(function (res1) {
             }, onErrorQuery);
             $cordovaSQLite.execute(db, query_pe).then(function (res2) {

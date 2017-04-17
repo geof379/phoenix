@@ -308,7 +308,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService,localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService,loca) {
     $scope.data = {};
     $scope.setting = function (data) {
 
