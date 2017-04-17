@@ -18,10 +18,13 @@
       <div class="profile" style="height: 120px;">
         <div class="item item-avatar">
           <img src="img/user_male.png">
-
+<<<<<<< HEAD
           <h2>HI </h2>
           <p>{{user.name}}</p>
-
+=======
+        <h2>{{user.name}}</h2>
+        <p>{{user.email}}</p>
+>>>>>>> 4d8f2c795c9fbd5f8675c4cf0bc72b0a9da6fb12
         </div>
       </div>
       <ul id="menu" class="list">
@@ -35,8 +38,8 @@
     </ion-content>
     <ion-footer-bar>
       <bar-footer class="button-bar footer">
-          <a class=" col col-80 button item item-left ion-android-exit " style="text-align:left" ng-click="loggout()"> Logout</a>
-          <a class=" col col-20 button item item-icon-left ion-gear-a" ng-href="#/app/setting"></a>
+        <a class="button " ng-click="loggout()"> Logout</a>
+        <a class="button" ng-href="#/app/setting"> <i class="item item-icon-left ion-settings"></i></a>
       </bar-footer>
     </ion-footer-bar>
 
