@@ -1,4 +1,4 @@
-angular.module('phoenix.controllers', [])
+multiplateforme de jeu en ligne multi-joueursangular.module('phoenix.controllers', [])
  
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
       $scope.user = AuthService.getCurrentUser(); 
@@ -235,7 +235,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
-  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService,localStorageService) {
+  .controller('SettingCtrl', function ($scope, $state, $ionicPopup, AuthService) {
     $scope.data = {};
     $scope.setting = function (data) {
 
