@@ -1,74 +1,30 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, AUTH_EVENTS) {
-    $scope.user = AuthService.getCurrentUser(); 
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
+      $scope.user = AuthService.getCurrentUser(); 
+      $scope.username = AuthService.getCurrentEmail();
+      /*
+      * Déconnexion
+      */
+      $scope.loggout = function () {
+          AuthService.logout();
+          $state.go('app.login', {}, { reload: true });
+      }; 
 
-    /*
-     * Déconnexion
-     */
-    $scope.loggout = function () {
-        AuthService.logout();
-        $state.go('app.login', {}, { reload: true });
-    }; 
-
-    /*
-     * Transferer des données de la base locale vers le serveur
-     */
-    $scope.transferer = function () {
-      disableAction('Processing..');
-      DataService.getAllProducts(function (results) {
-        var products = [];
-        angular.forEach(results, function (object, key) {
-          var product = {};
-          product.code = object['code'];
-          product.prix = object['prix'];
-          product.pointvente_id = object['pointvente_id'];
-          if (object['prix'] > 0) {
-            products.push(product);
-          }
-        })
-
-        //Lancer le transfert
-        $http({
-          method: 'POST',
-          url: DataService.getUrlApi(),
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          transformRequest: function (obj) {
-            var str = [];
-            for (var p in obj)
-              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-            return str.join("&");
-          },
-          data: products
-        })
-          .success(function (data, status, headers, config) {
-
-            angular.forEach(products, function (produit, key) {
-              var collectData = {};
-              collectData.code = produit.code;
-              collectData.statut = 1;
-              collectData.pointvente_id = produit.pointvente_id;
-              DataService.transfertUpdate(collectData, function (r) { })
-            })
-
-          }).error(function (data, status, headers, config) {
-            enableAction();
+      /*
+      * Transferer des données de la base locale vers le serveur
+      */
+      $scope.transferer = function () {   
+          ErrorService.disableAction('Processing..');
+          $q.all([
+              DataService.transfer($scope.username, function (results) {
+                  console.log('Transfer done.');
+              })
+          ]).then(function () {
+              ErrorService.enableAction();
           })
-          .then(function (data, status, headers, config) {
-            enableAction();
-          });
-      });
-    };
-
-    var enableAction = function () {
-      $ionicLoading.hide();
-    }
-
-    var disableAction = function (message) {
-      $ionicLoading.show({
-        template: message
-      });
-    }
+      };
+ 
   })
 
   /**.controller('ProductlistCtrl', function ($scope, $stateParams, DataService, $ionicLoading) {
@@ -94,51 +50,39 @@ angular.module('phoenix.controllers', [])
 
      
   })*/
-  .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
+  .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, ErrorService) {
       $scope.products = {};
       $scope.currentSalepoint;
       MultipleViewsManager.updated('view-shop', function (params) {
-        $q.all([
-            DataService.getProducts(params.shopCode, function (result) { 
-                $scope.products = result; 
-            })
-        ]).then(function () {})
+          $q.all([
+              DataService.getProducts(params.shopCode, function (result) { 
+                  $scope.products = result; 
+              })
+          ]).then(function () {})
 
       });
 
+      $scope.updatePrice = function (produit) {
+          $scope.produit = produit;
+          if ($scope.produit.prix > 0) {
+              var collectData = {};
+              collectData.code = $scope.produit.code;
+              collectData.prix = $scope.produit.prix;
+              DataService.updateProduct(collectData, function (r) {
 
-    $scope.updatePrice = function (produit) {
-        $scope.produit = produit;
-        if ($scope.produit.prix > 0) {
-            var collectData = {};
-            collectData.code = $scope.produit.code;
-            collectData.prix = $scope.produit.prix;
-            DataService.updateProduct(collectData, function (r) {
+              })
+          }
+      }
 
-            })
-        }
-    }
+      $scope.updateProducts = function () {
+          ErrorService.disableAction('Processing..');
+          var self = this;
+          angular.forEach($scope.products, function (object, key) { 
+              self.updatePrice(object);
+          })
+          ErrorService.enableAction();
+      }
 
-    $scope.updateProducts = function () {
-      $scope.disableAction('Processing..');
-      var self = this;
-
-      angular.forEach($scope.products, function (object, key) { 
-          self.updatePrice(object);
-      })
-      $scope.enableAction();
-
-    }
-
-    $scope.enableAction = function () {
-        $ionicLoading.hide();
-    }
-
-    $scope.disableAction = function (message) {
-        $ionicLoading.show({
-            template: message
-        });
-    }
   })
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService) {
@@ -380,8 +324,6 @@ angular.module('phoenix.controllers', [])
   .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService) {
       
     $scope.shop = JSON.parse($stateParams.shop);
-
-
     DataService.getProducts($scope.shop.code, function (result) {
       $scope.products = result;
     })
