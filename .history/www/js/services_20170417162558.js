@@ -18,8 +18,6 @@ angular.module('phoenix.services', ['ngCordova'])
             }, onErrorQuery);
             $cordovaSQLite.execute(db, query_pe).then(function (res2) {
             }, onErrorQuery);
-            $cordovaSQLite.execute(db, query_pa).then(function (res3) {
-            }, onErrorQuery);
         }
 
         $ionicPlatform.ready(function () {
