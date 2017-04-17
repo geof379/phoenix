@@ -71,6 +71,7 @@ angular.module('phoenix.controllers', [])
     }
   })
 
+
   .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, $ionicLoading) {
     $scope.products = {};
     $scope.currentSalepoint;
@@ -85,19 +86,20 @@ angular.module('phoenix.controllers', [])
         console.log($scope.products);
       })
 
-    });
+
+
 
 
     $scope.updatePrice = function (produit) {
-      $scope.produit = produit;
-      if ($scope.produit.prix > 0) {
-        var collectData = {};
-        collectData.code = $scope.produit.code;
-        collectData.prix = $scope.produit.prix;
-        DataService.updateProduct(collectData, function (r) {
+        $scope.produit = produit;
+        if ($scope.produit.prix > 0) {
+            var collectData = {};
+            collectData.code = $scope.produit.code;
+            collectData.prix = $scope.produit.prix;
+            DataService.updateProduct(collectData, function (r) {
 
-        })
-      }
+            })
+        }
     }
 
     $scope.updateProducts = function () {
@@ -120,6 +122,8 @@ angular.module('phoenix.controllers', [])
         template: message
       });
     }
+  })
+
   })
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService) {
@@ -270,13 +274,17 @@ angular.module('phoenix.controllers', [])
     };
   })
 
-  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, $q, AuthService, localStorageService,$ionicHistory) {
+ 
+  .controller('LoginCtrl', function ($scope, $state, $ionicPopup, $q, AuthService, localStorageService,$ionicHistory, ErrorService) {
+
     $scope.notificationMessage = null;
     $scope.loginErrors = false;
     $scope.login = function (data) {
+      ErrorService.disableAction('Processing..');
       $q.all([
         AuthService.login(data.email, data.password)])
         .then(function (response) {
+
           if (response[0].data.error === false) {
             $scope.username = data.email;
             $ionicHistory.nextViewOptions({
@@ -289,10 +297,13 @@ angular.module('phoenix.controllers', [])
             $scope.notificationMessage = response[0].data.message;
             $scope.loginErrors = true;
           }
+           ErrorService.enableAction();
+
         })
         .catch(function (response) {
-          $scope.notificationMessage = response.data.message;
-          $scope.loginErrors = true;
+            $scope.notificationMessage = response[0].data.message;
+            $scope.loginErrors = true;
+            ErrorService.enableAction();
         });
     }
   })
@@ -385,7 +396,3 @@ angular.module('phoenix.controllers', [])
 
 
   });
-
-
-
-

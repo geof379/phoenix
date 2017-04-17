@@ -289,118 +289,30 @@ angular.module('phoenix.services', ['ngCordova'])
             getCurrentEmail: function() {return getCurrentEmail();} ,
             getCurrentUsername: function() {return getCurrentUsername();} ,
             logout: logout,
-            getCurrentUser: function() {return loadUserCredentials();} 
-            //isAuthorized: isAuthorized,
+            getCurrentUser: function() {return loadUserCredentials();}  
         };
     })
 
-
-
-    /*.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
-        $q.resolve(response);
->>>>>>> 26132385a300e516f727818ef3f2ff11c65eb08e
-        return {
-            responseError: function (response) {
-            $rootScope.$broadcast({
-                401: AUTH_EVENTS.notAuthenticated,
-                403: AUTH_EVENTS.notAuthorized
-            }[response.status], response);
-            return $q.reject(response);
-            }
-        };
-<<<<<<< HEAD
-    })
-=======
-    })*/
 
 
     // gerer les erreurs
-    .factory('ErrorService', function (ionicToast, $ionicPopup, $ionicLoading) {
+    .factory('ErrorService', function ($ionicLoading) {
 
-        return {
-            onSaveSuccess: function () {
+        return {  
 
-            },
-
-            showToast: function (message, position) {
-                ionicToast.show(message, position, false, 4000);
-            },
-
-            hideToast: function () {
-                ionicToast.hide();
-            },
-
-            popErrorModal: function () {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Authentification failed.',
-                    template: 'Merci de vérifier vos paramètres de connexion!',
-                    cssClass: 'animated bounceInDown'
-                });
-            },
-
-            popErrorModalConFail: function () {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Authentification failed.',
-                    template: 'Impossible de joindre le serveur',
-                    cssClass: 'animated bounceInDown'
-                });
-            },
-
-            popErrorFromServer: function (title, message) {
-                var alertPopup = $ionicPopup.alert({
-                    title: title,
-                    template: message,
-                    cssClass: 'animated bounceInDown'
-                });
-            },
-
-            showLoading: function () {
-                $ionicLoading.show({
-                    template: '<ion-spinner class="spinner-energized"></ion-spinner>',
-                    noBackdrop: true,
-                    animation: 'fade-in'
-                });
-            },
-
-            hideLoading: function () {
+            enableAction: function () {
                 $ionicLoading.hide();
+            }, 
+
+            disableAction: function (message) {
+                $ionicLoading.show({
+                    template: message
+                });
             }
         }
 
     })
-    /** 
-    .factory('LocationService', function ($ionicPlatform, $cordovaGeolocation, localStorageService) {
-        return {
-            getGeoPosition: function () {
-                 localStorageService.set("oldgps", '6.18092575|1.19585915');
-                 $ionicPlatform.ready(function() {
-                  navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        localStorageService.set("gps",position.coords.latitude+'|'+position.coords.longitude);
-                        localStorageService.set("oldgps", localStorageService.get("gps"));
-                    },
-                    function(error) {
-                        if(error.code ==2){
-                             alert("Aucun service GPS n'a été trouvé sur ce mobile");
-                              cordova.plugins.settings.openSetting("location_source",function(){},function(){});
-                              localStorageService.set("gps", '0.00000|0.00000');
-                        }else{
-                            localStorageService.set("gps", localStorageService.get("oldgps"));
-                        }
-                    },
-                    { maximumAge: 5000, timeout: 10000, enableHighAccuracy: true }
-                  )
-                });
-                //return localStorageService.get("gps");
-            },
-        }
-    })*/
-
-    /**  
-     * 
-     * // Some fake testing data
-<<<<<<< HEAD
-    */
+    
     .factory('ShopService', function () {
 
         var shops = [
@@ -431,7 +343,7 @@ angular.module('phoenix.services', ['ngCordova'])
             }
         }
     })
-    /**  */
+    
 
     /** Connectivity monitor */
     .factory('ConnectivityMonitor', function ($rootScope, $cordovaNetwork) {
@@ -521,8 +433,6 @@ angular.module('phoenix.services', ['ngCordova'])
         var directionsService = null;
         var directionRequestion;
         var currentPosition;
-
-
 
         function enableMap() {
             $ionicLoading.hide();
@@ -908,8 +818,7 @@ angular.module('phoenix.services', ['ngCordova'])
             },
             initDiection: function () {
                 directionsService = new google.maps.DirectionsService;
-                directionsDisplay = new google.maps.DirectionsRenderer;
-
+                directionsDisplay = new google.maps.DirectionsRenderer; 
             },
             routeToShop: function (marker, directionsPanel) {
                 this.clearMarker();
@@ -964,9 +873,3 @@ angular.module('phoenix.services', ['ngCordova'])
 
 
     })
-  
-    /*
-    .config(function ($httpProvider) {
-        $httpProvider.interceptors.push('AuthInterceptor');
-    });
-*/
