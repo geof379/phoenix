@@ -9,7 +9,7 @@
       <input type="text" placeholder="Search" ng-model="searchText">
       </label>
       <div class="item item-divider"></div>
-        <label class="item  item-input  icon-left" ng-repeat="product in products | filter:searchText">
+        <label class="item  item-input  icon-left" ng-repeat="product in products">
           <span class="input-label">{{product.libelle}}</span>
           <input type="number"  style="text-align:right;"  ng-model="product.prix">
         </label>
