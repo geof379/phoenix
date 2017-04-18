@@ -1,18 +1,6 @@
 <ion-view view-title="Settings" ng-controller="AppCtrl">
-    <ion-content>
-
-        <div class="profile" style="height: 120px;">
-            <div class="item item-avatar">
-                <img src="img/user_male.png">
-
-                <h2>HI </h2>
-                <p>{{user.name}}</p>
-
-            </div>
-        </div>
-
-        <div class="list">
-
+    <ion-content> 
+        <div class="list"> 
             <div class="item item-divider"> Route options </div>
             <ion-list>
                 <ion-radio ng-model="travel_mode" ng-value="'DRIVING'">DRIVING</ion-radio>
@@ -25,7 +13,6 @@
                 0
                 <input type="range" name="volume" min="0" max="100" value="33">
                 100
-            </div>
-
+            </div> 
     </ion-content>
 </ion-view>

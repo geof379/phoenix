@@ -11,29 +11,26 @@
     <ion-nav-view name="menuContent"> </ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="left" ng-controller="LeftMenuCtrl">
-
-    <ion-content>
-
+  <ion-side-menu side="left" ng-controller="LeftMenuCtrl"> 
+    <ion-content> 
       <div class="profile" style="height: 120px;">
         <div class="item item-avatar">
-          <img src="img/user_male.png">
-
+          <img src="img/logo.png"> 
           <h2>HI </h2>
-          <p>{{user.name}}</p>
-
+          <p>{{user.name}}</p> 
         </div>
       </div>
       <ul id="menu" class="list">
           <a ng-repeat="menu in menus" ng-class="isItemActive({{menu}})" menu-close ng-href="{{menu.href}}"> {{menu.name}}</a>
-          <a  class="ng-binding item ion-android-arrow-forward" menu-close ng-click="transferer()"> Transfer</a>  
+          <a  class="ng-binding item ion-android-arrow-forward" menu-close  ng-click="transferer()"> Transfer</a>  
+          <a  class="ng-binding item ion-android-arrow-forward" menu-close ng-click="synchroniser()"> Synchronize</a>  
       </ul> 
 
     </ion-content>
     <ion-footer-bar>
       <bar-footer class="button-bar footer">
           <a class=" col col-80 button item item-left ion-android-exit " style="text-align:left" ng-click="loggout()"> Logout</a>
-          <a class=" col col-20 button item item-icon-left ion-settings" ng-href="#/app/setting"></a>
+          <a class=" col col-20 button item item-icon-left ion-settings" ng-href="#/app/setting">Settings</a>
       </bar-footer>
     </ion-footer-bar>
 

@@ -211,8 +211,7 @@ angular.module('phoenix.services', ['ngCordova'])
             transfer: function (username) {
                 var self = this;
                 var products = [];
-                this.getProductsByUser(username, function (results) {
-
+                this.getProductsByUser(username, function (results) {                     
                     angular.forEach(results, function (object, key) {
                         var product = {};
                         product.code = object['code'];
@@ -235,21 +234,21 @@ angular.module('phoenix.services', ['ngCordova'])
                         },
                         data: JSON.stringify(products)
                     })
-                        .success(function (data, status, headers, config) {
-                            angular.forEach(products, function (produit, key) {
-                                var collectData = {};
-                                collectData.code = produit.code;
-                                collectData.statut = 1;
-                                collectData.pointvente_id = produit.pointvente_id;
-                                self.transfertUpdate(collectData, function (r) { })
-                            })
-
-                        }).error(function (error) {
-                            deferred.reject(error);
+                    .success(function (data, status, headers, config) {
+                        angular.forEach(products, function (produit, key) {
+                            var collectData = {};
+                            collectData.code = produit.code;
+                            collectData.statut = 1;
+                            collectData.pointvente_id = produit.pointvente_id;
+                            self.transfertUpdate(collectData, function (r) { })
                         })
-                        .then(function (data, status, headers, config) {
-                            deferred.resolve(data);
-                        });
+                        console.log(data);
+                    }).error(function (error) {
+                        deferred.reject(error);
+                    })
+                    .then(function (data, status, headers, config) {
+                        deferred.resolve(data);
+                    });
                 });
 
             }
