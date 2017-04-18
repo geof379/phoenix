@@ -13,8 +13,7 @@ angular.module('phoenix', ['ionic', 'phoenix.controllers', 'phoenix.services', '
   })
 
   .run(function ($ionicPlatform, $rootScope) {
-    $rootScope.user = {};
-    $rootScope.username = "";
+    $rootScope.username = ""
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)

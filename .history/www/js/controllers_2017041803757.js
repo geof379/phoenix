@@ -1,6 +1,6 @@
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope,$rootScope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
+  .controller('AppCtrl', function ($scope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
     $rootScope.user = AuthService.getCurrentUser();
     $rootScope.username = AuthService.getCurrentEmail();
 
@@ -47,7 +47,7 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('ProductlistCtrl', function ($scope,$rootScope, $stateParams, $q, MultipleViewsManager, DataService, ErrorService) {
+  .controller('ProductlistCtrl', function ($scope, $stateParams, $q, MultipleViewsManager, DataService, ErrorService) {
     $scope.products = {};
     $scope.currentSalepoint;
     MultipleViewsManager.updated('view-shop', function (params) {
