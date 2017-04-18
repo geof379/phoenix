@@ -1,9 +1,8 @@
 <ion-view view-title="List">
   <ion-content>
     <ion-list class="list">
-      <ion-item ng-repeat="shop in pointsvente" ng-click="changeShop(shop)" class="item item-button-right">
-        {{shop.libelle}}
-
+      <ion-item ng-repeat="shop in pointsvente" ng-click="changeShop(shop)" class="item item-button-right" >
+        <span ng-class="shop.done == 1 ? 'shop-transfered' : '' " >{{shop.libelle}}</span>
         <a class="button" href="#/app/location/{{shop}}">
           <i class="icon ion-ios-location"></i>
         </a>
@@ -15,5 +14,5 @@
     </div>
   </ion-content>
 
-  <multiple-views-support width="35%" />
+  <multiple-views-support width="35%">
 </ion-view>

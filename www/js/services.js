@@ -1,5 +1,5 @@
 angular.module('phoenix.services', ['ngCordova'])
-    .factory('DataService', function ($cordovaSQLite, $ionicPlatform, $q, $http, $ionicLoading, localStorageService, $timeout) {
+    .factory('DataService', function ($cordovaSQLite, $ionicPlatform, $q, $http, $ionicLoading, localStorageService) {
         var db, dbName = "phoenix.db";
 
         function useWebSql() {
@@ -83,8 +83,8 @@ angular.module('phoenix.services', ['ngCordova'])
              * Vider la table des pointventes
              */
             deleteAllSalepoints: function (username) {
-                var query = 'DELETE FROM pointvente WHERE username ="' + username + '"';
-                return $cordovaSQLite.execute(db, query)
+                var query = 'DELETE FROM pointvente WHERE username = ?';
+                return $cordovaSQLite.execute(db, query, [username])
                     .then(function (res) { }, onErrorQuery);
             },
 
@@ -131,9 +131,9 @@ angular.module('phoenix.services', ['ngCordova'])
              * Vider la table des produits
              */
             deleteAllProducts: function (username) {
-                var query = 'DELETE FROM produit WHERE username ="' + username + '"';
-                return $cordovaSQLite.execute(db, query)
-                    .then(function (res) { }, onErrorQuery);
+                var query = 'DELETE FROM produit WHERE username = ?';
+                return $cordovaSQLite.execute(db, query, [username])
+                    .then(function (res) {}, onErrorQuery);
             },
 
             /*
@@ -177,9 +177,9 @@ angular.module('phoenix.services', ['ngCordova'])
 
             synchronize: function (username) { 
                 var self = this;
-                var url = this.getUrlApi() + '/' + username;
+                var url = this.getUrlApi() + '/'+username;
                 var deferred = $q.defer();
-                return $http.get(url, {params:{"user": username}})
+                return $http.get(url)
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -206,7 +206,7 @@ angular.module('phoenix.services', ['ngCordova'])
                             product.username = username;
                             self.createProduct(product);
                         })
-                        return data.salepoints;
+                        data.salepoints;
                     })
                     .error(function (data) {
                         deferred.reject(data);
