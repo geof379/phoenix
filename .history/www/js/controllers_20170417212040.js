@@ -16,12 +16,12 @@ angular.module('phoenix.controllers', [])
     * Transferer des données de la base locale vers le serveur
     */
     $scope.transferer = function () {
-      ErrorService.disableAction('Processing..');
-      $q.all([
-        DataService.transfer($scope.username, function (results) {
-
-        })])
-        .then(function () {
+        ErrorService.disableAction('Processing..');
+        $q.all([
+          DataService.transfer($scope.username, function (results) {
+            
+          })])
+          .then(function () {
           ErrorService.enableAction();
         })
     };
@@ -68,74 +68,74 @@ angular.module('phoenix.controllers', [])
   })
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService, ErrorService) {
-    $scope.pointsvente = {};
-    $scope.username = AuthService.getCurrentEmail();
-    if ($scope.username === 'undefined' || $scope.username === null)
-      $state.go('app.login');
-    ErrorService.disableAction('Processing..');
-    $q.all([
-      DataService.getSalePoints($scope.username, function (result) {
-        $scope.pointsvente = result;
-      })])
-      .then(function () {
-        if (MultipleViewsManager.isActive()) {
-          if ($stateParams.shopCode) {
-            if ($stateParams.shopCode !== "===y") {
-              $scope.selectedShopCode = $stateParams.shopCode;
-              MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-              myEl = angular.element(document.querySelector('#list-view'));
-              myEl.removeClass("mode-master");
-              myEl.addClass("mode-detail");
+      $scope.pointsvente = {};
+      $scope.username = AuthService.getCurrentEmail();
+      if ($scope.username === 'undefined' || $scope.username === null)
+          $state.go('app.login');
+      ErrorService.disableAction('Processing..');
+      $q.all([
+          DataService.getSalePoints($scope.username, function (result) {
+            $scope.pointsvente = result;
+          })])
+      .then( function () {
+            if (MultipleViewsManager.isActive()) {
+                if ($stateParams.shopCode) {
+                    if ($stateParams.shopCode !== "===y") {
+                        $scope.selectedShopCode = $stateParams.shopCode;
+                        MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+                        myEl = angular.element(document.querySelector('#list-view'));
+                        myEl.removeClass("mode-master");
+                        myEl.addClass("mode-detail");
+                    } 
+                    else {
+                        if ($scope.pointsvente[0] !== undefined) {
+                            $scope.selectedShopCode = $scope.pointsvente[0].code;
+                            MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+                            myEl = angular.element(document.querySelector('#list-view'));
+                            myEl.addClass("mode-master");
+                            myEl.removeClass("mode-detail");
+                        }
+                    }
+                }
             }
-            else {
-              if ($scope.pointsvente[0] !== undefined) {
-                $scope.selectedShopCode = $scope.pointsvente[0].code;
-                MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-                myEl = angular.element(document.querySelector('#list-view'));
-                myEl.addClass("mode-master");
-                myEl.removeClass("mode-detail");
-              }
-            }
-          }
-        }
-        ErrorService.enableAction();
-      });
+            ErrorService.enableAction();
+      }); 
 
     /*
       * Récupération des données du serveur et alimentation de la base locale
       */
     $scope.synchroniser = function () {
-      ErrorService.disableAction('Processing..');
-      DataService.synchronize($scope.username).then(function () {
-        DataService.getSalePoints($scope.username, function (result) {
-          $scope.pointsvente = result;
-        });
-        $scope.$broadcast('scroll.refreshComplete');
-        ErrorService.enableAction();
-      })
+        ErrorService.disableAction('Processing..');
+        DataService.synchronize($scope.username).then(function () {
+            DataService.getSalePoints($scope.username, function (result) {
+                $scope.pointsvente = result;
+            });
+            $scope.$broadcast('scroll.refreshComplete');
+            ErrorService.enableAction();
+        })
     };
 
     $scope.changeShop = function (shop) {
-      if (shop !== undefined) {
-        $scope.selectedShopCode = shop.code;
-      } else {
-        $scope.selectedShopCode = $scope.pointsvente[0];
-      }
-      if (MultipleViewsManager.isActive()) {
-        MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
-        myEl = angular.element(document.querySelector('#list-view'));
-        myEl.removeClass("mode-master");
-        myEl.addClass("mode-detail");
-      } else {
-        $state.go('view-shop', { shopCode: $scope.selectedShopCode });
-      }
+        if (shop !== undefined) {
+            $scope.selectedShopCode = shop.code;
+        } else {
+            $scope.selectedShopCode = $scope.pointsvente[0];
+        }
+        if (MultipleViewsManager.isActive()) {
+            MultipleViewsManager.updateView('view-shop', { shopCode: $scope.selectedShopCode });
+            myEl = angular.element(document.querySelector('#list-view'));
+            myEl.removeClass("mode-master");
+            myEl.addClass("mode-detail");
+        } else {
+            $state.go('view-shop', { shopCode: $scope.selectedShopCode });
+        }
     }
 
     $scope.detailToMaster = function () {
-      if (MultipleViewsManager.isActive()) {
-        myEl = angular.element(document.querySelector('#list-view'));
-        myEl.addClass("mode-master");
-      }
+        if (MultipleViewsManager.isActive()) {
+            myEl = angular.element(document.querySelector('#list-view'));
+            myEl.addClass("mode-master");
+        }
     }
   })
 
@@ -238,12 +238,13 @@ angular.module('phoenix.controllers', [])
     $ionicHistory.nextViewOptions({
       disableBack: true
     });
-    
+    $scope.setting = function (data) {
+
+    };
 
     $scope.onRelease = function () {
-      $scope.distance = $scope.temp.distance;
-      $scope.travel_mode = $scope.temp.travel_mode;
-    };
+    $scope.volume = $scope.temp.volume;
+  };
 
   })
 

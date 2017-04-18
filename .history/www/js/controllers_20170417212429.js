@@ -238,11 +238,12 @@ angular.module('phoenix.controllers', [])
     $ionicHistory.nextViewOptions({
       disableBack: true
     });
-    
+    $scope.setting = function (data) {
+
+    };
 
     $scope.onRelease = function () {
-      $scope.distance = $scope.temp.distance;
-      $scope.travel_mode = $scope.temp.travel_mode;
+      $scope.volume = $scope.temp.volume;
     };
 
   })

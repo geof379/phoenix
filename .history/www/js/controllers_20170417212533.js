@@ -241,7 +241,7 @@ angular.module('phoenix.controllers', [])
     
 
     $scope.onRelease = function () {
-      $scope.distance = $scope.temp.distance;
+      $scope.distance = $scope.temp.travel;
       $scope.travel_mode = $scope.temp.travel_mode;
     };
 
