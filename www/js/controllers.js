@@ -1,4 +1,3 @@
-
 angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope,$rootScope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
@@ -33,9 +32,9 @@ angular.module('phoenix.controllers', [])
     $scope.synchroniser = function () {
       ErrorService.disableAction('Processing..');
       DataService.synchronize($rootScope.username).then(function () {
-        DataService.getSalePoints($rootScope.username, function (result) {
+        /*DataService.getSalePoints($rootScope.username, function (result) {
           $scope.pointsvente = result;
-        });
+        });*/
         $scope.$broadcast('scroll.refreshComplete');
         ErrorService.enableAction();
       })
@@ -243,9 +242,9 @@ angular.module('phoenix.controllers', [])
 
   .controller('LeftMenuCtrl', function ($scope,$rootScope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
     $scope.menus = [
-      { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-      { name: 'Pointes de vente', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
-      { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' }
+        { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
+        { name: 'Pointes de vente', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
+        { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' }
     ];
 
     $scope.isItemActive = function (menu) {
@@ -305,7 +304,6 @@ angular.module('phoenix.controllers', [])
 
       localStorageService.set('travel_mode', travel_mode);
       $scope.travel_mode = localStorageService.get('travel_mode');
-      console.log(localStorageService.get('travel_mode'));
     };
 
     $scope.onRelease = function (distance) {
@@ -344,7 +342,6 @@ angular.module('phoenix.controllers', [])
             var currentPoint = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             angular.forEach(oldSearchList, function (object, key) {
               var shopMarker = Marker.getMarker(object);
-              console.log(localStorageService.get('distance'));
               if (GoogleMaps.getDistanceBetweenPoints(position, shopMarker) <= localStorageService.get('distance')) {
                 if ($scope.tempSearchlists.indexOf(object) < 0)
                   $scope.tempSearchlists.push(object);
@@ -378,23 +375,21 @@ angular.module('phoenix.controllers', [])
 
   .controller('LocationCtrl', function ($scope,$rootScope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService, localStorageService) {
 
-    $scope.shop = JSON.parse($stateParams.shop);
-    DataService.getProducts($scope.shop.code, function (result) {
-      $scope.products = result;
-    })
+      $scope.shop = JSON.parse($stateParams.shop);
+      DataService.getProducts($scope.shop.code, function (result) {
+        $scope.products = result;
+      })
+
+      var routeTo = function (data) {
+        $scope.currentObject = data;
+        GoogleMaps.addMarker(Marker.getMarker($scope.shop));
+        GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
+      }
+
+      GoogleMaps.init("AIzaSyBrWkD7-iJ2Hiphb85aS8GhfrzxMCA_39w", function () {
+        GoogleMaps.initDiection();
+        routeTo($scope.shop);
+      });
 
 
-    var routeTo = function (data) {
-      $scope.currentObject = data;
-      GoogleMaps.addMarker(Marker.getMarker($scope.shop));
-      GoogleMaps.routeToShop(Marker.getMarker($scope.shop), document.getElementById('routes'));
-    }
-
-    GoogleMaps.init("AIzaSyBrWkD7-iJ2Hiphb85aS8GhfrzxMCA_39w", function () {
-      GoogleMaps.initDiection();
-      routeTo($scope.shop);
-    });
-
-
-  });
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb
+  }); 

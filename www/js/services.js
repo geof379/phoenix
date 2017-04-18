@@ -1,5 +1,5 @@
 angular.module('phoenix.services', ['ngCordova'])
-    .factory('DataService', function ($cordovaSQLite, $ionicPlatform, $q, $http, $ionicLoading, localStorageService) {
+    .factory('DataService', function ($cordovaSQLite, $ionicPlatform, $q, $http, $ionicLoading, localStorageService, $timeout) {
         var db, dbName = "phoenix.db";
 
         function useWebSql() {
@@ -175,10 +175,11 @@ angular.module('phoenix.services', ['ngCordova'])
                 return 'http://www.e-sud.fr/client/phoenix/api/v1/synchronize';
             },
 
-            synchronize: function (username) {
+            synchronize: function (username) { 
                 var self = this;
                 var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
+                var deferred = $q.defer();
+                return $http.get(url, {params:{"user": username}})
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -195,18 +196,24 @@ angular.module('phoenix.services', ['ngCordova'])
                         });
 
                         //Vider la table des produits
-                        self.deleteAllProducts(),
+                        self.deleteAllProducts(username),
                             //Remplir la table des produits
-                            angular.forEach(data.products, function (object, key) {
-                                var product = {};
-                                product.code = object['code'];
-                                product.libelle = object['libelle'];
-                                product.pointvente_id = object['pointvente_id'];
-                                product.username = username;
-                                self.createProduct(product);
-                            })
+                        angular.forEach(data.products, function (object, key) {
+                            var product = {};
+                            product.code = object['code'];
+                            product.libelle = object['libelle'];
+                            product.pointvente_id = object['pointvente_id'];
+                            product.username = username;
+                            self.createProduct(product);
+                        })
                         return data.salepoints;
                     })
+                    .error(function (data) {
+                        deferred.reject(data);
+                    })
+                    .then(function (data) {
+                        deferred.resolve(data);
+                    });
 
             },
 
@@ -243,10 +250,9 @@ angular.module('phoenix.services', ['ngCordova'])
                                 collectData.statut = 1;
                                 collectData.pointvente_id = produit.pointvente_id;
                                 self.transfertUpdate(collectData, function (r) { })
-                            })
-                            console.log(data);
-                        }).error(function (error) {
-                            deferred.reject(error);
+                            }) 
+                        }).error(function (data) {
+                            deferred.reject(data);
                         })
                         .then(function (data, status, headers, config) {
                             deferred.resolve(data);
@@ -359,37 +365,6 @@ angular.module('phoenix.services', ['ngCordova'])
             }
         }
 
-    })
-
-    .factory('ShopService', function () {
-
-        var shops = [
-            { libelle: 'Max&Cie', code: 1, latitude: 45.491403, longitude: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
-            { libelle: 'Metro', code: 2, latitude: 40.7274488, longitude: -73.9897746, products: [{ libelle: 'product3', prix: 0 }, { libelle: 'product4', prix: 0 }] },
-            { libelle: 'Carefour', code: 3, latitude: 45.493403, longitude: -73.54164319999999, products: [{ libelle: 'product6', prix: 0 }, { libelle: 'product5', prix: 0 }] },
-            { libelle: 'Ikea', code: 4, latitude: 45.494403, longitude: -73.56164519999999, products: [{ libelle: 'product7', prix: 0 }, { libelle: 'product9', prix: 0 }] },
-            { libelle: 'ToyRuzz', code: 5, latitude: 45.495403, longitude: -73.56664319999999, products: [{ libelle: 'product8', prix: 0 }, { libelle: 'product10', prix: 0 }] },
-            { libelle: 'ZhongJie', code: 6, latitude: 45.496403, longitude: -73.5654319999999, products: [{ libelle: 'product11', prix: 0 }, { libelle: 'product12', prix: 0 }] },
-            { libelle: 'Max&Cie', code: 1, latitude: 45.491403, longitude: -73.56114319999999, products: [{ libelle: 'product1', prix: 0 }, { libelle: 'product2', priprixce: 0 }] },
-            { libelle: 'Metro', code: 2, latitude: 45.492403, longitude: -73.56163319999999, products: [{ libelle: 'product3', prix: 0 }, { libelle: 'product4', prix: 0 }] },
-            { libelle: 'Carefour', code: 3, latitude: 45.493403, longitude: -73.54164319999999, products: [{ libelle: 'product6', prix: 0 }, { libelle: 'product5', prix: 0 }] },
-            { libelle: 'Ikea', code: 4, latitude: 45.494403, longitude: -73.56164519999999, products: [{ libelle: 'product7', prix: 0 }, { libelle: 'product9', prix: 0 }] },
-            { libelle: 'ToyRuzz', code: 5, latitude: 45.495403, longitude: -73.56664319999999, products: [{ libelle: 'product8', prix: 0 }, { libelle: 'product10', prix: 0 }] },
-            { libelle: 'ZhongJie', code: 6, latitude: 45.496403, longitude: -73.5654319999999, products: [{ libelle: 'product11', prix: 0 }, { libelle: 'product12', prix: 0 }] }
-        ];
-
-        return {
-            all: function () {
-
-                return shops;
-            },
-            get: function (shopId) {
-                for (var i = 0; i < shops.length; i++)
-                    if (shops[i].code == shopId)
-                        return shops[i];
-
-            }
-        }
     })
 
     /** Connectivity monitor */
@@ -740,13 +715,10 @@ angular.module('phoenix.services', ['ngCordova'])
                     travelMode: localStorageService.get('travel_mode')
                 };
                 directionsService.route(request, function (response, status) {
-
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                         directionsDisplay.setMap(map);
                         directionsDisplay.setPanel(directionsPanel);
-
-
                     } else {
                         console.info(status);
                     }
@@ -781,5 +753,4 @@ angular.module('phoenix.services', ['ngCordova'])
         }
 
 
-    })
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb
+    }) 
