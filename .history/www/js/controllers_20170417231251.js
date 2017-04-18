@@ -26,10 +26,7 @@ angular.module('phoenix.controllers', [])
         })
     };
 
-    /*
-         * Récupération des données du serveur et alimentation de la base locale
-         */
-    $scope.synchroniser = function () {
+      $scope.synchroniser = function () {
       ErrorService.disableAction('Processing..');
       DataService.synchronize($scope.username).then(function () {
         DataService.getSalePoints($scope.username, function (result) {
@@ -83,7 +80,6 @@ angular.module('phoenix.controllers', [])
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService, ErrorService) {
     $scope.pointsvente = {};
-    $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
@@ -115,19 +111,6 @@ angular.module('phoenix.controllers', [])
         }
         ErrorService.enableAction();
       });
-    /*
- * Transferer des données de la base locale vers le serveur
- */
-    $scope.transferer = function () {
-      ErrorService.disableAction('Processing..');
-      $q.all([
-        DataService.transfer($scope.username, function (results) {
-
-        })])
-        .then(function () {
-          ErrorService.enableAction();
-        })
-    };
 
     /*
       * Récupération des données du serveur et alimentation de la base locale
@@ -263,7 +246,7 @@ angular.module('phoenix.controllers', [])
 
   .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
     $scope.data = {};
-    $scope.username = AuthService.getCurrentEmail();
+      $scope.username = AuthService.getCurrentEmail();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
     $ionicHistory.nextViewOptions({
@@ -286,8 +269,8 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $state, $window, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
-
+  .controller('MapCtrl', function ($scope, $ionicLoading, $q, $state,$window, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, DataService, Marker, AuthService, localStorageService) {
+    
     $scope.username = AuthService.getCurrentEmail();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
@@ -347,7 +330,7 @@ angular.module('phoenix.controllers', [])
 
   })
 
-  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService, localStorageService) {
+  .controller('LocationCtrl', function ($scope, $state, $stateParams, $ionicLoading, $q, $cordovaGeolocation, GoogleMaps, $cordovaNetwork, $ionDrawerVerticalDelegate, $ionicSlideBoxDelegate, $ionicPlatform, ConnectivityMonitor, Marker, DataService, AuthService,localStorageService) {
 
     $scope.shop = JSON.parse($stateParams.shop);
     DataService.getProducts($scope.shop.code, function (result) {

@@ -3,6 +3,7 @@ angular.module('phoenix.controllers', [])
   .controller('AppCtrl', function ($scope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
     $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
+     $scope.username = AuthService.getCurrentEmail();
 
     /*
     * Déconnexion
@@ -83,7 +84,6 @@ angular.module('phoenix.controllers', [])
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService, ErrorService) {
     $scope.pointsvente = {};
-    $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');

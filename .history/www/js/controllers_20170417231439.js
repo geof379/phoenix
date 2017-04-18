@@ -83,7 +83,6 @@ angular.module('phoenix.controllers', [])
 
   .controller('ShopListCtrl', function ($scope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService, ErrorService) {
     $scope.pointsvente = {};
-    $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
