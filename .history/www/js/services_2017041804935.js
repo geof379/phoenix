@@ -178,7 +178,7 @@ angular.module('phoenix.services', ['ngCordova'])
             synchronize: function (username) {
                 var self = this;
                 var url = this.getUrlApi() + '/' + username;
-                return $http.get(url)
+                 $http.get(url)
                     .success(function (data, status, headers, config) {
                         //Vider la table des points de vente
                         self.deleteAllSalepoints(username);
@@ -782,4 +782,3 @@ angular.module('phoenix.services', ['ngCordova'])
 
 
     })
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb

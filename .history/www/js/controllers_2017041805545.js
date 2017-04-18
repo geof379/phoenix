@@ -1,4 +1,3 @@
-
 angular.module('phoenix.controllers', [])
 
   .controller('AppCtrl', function ($scope,$rootScope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
@@ -397,4 +396,3 @@ angular.module('phoenix.controllers', [])
 
 
   });
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb

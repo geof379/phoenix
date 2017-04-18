@@ -392,6 +392,7 @@ angular.module('phoenix.services', ['ngCordova'])
         }
     })
 
+
     /** Connectivity monitor */
     .factory('ConnectivityMonitor', function ($rootScope, $cordovaNetwork) {
         return {
@@ -782,4 +783,3 @@ angular.module('phoenix.services', ['ngCordova'])
 
 
     })
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb

@@ -1,7 +1,6 @@
-
 angular.module('phoenix.controllers', [])
 
-  .controller('AppCtrl', function ($scope,$rootScope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
+  .controller('AppCtrl', function ($scope, localStorageService, $ionicModal, $ionicPopup, $ionicLoading, $timeout, $ionicHistory, $state, $stateParams, $q, $window, $http, DataService, AuthService, ErrorService) {
     $rootScope.user = AuthService.getCurrentUser();
     $rootScope.username = AuthService.getCurrentEmail();
 
@@ -81,7 +80,7 @@ angular.module('phoenix.controllers', [])
     })
 
   })
-  
+
   .controller('ShopListCtrl', function ($scope,$rootScope, $state, $stateParams, MultipleViewsManager, DataService, $q, AuthService, ErrorService) {
     $scope.pointsvente = {};
     $rootScope.user = AuthService.getCurrentUser();
@@ -397,4 +396,3 @@ angular.module('phoenix.controllers', [])
 
 
   });
->>>>>>> 6800dbf924a1fcc89479e410ad58f634c137a0bb
