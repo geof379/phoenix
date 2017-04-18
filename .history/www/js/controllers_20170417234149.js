@@ -173,7 +173,7 @@ angular.module('phoenix.controllers', [])
 
     $scope.totalShop = 0;
     $scope.count = 0;
-    getShopDone();
+    getShopDone
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -208,7 +208,7 @@ angular.module('phoenix.controllers', [])
       }
     };
 
-   function getShopDone () {
+    $scope.getShopDone = function () {
       
       angular.forEach($scope.pointsvente, function (data, key) {
 
@@ -243,7 +243,7 @@ angular.module('phoenix.controllers', [])
   .controller('LeftMenuCtrl', function ($scope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
     $scope.menus = [
       { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-      { name: 'Pointes de vente', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' }
     ];
 

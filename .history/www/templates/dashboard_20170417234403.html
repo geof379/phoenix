@@ -1,13 +1,20 @@
-<ion-view view-title="Dashboard" ng-controller="DashboardCtrl">
+<ion-view view-title="Dashboard">
   <ion-content>
     <ion-list>
 
       <ion-item class="no-border">
         <div class="card">
           <div class="item item-text-wrap item-icon-right" style="border-top:#387ef5 4px solid">
-            Nombre de points de vente restants: {{count}}/{{totalShop}}
+            Nombre de points de vente restants: {count}/{totalShop} 
           </div>
 
+          <div class="item item-body">           
+            <canvas id="bar" class="chart chart-bar" data="graph.data" labels="graph.labels" series="graph.series"></canvas>
+            <p>
+              <a href="#" class="subdued">1 Like</a>
+              <a href="#" class="subdued">5 Comments</a>
+            </p>
+          </div>
         </div>
       </ion-item>
       <ion-item class="no-border">

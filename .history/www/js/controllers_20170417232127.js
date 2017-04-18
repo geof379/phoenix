@@ -168,12 +168,7 @@ angular.module('phoenix.controllers', [])
   })
 
   .controller('DashboardCtrl', function ($scope, $q, DataService, MultipleViewsManager, $ionicPlatform, AuthService, $state) {
-    $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
-
-    $scope.totalShop = 0;
-    $scope.count = 0;
-    getShopDone();
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -183,9 +178,9 @@ angular.module('phoenix.controllers', [])
     };
 
     $ionicPlatform.ready(function () {
+
       DataService.getSalePoints($scope.username, function (result) {
         $scope.pointsvente = result;
-        $scope.totalShop = $scope.pointsvente.length;
       });
     })
 
@@ -208,26 +203,6 @@ angular.module('phoenix.controllers', [])
       }
     };
 
-   function getShopDone () {
-      
-      angular.forEach($scope.pointsvente, function (data, key) {
-
-        DataService.getProducts(data, function (result) {
-          var keepGoing = true;
-          angular.forEach(result, function (object, key) {
-            if (keepGoing) {
-              if (object.prix == 0) {
-                count++;
-                keepGoing = false;
-              }
-            }
-          })
-        })
-      })
-    };
-
-
-
     $scope.graph = {};
     $scope.graph.data = [
       //Awake
@@ -243,7 +218,7 @@ angular.module('phoenix.controllers', [])
   .controller('LeftMenuCtrl', function ($scope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
     $scope.menus = [
       { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-      { name: 'Pointes de vente', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' }
     ];
 
@@ -289,12 +264,10 @@ angular.module('phoenix.controllers', [])
   .controller('SettingCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, AuthService, localStorageService) {
     $scope.data = {};
     $scope.username = AuthService.getCurrentEmail();
-    $ionicHistory.nextViewOptions({
-      disableBack: true
-    });
+    
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
-
+    
     $scope.travel_mode = localStorageService.get('travel_mode');
     $scope.distance = localStorageService.get('distance');
 

@@ -171,9 +171,7 @@ angular.module('phoenix.controllers', [])
     $scope.user = AuthService.getCurrentUser();
     $scope.username = AuthService.getCurrentEmail();
 
-    $scope.totalShop = 0;
-    $scope.count = 0;
-    getShopDone();
+    $scope.totalShop
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
 
@@ -185,7 +183,6 @@ angular.module('phoenix.controllers', [])
     $ionicPlatform.ready(function () {
       DataService.getSalePoints($scope.username, function (result) {
         $scope.pointsvente = result;
-        $scope.totalShop = $scope.pointsvente.length;
       });
     })
 
@@ -208,25 +205,11 @@ angular.module('phoenix.controllers', [])
       }
     };
 
-   function getShopDone () {
+      $scope.getShopDone = function () {
       
-      angular.forEach($scope.pointsvente, function (data, key) {
-
-        DataService.getProducts(data, function (result) {
-          var keepGoing = true;
-          angular.forEach(result, function (object, key) {
-            if (keepGoing) {
-              if (object.prix == 0) {
-                count++;
-                keepGoing = false;
-              }
-            }
-          })
-        })
-      })
     };
-
-
+     
+    
 
     $scope.graph = {};
     $scope.graph.data = [
@@ -243,7 +226,7 @@ angular.module('phoenix.controllers', [])
   .controller('LeftMenuCtrl', function ($scope, $location, DataService, MultipleViewsManager, $state, $stateParams) {
     $scope.menus = [
       { name: 'Dashboard', href: '#/app/dashboard', action: '', icon: 'icon ion-home' },
-      { name: 'Pointes de vente', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
+      { name: 'List Shops', href: '#/masterDetail/shops/===y', action: '', icon: 'ion-ios-list-outline' },
       { name: 'Map', href: '#/app/map', action: '', icon: 'icon ion-map' }
     ];
 
@@ -294,7 +277,7 @@ angular.module('phoenix.controllers', [])
     });
     if ($scope.username === 'undefined' || $scope.username === null)
       $state.go('app.login');
-
+    
     $scope.travel_mode = localStorageService.get('travel_mode');
     $scope.distance = localStorageService.get('distance');
 
