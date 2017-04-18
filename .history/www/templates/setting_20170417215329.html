@@ -1,0 +1,18 @@
+<ion-view view-title="Settings" ng-controller="AppCtrl">
+    <ion-content> 
+        <div class="list"> 
+            <div class="item item-divider"> Route options </div>
+            <ion-list>
+                <ion-radio ng-model="travel_mode" ng-value="'DRIVING'" ng-change='travel(value)'>DRIVING</ion-radio>
+                <ion-radio ng-model="travel_mode" ng-value="'BICYCLING'">BICYCLING</ion-radio>
+                <ion-radio ng-model="travel_mode" ng-value="'TRANSIT'">TRANSIT</ion-radio>
+                <ion-radio ng-model="travel_mode" ng-value="'WALKING'">WALKING</ion-radio>
+            </ion-list>
+            <div class="item item-divider"> Distance around </div>
+            <div class="item range">
+                0
+                <input type="range" name="volume" ng-model="temp.distance" on-release="onRelease()" max="100" value="10">
+                100
+            </div> 
+    </ion-content>
+</ion-view>
